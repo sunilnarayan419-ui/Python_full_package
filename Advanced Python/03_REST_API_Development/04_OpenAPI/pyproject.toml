@@ -1,0 +1,5 @@
+[project]
+name = "openapi-customization"
+version = "1.0.0"
+requires-python = ">=3.12"
+dependencies = ["fastapi>=0.115", "pydantic>=2.9"]

@@ -1,0 +1,14 @@
+[distutils]
+index-servers =
+    pypi
+    testpypi
+
+[pypi]
+repository = https://upload.pypi.org/legacy/
+username = __token__
+password = set-via-secure-secret-store-not-in-this-file
+
+[testpypi]
+repository = https://test.pypi.org/legacy/
+username = __token__
+password = set-via-secure-secret-store-not-in-this-file
