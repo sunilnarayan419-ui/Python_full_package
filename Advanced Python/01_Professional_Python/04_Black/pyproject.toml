@@ -1,7 +1,0 @@
-[tool.black]
-target-version = ["py312"]
-line-length = 100
-skip-string-normalization = false
-
-[tool.pytest.ini_options]
-asyncio_mode = "auto"

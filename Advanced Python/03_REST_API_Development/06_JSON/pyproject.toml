@@ -1,8 +1,0 @@
-[project]
-name = "scientific-json-processing"
-version = "1.0.0"
-requires-python = ">=3.12"
-dependencies = ["pydantic>=2.9"]
-
-[project.optional-dependencies]
-test = ["pytest>=8.3"]

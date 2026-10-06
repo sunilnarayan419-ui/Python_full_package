@@ -1,8 +1,0 @@
-[project]
-name = "requests-drug-database-client"
-version = "1.0.0"
-requires-python = ">=3.12"
-dependencies = ["requests>=2.32", "urllib3>=2.2"]
-
-[project.optional-dependencies]
-test = ["pytest>=8.3", "responses>=0.25"]

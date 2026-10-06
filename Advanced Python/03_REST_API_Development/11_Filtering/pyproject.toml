@@ -1,8 +1,0 @@
-[project]
-name = "advanced-filtering"
-version = "1.0.0"
-requires-python = ">=3.12"
-dependencies = ["fastapi>=0.115", "sqlalchemy[asyncio]>=2.0", "asyncpg>=0.29"]
-
-[project.optional-dependencies]
-test = ["pytest>=8.3", "pytest-asyncio>=0.24", "aiosqlite>=0.20"]
