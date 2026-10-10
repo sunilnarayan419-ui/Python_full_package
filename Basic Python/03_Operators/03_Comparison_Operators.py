@@ -1,42 +1,56 @@
-"""Comparison operators in scientific data validation."""
 
+"""
+03. Comparison Operators
 
-class HeightThreshold:
-    def __init__(self, height_cm: float, min_cm: float, max_cm: float) -> None:
-        self.height_cm = height_cm
-        self.min_cm = min_cm
-        self.max_cm = max_cm
+Main points
+- Comparison operators evaluate relationships between values.
+- == : Equal to.
+- != : Not equal to.
+- > : Greater than.
+- < : Less than.
+- >= : Greater than or equal to.
+- <= : Less than or equal to.
+- Comparisons generally return Boolean values: True or False.
+- Chained comparisons such as 20 <= temperature <= 30 are valid.
+- Comparisons are meaningful only when the values and units are appropriate.
+"""
 
-    def is_within(self) -> bool:
-        return self.min_cm <= self.height_cm <= self.max_cm
+# Example 1: Check a laboratory temperature range
+temperature_celsius = 25.0
 
+print("Above 20 C:", temperature_celsius > 20)
+print("Below 30 C:", temperature_celsius < 30)
+print("Within range:", 20 <= temperature_celsius <= 30)
 
-class ExpressionComparator:
-    def __init__(self, values: list[float], threshold: float) -> None:
-        self.values = values
-        self.threshold = threshold
+# Example 2: Compare gene expression values
+control_expression = 12.5
+treated_expression = 25.0
 
-    def above_threshold(self) -> list[float]:
-        return [v for v in self.values if v > self.threshold]
+print("Expression increased:", treated_expression > control_expression)
+print("Expression unchanged:", treated_expression == control_expression)
+print("Expression differs:", treated_expression != control_expression)
 
-    def is_significant(self, value: float) -> bool:
-        return value != self.threshold and value >= self.threshold * 2
+# Example 3: Check sample quality
+dna_concentration = 45.0
+minimum_concentration = 20.0
 
+is_concentration_sufficient = dna_concentration >= minimum_concentration
+print("Concentration sufficient:", is_concentration_sufficient)
 
-class QualityControlFilter:
-    def __init__(self, min_quality: float, min_length: int) -> None:
-        self.min_quality = min_quality
-        self.min_length = min_length
+# Example 4: Compare sequencing read counts
+sample_a_reads = 1_500_000
+sample_b_reads = 1_200_000
 
-    def passes(self, quality: float, length: int) -> bool:
-        return quality >= self.min_quality and length >= self.min_length
+print("A has more reads:", sample_a_reads > sample_b_reads)
+print("Read counts are equal:", sample_a_reads == sample_b_reads)
 
+# Example 5: Check an approximate laboratory target
+measured_ph = 7.35
+target_ph = 7.40
+tolerance = 0.10
 
-if __name__ == "__main__":
-    print(HeightThreshold(45.0, 30.0, 60.0).is_within())
+is_close_to_target = abs(measured_ph - target_ph) <= tolerance
+print("pH is within tolerance:", is_close_to_target)
 
-    c = ExpressionComparator([1.2, 3.5, 0.4], threshold=1.0)
-    print(c.above_threshold())
-
-    qc = QualityControlFilter(min_quality=30.0, min_length=100)
-    print(qc.passes(quality=35.0, length=150))
+# A comparison does not establish biological significance.
+# Statistical analysis and experimental context are separate requirements.

@@ -1,92 +1,46 @@
-class UniversityArgs:
-    def __init__(self, plant_species: str) -> None:
-        self.plant_species = plant_species
 
-    def total_leaf_area(self, *leaf_areas_cm2: float) -> float:
-        return sum(leaf_areas_cm2)
+"""
+07. *args
 
-    def average_leaf_area(self, *leaf_areas_cm2: float) -> float:
-        if not leaf_areas_cm2:
-            return 0.0
-        return sum(leaf_areas_cm2) / len(leaf_areas_cm2)
+Main points
+- *args collects extra positional arguments into a tuple.
+- The name args is conventional; the asterisk is what matters.
+- It allows a function to accept a variable number of positional arguments.
+- The collected tuple can be iterated over or used in calculations.
+- *args can be combined with ordinary parameters.
+- It is useful when the number of measurements or datasets varies.
+"""
 
-    @staticmethod
-    def run() -> None:
-        plant = UniversityArgs("Ficus benjamina")
-        total = plant.total_leaf_area(12.4, 15.1, 9.8, 20.0)
-        average = plant.average_leaf_area(12.4, 15.1, 9.8, 20.0)
-        print("University - total leaf area:", total)
-        print("University - average leaf area:", average)
+# Example 1: Calculate the mean of any number of measurements.
+def calculate_mean(*measurements):
+    if not measurements:
+        return None
 
-
-class InterviewArgs:
-    def __init__(self, experiment_name: str) -> None:
-        self.experiment_name = experiment_name
-
-    def aggregate_measurements(self, *measurements: float) -> dict[str, float]:
-        if not measurements:
-            return {"count": 0, "sum": 0.0, "min": 0.0, "max": 0.0}
-        return {
-            "count": len(measurements),
-            "sum": sum(measurements),
-            "min": min(measurements),
-            "max": max(measurements),
-        }
-
-    def combine_with_named_arg(self, label: str, *measurements: float) -> str:
-        stats = self.aggregate_measurements(*measurements)
-        return f"{label}: {stats}"
-
-    @staticmethod
-    def run() -> None:
-        experiment = InterviewArgs("Root-Length-Trial")
-        stats = experiment.aggregate_measurements(3.2, 4.1, 2.9, 5.0)
-        print("Interview - stats:", stats)
-
-        empty_stats = experiment.aggregate_measurements()
-        print("Interview - empty stats:", empty_stats)
-
-        combined = experiment.combine_with_named_arg("Root-Length-Trial", 3.2, 4.1, 2.9)
-        print("Interview - combined:", combined)
+    return sum(measurements) / len(measurements)
 
 
-class IndustryArgs:
-    """Aggregates readings from an arbitrary number of sensor sources."""
+print(calculate_mean(10.0, 12.0, 14.0))
+print(calculate_mean(5.5, 7.5, 9.5, 11.5))
+print(calculate_mean())
 
-    def __init__(self, pipeline_name: str) -> None:
-        if not pipeline_name.strip():
-            raise ValueError("pipeline_name must not be empty")
-        self.pipeline_name = pipeline_name
+# Example 2: Summarize multiple gene-expression measurements.
+def summarize_expression(gene_name, *measurements):
+    print("Gene:", gene_name)
+    print("Measurements:", measurements)
 
-    def merge_sensor_readings(self, *readings: dict[str, float]) -> dict[str, object]:
-        if not readings:
-            raise ValueError("At least one sensor reading is required")
-        values = [reading["value"] for reading in readings]
-        return {
-            "pipeline": self.pipeline_name,
-            "sample_size": len(values),
-            "mean": sum(values) / len(values),
-            "spread": max(values) - min(values),
-        }
-
-    @staticmethod
-    def run() -> None:
-        pipeline = IndustryArgs("Soil-Moisture-Network")
-        readings = (
-            {"sensor_id": "S1", "value": 22.5},
-            {"sensor_id": "S2", "value": 24.1},
-            {"sensor_id": "S3", "value": 21.9},
-        )
-        merged = pipeline.merge_sensor_readings(*readings)
-        print("Industry - merged readings:", merged)
-
-        try:
-            pipeline.merge_sensor_readings()
-        except ValueError as error:
-            print("Industry - empty reading guard:", error)
+    if measurements:
+        mean = sum(measurements) / len(measurements)
+        print("Mean expression:", mean)
 
 
-if __name__ == "__main__":
-    UniversityArgs.run()
-    InterviewArgs.run()
-    IndustryArgs.run()
+summarize_expression("TP53", 12.5, 15.0, 18.5)
+summarize_expression("BRCA1", 8.2, 9.1)
+
+# Example 3: Pass existing values using unpacking.
+expression_values = [10.0, 20.0, 30.0]
+
+mean = calculate_mean(*expression_values)
+print("Mean from a list:", mean)
+
+# The * in a function definition collects arguments.
+# The * in a function call unpacks an iterable into positional arguments.

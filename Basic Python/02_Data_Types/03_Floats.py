@@ -1,42 +1,45 @@
-﻿"""Floating-point values in plant measurements."""
 
+"""
+03. Floats
 
-class FloatUniversity:
-    def __init__(self, height_cm: float) -> None:
-        self.height_cm = height_cm
+Main points
+- float represents floating-point numbers.
+- Floats can represent fractional, positive, negative, and scientific
+  notation values.
+- Floating-point arithmetic has finite precision.
+- Some decimal fractions cannot be represented exactly in binary.
+- Use round() to round a value for display or a specific calculation.
+- Avoid direct equality comparisons for many floating-point calculations.
+"""
 
-    def in_meters(self) -> float:
-        return self.height_cm / 100.0
+# Floating-point values
+temperature = 25.5
+negative_value = -12.75
+scientific_value = 1.5e3
 
+print(temperature)
+print(negative_value)
+print("Scientific notation:", scientific_value)
 
-class FloatInterview:
-    def __init__(self, ph: float) -> None:
-        self.ph = ph
+# Floating-point arithmetic
+print("Addition:", 0.1 + 0.2)
+print("Rounded result:", round(0.1 + 0.2, 2))
 
-    def is_acidic(self) -> bool:
-        return self.ph < 7.0
+# Demonstrate floating-point precision
+print("Direct equality:", 0.1 + 0.2 == 0.3)
 
+# Compare floats with a tolerance
+tolerance = 1e-9
+difference = abs((0.1 + 0.2) - 0.3)
 
-class FloatIndustry:
-    def __init__(self, values: list[float], tolerance: float = 0.01) -> None:
-        self.values = values
-        self.tolerance = tolerance
+print("Approximately equal:", difference < tolerance)
 
-    def mean(self) -> float:
-        if not self.values:
-            return 0.0
-        return sum(self.values) / len(self.values)
+# Convert a string to float
+ph_value = float("7.4")
+print("pH:", ph_value, type(ph_value))
 
-    def is_consistent(self) -> bool:
-        if not self.values:
-            return True
-        m = self.mean()
-        return all(abs(v - m) <= self.tolerance for v in self.values)
+# Scientific example: convert milligrams to grams
+mass_mg = 250.0
+mass_g = mass_mg / 1000
 
-
-if __name__ == "__main__":
-    print(FloatUniversity(150.0).in_meters())
-
-    print(FloatInterview(5.5).is_acidic())
-
-    print(FloatIndustry([0.45, 0.46, 0.44]).is_consistent())
+print(f"Mass in grams: {mass_g:.3f} g")

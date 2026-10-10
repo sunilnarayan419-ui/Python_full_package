@@ -1,108 +1,68 @@
-"""14_Dictionary_Methods.py — Python dictionary methods through plant science and genomics."""
-from __future__ import annotations
 
+"""
+14. Dictionary Methods
 
-class PlantTraitMethodsUniversity:
-    """University level: basic dictionary manipulation with keys, values, items, update, pop, copy."""
+Main points
+- keys() returns a view of dictionary keys.
+- values() returns a view of dictionary values.
+- items() returns a view of key-value pairs.
+- get() retrieves a value with an optional default.
+- update() adds or updates key-value pairs.
+- pop(key) removes a key and returns its value.
+- popitem() removes and returns the most recently inserted pair.
+- setdefault() returns an existing value or inserts a default.
+- copy() creates a shallow copy.
+- clear() removes all key-value pairs.
+- View objects reflect changes to the dictionary.
+"""
 
-    def __init__(self) -> None:
-        self.traits: dict[str, str | float | int] = {"species": "Barley", "height_cm": 30.0}
+# Gene expression data
+expression = {
+    "TP53": 12.5,
+    "BRCA1": 8.2,
+    "EGFR": 18.4
+}
 
-    def demonstrate(self) -> None:
-        print(f"Keys:   {list(self.traits.keys())}")
-        print(f"Values: {list(self.traits.values())}")
-        self.traits.update({"leaf_count": 14, "stem_diameter_mm": 4.2})
-        print(f"After update: {self.traits}")
-        popped = self.traits.pop("stem_diameter_mm")
-        print(f"After pop('stem_diameter_mm') -> {popped}: {self.traits}")
-        copied = self.traits.copy()
-        copied.clear()
-        print(f"Copied and cleared: {copied}")
+# Retrieve keys, values, and items
+print("Genes:", expression.keys())
+print("Measurements:", expression.values())
+print("Records:", expression.items())
 
-    @staticmethod
-    def run() -> None:
-        demo = PlantTraitMethodsUniversity()
-        demo.demonstrate()
+# Safe retrieval
+print("MYC expression:", expression.get("MYC", 0.0))
 
+# Update one or more values
+expression.update({
+    "MYC": 14.3,
+    "EGFR": 20.1
+})
 
-class GenomicRecordProcessorInterview:
-    """Interview level: process plant/genomic metadata with dictionary methods."""
+print("Updated expression:", expression)
 
-    def __init__(self, records: dict[str, dict[str, str | float | int]]) -> None:
-        self.records = records
+# Insert a default only when a key is absent
+expression.setdefault("APOE", 5.0)
+expression.setdefault("TP53", 0.0)
 
-    def merge_annotations(self, gene_id: str, annotations: dict[str, str | float | int]) -> None:
-        rec = self.records.get(gene_id)
-        if rec is None:
-            self.records[gene_id] = annotations.copy()
-        else:
-            rec.update(annotations)
+print("After setdefault:", expression)
 
-    def remove_record(self, gene_id: str) -> dict[str, str | float | int] | None:
-        return self.records.pop(gene_id, None)
+# Remove and retrieve a specific value
+removed_value = expression.pop("BRCA1")
+print("Removed BRCA1 expression:", removed_value)
 
-    def list_gene_ids(self) -> list[str]:
-        return list(self.records.keys())
+# Remove the most recently inserted pair
+removed_pair = expression.popitem()
+print("Removed pair:", removed_pair)
 
-    @staticmethod
-    def run() -> None:
-        records: dict[str, dict[str, str | float | int]] = {
-            "AT1G01010": {"expression": 12.5, "tissue": "leaf"},
-            "AT1G01020": {"expression": 8.3, "tissue": "root"},
-        }
-        processor = GenomicRecordProcessorInterview(records)
-        processor.merge_annotations("AT1G01010", {"go_term": "photosynthesis"})
-        processor.merge_annotations("AT1G01030", {"expression": 5.0, "tissue": "stem"})
-        removed = processor.remove_record("AT1G01020")
-        print("Interview — Processed records:")
-        print(f"  Gene IDs: {processor.list_gene_ids()}")
-        print(f"  Removed:  {removed}")
-        print(f"  Records:  {processor.records}")
+# Create a shallow copy
+expression_copy = expression.copy()
+print("Copied dictionary:", expression_copy)
 
+# Iterate through the data
+for gene, value in expression.items():
+    print(f"{gene}: {value}")
 
-class PhenotypeDatabaseIndustry:
-    """Industry level: scientific metadata-management component."""
+# Clear the copy without clearing the original
+expression_copy.clear()
 
-    def __init__(self) -> None:
-        self.entries: dict[str, dict[str, str | float | int]] = {}
-
-    def insert(self, sample_id: str, data: dict[str, str | float | int]) -> None:
-        if sample_id in self.entries:
-            raise ValueError(f"{sample_id} already exists")
-        self.entries[sample_id] = data.copy()
-
-    def upsert(self, sample_id: str, data: dict[str, str | float | int]) -> None:
-        if sample_id in self.entries:
-            self.entries[sample_id].update(data)
-        else:
-            self.entries[sample_id] = data.copy()
-
-    def popitem_safe(self) -> tuple[str, dict[str, str | float | int]] | None:
-        if not self.entries:
-            return None
-        return self.entries.popitem()
-
-    def setdefault_field(self, sample_id: str, field: str, default: str | float | int) -> str | float | int:
-        rec = self.entries.setdefault(sample_id, {})
-        if not isinstance(rec, dict):
-            raise TypeError("expected dict entry")
-        return rec.setdefault(field, default)
-
-    @staticmethod
-    def run() -> None:
-        db = PhenotypeDatabaseIndustry()
-        db.insert("WHT-001", {"species": "Wheat", "height_cm": 28.5})
-        db.upsert("WHT-001", {"leaf_count": 12})
-        db.setdefault_field("WHT-002", "species", "Wheat")
-        db.setdefault_field("WHT-002", "height_cm", 32.1)
-        print("Industry — Phenotype database:")
-        for sid, data in db.entries.items():
-            print(f"  {sid}: {data}")
-
-
-if __name__ == "__main__":
-    PlantTraitMethodsUniversity.run()
-    print()
-    GenomicRecordProcessorInterview.run()
-    print()
-    PhenotypeDatabaseIndustry.run()
+print("Cleared copy:", expression_copy)
+print("Original remains:", expression)

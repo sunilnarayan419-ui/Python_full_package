@@ -1,102 +1,84 @@
-"""yield: pausing/resuming function execution and generator state."""
+"""
+TOPIC: yield
+
+MAIN POINTS
+- yield produces a value and pauses the generator.
+- When the generator resumes, execution continues immediately after the previous yield.
+- Local variables retain their values between yields.
+- A generator can yield values inside loops and conditional statements.
+- Multiple yield statements can produce a sequence of values.
+- return ends a generator; a return value becomes the value carried by StopIteration rather than an ordinary yielded item.
+- yield from delegates iteration to another iterable or generator.
+- These features allow complex biological data-processing pipelines to operate incrementally.
+"""
+
+def analyze_dna_sequence(sequence):
+    """Yield analysis results one at a time."""
+
+    sequence = sequence.upper()
+
+    yield f"Sequence: {sequence}"
+
+    yield f"Length: {len(sequence)}"
+
+    gc_count = sequence.count("G") + sequence.count("C")
+    gc_percentage = gc_count / len(sequence) * 100 if sequence else 0
+
+    yield f"GC percentage: {gc_percentage:.2f}%"
+
+    yield f"A count: {sequence.count('A')}"
+    yield f"T count: {sequence.count('T')"
+    yield f"G count: {sequence.count('G')}"
+    yield f"C count: {sequence.count('C')}"
 
 
-class UniversityYield:
-    def __init__(self, plant_records: list[dict]) -> None:
-        self.plant_records = plant_records
+dna = "ATGCGCGT"
 
-    def paused_reader(self):
-        """Demonstrates that yield pauses execution and resumes on next()."""
-        for record in self.plant_records:
-            print(f"  [about to yield] {record['sample_id']}")
-            yield record["sample_id"]
-            print(f"  [resumed after] {record['sample_id']}")
+print("DNA analysis results:")
 
-    @staticmethod
-    def run() -> None:
-        data = [
-            {"sample_id": "P001", "species": "Wheat"},
-            {"sample_id": "P002", "species": "Rice"},
-        ]
-
-        demo = UniversityYield(data)
-        gen = demo.paused_reader()
-
-        print("Calling next() once, manually:")
-        first_id = next(gen)
-        print(f"Received: {first_id}")
-
-        print("Calling next() again to resume:")
-        second_id = next(gen)
-        print(f"Received: {second_id}")
+for result in analyze_dna_sequence(dna):
+    print(result)
 
 
-class InterviewYield:
-    def __init__(self, readings: list[float]) -> None:
-        self.readings = readings
+# Demonstrate how generator state is preserved.
+def gene_expression_generator():
+    print("\nStarting gene expression analysis.")
 
-    def running_average_generator(self):
-        """A stateful generator: yields a running average after each new reading.
+    gene = "BRCA1"
+    expression = 24.6
 
-        Demonstrates that local state (total, count) persists across yields.
-        """
-        total = 0.0
-        count = 0
-        for reading in self.readings:
-            if not isinstance(reading, (int, float)):
-                continue
-            total += reading
-            count += 1
-            yield total / count
+    yield gene, expression
 
-    @staticmethod
-    def run() -> None:
-        empty_readings: list[float] = []
-        processor = InterviewYield(empty_readings)
-        result_empty = list(processor.running_average_generator())
-        print(f"Empty readings -> running averages: {result_empty}")
+    # Execution resumes here.
+    expression = expression * 1.5
 
-        mixed_readings = [10.0, "bad", 20.0, 30.0]
-        processor = InterviewYield(mixed_readings)
-        result_mixed = list(processor.running_average_generator())
-        print(f"Mixed readings -> running averages: {result_mixed}")
+    yield gene, expression
+
+    expression = expression * 2
+
+    yield gene, expression
 
 
-class IndustryYield:
-    def __init__(self, sequencing_data: list[str]) -> None:
-        self.data = sequencing_data
+expression_generator = gene_expression_generator()
 
-    def chunked_sequence_yielder(self, chunk_size: int):
-        """Yields fixed-size chunks of a DNA sequence, one at a time.
+print("\nFirst value:")
+print(next(expression_generator))
 
-        Memory-efficient: never holds all chunks in memory simultaneously
-        for a single sequence.
-        """
-        if chunk_size <= 0:
-            raise ValueError("chunk_size must be positive")
-        for sequence in self.data:
-            for start in range(0, len(sequence), chunk_size):
-                yield sequence[start : start + chunk_size]
+print("\nSecond value:")
+print(next(expression_generator))
 
-    def process(self, chunk_size: int = 4) -> dict[str, object]:
-        chunks = list(self.chunked_sequence_yielder(chunk_size))
-        return {
-            "total_sequences": len(self.data),
-            "chunk_size": chunk_size,
-            "total_chunks": len(chunks),
-            "chunks": chunks,
-        }
-
-    @staticmethod
-    def run() -> None:
-        sequencing_data = ["ATCGGGTA", "TTAACCGGTT"]
-
-        processor = IndustryYield(sequencing_data)
-        report = processor.process(chunk_size=4)
-        print(f"Experiment report: {report}")
+print("\nThird value:")
+print(next(expression_generator))
 
 
-if __name__ == "__main__":
-    UniversityYield.run()
-    InterviewYield.run()
-    IndustryYield.run()
+# yield from delegates to another iterable.
+def generate_all_sequences():
+    yield from ["ATGC", "GCTA", "TTAA"]
+
+    yield from generate_repeated_dna("CCGG", 2)
+
+
+print("\nCombined sequence stream:")
+
+for sequence in generate_all_sequences():
+    print(sequence)

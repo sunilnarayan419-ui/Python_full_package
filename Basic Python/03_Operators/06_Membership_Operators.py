@@ -1,42 +1,54 @@
-"""Membership operators in genomic data validation."""
 
+"""
+06. Membership Operators
 
-class BaseMembership:
-    DNA_BASES = "ACGT"
+Main points
+- in checks whether an element belongs to a container.
+- not in checks whether an element does not belong to a container.
+- Membership works with strings, lists, tuples, sets, and dictionaries.
+- For dictionaries, membership checks keys, not values.
+- String membership checks whether a substring occurs within a string.
+- Set membership is typically faster than list membership for large collections.
+- Membership checks do not establish biological function or significance.
+"""
 
-    def __init__(self, base: str) -> None:
-        self.base = base
+# Example 1: Check whether a gene is in a gene panel
+gene_panel = ["BRCA1", "TP53", "EGFR", "MYC"]
 
-    def is_dna_base(self) -> bool:
-        return self.base in self.DNA_BASES
+print("TP53 included:", "TP53" in gene_panel)
+print("ALK included:", "ALK" in gene_panel)
 
+# Example 2: Check for a DNA motif
+dna_sequence = "ATGCGTACGATG"
 
-class SequenceValidator:
-    def __init__(self, sequence: str) -> None:
-        self.sequence = sequence.upper()
+print("Contains ATG:", "ATG" in dna_sequence)
+print("Contains TTT:", "TTT" in dna_sequence)
 
-    def has_only_dna(self) -> bool:
-        return all(b in "ACGT" for b in self.sequence)
+# Example 3: Screen for contamination markers
+detected_markers = {"marker_A", "marker_B", "marker_C"}
 
+print("Marker A detected:", "marker_A" in detected_markers)
+print("Marker D absent:", "marker_D" not in detected_markers)
 
-class ChromosomeLookup:
-    VALID = {"Chr1", "Chr2", "Chr3", "ChrX"}
+# Example 4: Dictionary membership checks keys
+sample = {
+    "sample_id": "S001",
+    "organism": "Arabidopsis thaliana",
+    "temperature": 25.0
+}
 
-    def __init__(self, name: str) -> None:
-        self.name = name
+print("Has organism key:", "organism" in sample)
+print("Has pH key:", "pH" in sample)
 
-    def is_known(self) -> bool:
-        return self.name in self.VALID
+# To check dictionary values, use .values()
+print("Organism recorded:", "Arabidopsis thaliana" in sample.values())
 
-    def is_unknown(self) -> bool:
-        return self.name not in self.VALID
+# Example 5: Check whether a sample is in a control group
+control_samples = ("S001", "S002", "S003")
 
+sample_id = "S002"
 
-if __name__ == "__main__":
-    print(BaseMembership("A").is_dna_base())
-
-    print(SequenceValidator("ATGCAT").has_only_dna())
-
-    c = ChromosomeLookup("Chr1")
-    print(c.is_known())
-    print(c.is_unknown())
+if sample_id in control_samples:
+    print("Sample belongs to the control group.")
+else:
+    print("Sample is not in the control group.")

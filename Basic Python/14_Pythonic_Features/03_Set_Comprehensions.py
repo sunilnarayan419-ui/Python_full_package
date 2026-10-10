@@ -1,107 +1,101 @@
-"""Set comprehensions demonstrated through species and mutation data."""
+"""
+TOPIC: Set Comprehensions
+
+MAIN POINTS
+- Set comprehensions create sets using concise syntax.
+- Basic syntax: {expression for item in iterable}.
+- Sets store unique elements and remove duplicates.
+- Sets are unordered; do not rely on their display order.
+- Conditions can filter elements.
+- Sets support union, intersection, and difference.
+- They are useful for unique nucleotide types, gene IDs, and comparing datasets.
+"""
+
+# Example 1: Extract unique nucleotides.
+dna_sequence = "ATGCGCGTAT"
+
+unique_bases = {
+    nucleotide
+    for nucleotide in dna_sequence
+}
+
+print("Unique nucleotides:")
+print(unique_bases)
 
 
-class UniversitySetComprehensions:
-    """Teach the fundamental syntax of building sets from iterables."""
+# Example 2: Extract unique GC bases from multiple sequences.
+dna_sequences = [
+    "ATGC",
+    "GGCC",
+    "ATAT",
+    "GCGC"
+]
 
-    def __init__(self, species_observations: list[str]) -> None:
-        self.species_observations = species_observations
+unique_gc_bases = {
+    nucleotide
+    for sequence in dna_sequences
+    for nucleotide in sequence
+    if nucleotide in {"G", "C"}
+}
 
-    def unique_species(self) -> set[str]:
-        """Extract the unique species observed across all samples."""
-        return {species for species in self.species_observations}
-
-    @staticmethod
-    def run() -> None:
-        observations = [
-            "Arabidopsis",
-            "Oryza sativa",
-            "Arabidopsis",
-            "Zea mays",
-            "Oryza sativa",
-        ]
-
-        processor = UniversitySetComprehensions(observations)
-        species = processor.unique_species()
-
-        print(f"Observed species (raw list): {observations}")
-        print(f"Unique species (set): {species}")
+print("\nUnique GC bases:")
+print(unique_gc_bases)
 
 
-class InterviewSetComprehensions:
-    """Solve a practical mutation-deduplication problem with edge cases."""
+# Example 3: Extract unique gene identifiers.
+gene_records = [
+    {"gene": "BRCA1", "expression": 24.6},
+    {"gene": "TP53", "expression": 18.2},
+    {"gene": "BRCA1", "expression": 26.1},
+    {"gene": "EGFR", "expression": 42.8}
+]
 
-    def __init__(self, mutation_records: list[str]) -> None:
-        self.mutation_records = mutation_records
+unique_gene_ids = {
+    record["gene"]
+    for record in gene_records
+}
 
-    def unique_valid_mutations(self) -> set[str]:
-        """Return unique, non-empty, uppercase-normalized mutation codes.
-
-        Handles an empty record list and filters out blank entries.
-        """
-        if not self.mutation_records:
-            return set()
-
-        return {
-            record.strip().upper()
-            for record in self.mutation_records
-            if record and record.strip()
-        }
-
-    def mutations_shared_with(self, other_mutations: set[str]) -> set[str]:
-        """Find mutations shared between this sample and another sample."""
-        current = self.unique_valid_mutations()
-        return {mutation for mutation in current if mutation in other_mutations}
-
-    @staticmethod
-    def run() -> None:
-        raw_mutations = ["p.V600E", "  p.v600e", "", "p.G12D", "p.G12D", "   "]
-        empty_mutations: list[str] = []
-
-        case_one = InterviewSetComprehensions(raw_mutations)
-        case_two = InterviewSetComprehensions(empty_mutations)
-
-        print(f"Unique valid mutations: {case_one.unique_valid_mutations()}")
-        print(f"Empty record result: {case_two.unique_valid_mutations()}")
-        print(
-            "Shared mutations: "
-            f"{case_one.mutations_shared_with({'P.G12D', 'P.G13D'})}"
-        )
+print("\nUnique gene identifiers:")
+print(unique_gene_ids)
 
 
-class IndustrySetComprehensions:
-    """Normalize and deduplicate a biological dataset for downstream use."""
+# Example 4: Find genes shared between two experiments.
+experiment_A = {
+    "BRCA1",
+    "TP53",
+    "EGFR",
+    "MYC"
+}
 
-    def __init__(self, gene_identifiers: list[str]) -> None:
-        self.gene_identifiers = gene_identifiers
+experiment_B = {
+    "TP53",
+    "EGFR",
+    "KRAS",
+    "BRAF"
+}
 
-    def normalized_unique_ids(self) -> set[str]:
-        """Standardize gene identifiers to a consistent uppercase format."""
-        return {gene_id.strip().upper() for gene_id in self.gene_identifiers if gene_id}
+shared_genes = {
+    gene
+    for gene in experiment_A
+    if gene in experiment_B
+}
 
-    def duplicate_count(self) -> int:
-        """Report how many redundant identifiers exist in the raw dataset.
-
-        A list is used here deliberately to preserve total count, while the
-        set comprehension isolates the unique identifiers for comparison.
-        """
-        unique_ids = self.normalized_unique_ids()
-        raw_count = len([gene_id for gene_id in self.gene_identifiers if gene_id])
-        return raw_count - len(unique_ids)
-
-    @staticmethod
-    def run() -> None:
-        gene_ids = ["ENSG001", "ensg001", "ENSG002", "ENSG003", "ensg002", ""]
-
-        deduplicator = IndustrySetComprehensions(gene_ids)
-        unique_ids = deduplicator.normalized_unique_ids()
-        duplicates = deduplicator.duplicate_count()
-
-        print(f"Normalized unique gene IDs: {unique_ids}")
-        print(f"Duplicate identifiers removed: {duplicates}")
+print("\nShared genes:")
+print(shared_genes)
 
 
-if __name__ == "__main__":
-    UniversitySetComprehensions.run()
-    InterviewSetComprehensions.run()
-    IndustrySetComprehensions.run()
+# Example 5: Find genes unique to experiment A.
+unique_to_A = {
+    gene
+    for gene in experiment_A
+    if gene not in experiment_B
+}
+
+print("\nGenes unique to experiment A:")
+print(unique_to_A)
+
+
+# Example 6: Set operations provide concise alternatives.
+print("\nIntersection:", experiment_A & experiment_B)
+print("Union:", experiment_A | experiment_B)
+print("Difference:", experiment_A - experiment_B)

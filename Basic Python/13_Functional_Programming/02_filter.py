@@ -1,91 +1,103 @@
-"""filter(): selecting biological samples and measurements based on conditions."""
+"""
+TOPIC: filter()
+
+MAIN POINTS
+- filter() selects items from an iterable based on a function.
+- Syntax: filter(function, iterable).
+- The function should return a truthy or falsy result.
+- filter() returns a lazy iterator in Python 3.
+- filter(None, iterable) retains truthy elements.
+- It is useful for selecting genes, DNA sequences, and samples that satisfy criteria.
+"""
+
+# Example 1: Select DNA sequences containing a start codon.
+dna_sequences = [
+    "ATGCGTAC",
+    "TTAGGCAT",
+    "ATGCCGTA",
+    "CGATCGAT"
+]
+
+def contains_start_codon(sequence):
+    return sequence.startswith("ATG")
 
 
-class UniversityFilter:
-    def __init__(self, plant_heights_cm: list[float]) -> None:
-        self.plant_heights_cm = plant_heights_cm
+coding_candidates = filter(
+    contains_start_codon,
+    dna_sequences
+)
 
-    def tall_plants(self, threshold: float) -> list[float]:
-        return list(filter(lambda height: height >= threshold, self.plant_heights_cm))
-
-    @staticmethod
-    def run() -> None:
-        heights_cm = [18.2, 25.5, 31.2, 42.8, 12.0]
-
-        processor = UniversityFilter(heights_cm)
-        tall = processor.tall_plants(25.0)
-
-        print(f"All heights: {heights_cm}")
-        print(f"Heights >= 25cm: {tall}")
+print("Sequences beginning with ATG:")
+print(list(coding_candidates))
 
 
-class InterviewFilter:
-    def __init__(self, samples: list[dict]) -> None:
-        self.samples = samples
+# Example 2: Select genes with high expression.
+gene_expression = {
+    "BRCA1": 24.6,
+    "TP53": 18.2,
+    "EGFR": 42.8,
+    "MYC": 35.1,
+    "GAPDH": 8.4
+}
 
-    def healthy_samples(self) -> list[dict]:
-        return list(
-            filter(
-                lambda sample: isinstance(sample.get("health_score"), (int, float))
-                and sample.get("health_score", 0) >= 0.7,
-                self.samples,
-            )
-        )
+high_expression_genes = filter(
+    lambda item: item[1] >= 30,
+    gene_expression.items()
+)
 
-    @staticmethod
-    def run() -> None:
-        samples = [
-            {"id": "P001", "health_score": 0.91},
-            {"id": "P002", "health_score": 0.52},
-            {"id": "P003", "health_score": 0.84},
-            {"id": "P004", "health_score": None},
-            {"id": "P005"},
-        ]
-
-        processor = InterviewFilter(samples)
-        print(f"Healthy samples: {processor.healthy_samples()}")
-
-        empty_processor = InterviewFilter([])
-        print(f"Empty dataset: {empty_processor.healthy_samples()}")
+print("\nGenes with expression >= 30:")
+print(list(high_expression_genes))
 
 
-class IndustryFilter:
-    def __init__(self, experiment_data: list[dict]) -> None:
-        self.data = experiment_data
+# Example 3: Select samples passing a quality threshold.
+samples = [
+    {"sample_id": "S001", "purity": 1.91},
+    {"sample_id": "S002", "purity": 1.52},
+    {"sample_id": "S003", "purity": 1.86},
+    {"sample_id": "S004", "purity": 2.10}
+]
 
-    def filter_by_expression_threshold(self, min_level: float) -> list[dict]:
-        """Reusable predicate-based filtering step for a QC pipeline."""
-
-        def passes_threshold(record: dict) -> bool:
-            level = record.get("expression_level")
-            return isinstance(level, (int, float)) and level >= min_level
-
-        return list(filter(passes_threshold, self.data))
-
-    def process(self, min_level: float = 5.0) -> dict[str, object]:
-        passing = self.filter_by_expression_threshold(min_level)
-        return {
-            "total_samples": len(self.data),
-            "passing_samples": len(passing),
-            "min_level": min_level,
-            "records": passing,
-        }
-
-    @staticmethod
-    def run() -> None:
-        sample_data = [
-            {"gene": "wus1", "expression_level": 4.2},
-            {"gene": "zmm4", "expression_level": 6.1},
-            {"gene": "sb_drought1", "expression_level": 8.9},
-            {"gene": "cry1ab", "expression_level": 2.5},
-        ]
-
-        processor = IndustryFilter(sample_data)
-        report = processor.process(min_level=5.0)
-        print(f"Experiment report: {report}")
+def passes_purity_threshold(sample):
+    return 1.8 <= sample["purity"] <= 2.0
 
 
-if __name__ == "__main__":
-    UniversityFilter.run()
-    InterviewFilter.run()
-    IndustryFilter.run()
+qualified_samples = filter(
+    passes_purity_threshold,
+    samples
+)
+
+print("\nSamples within the illustrative purity range:")
+for sample in qualified_samples:
+    print(sample)
+
+
+# Example 4: Remove empty sequence records.
+sequences = [
+    "ATGC",
+    "",
+    "GCTA",
+    "",
+    "CCGG"
+]
+
+non_empty_sequences = filter(None, sequences)
+
+print("\nNon-empty sequences:")
+print(list(non_empty_sequences))
+
+
+# Example 5: Filter and then transform.
+dna_sequences = [
+    "ATGCGT",
+    "TTAGGC",
+    "ATGCCG",
+    "CGATCG"
+]
+
+selected_lengths = map(
+    len,
+    filter(contains_start_codon, dna_sequences)
+)
+
+print("\nLengths of selected sequences:")
+print(list(selected_lengths))

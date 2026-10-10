@@ -1,127 +1,141 @@
 """
-12_Dataclasses.py
+TOPIC: Dataclasses
 
-Concept: Dataclasses
-`@dataclass` generates boilerplate (init, repr, equality) for classes
-that primarily hold structured data. This file progresses from a plain
-dataclass to defaults/validation to an immutable, carefully controlled
-scientific data model.
+MAIN POINTS
+- Dataclasses simplify classes that primarily store structured data.
+- The @dataclass decorator can generate __init__(), __repr__(), and __eq__() automatically.
+- Type annotations document the expected attribute types but do not enforce runtime validation.
+- Default values can be provided for optional fields.
+- Use field(default_factory=...) for mutable attributes such as lists and dictionaries.
+- frozen=True prevents ordinary attribute reassignment after initialization.
+- Dataclasses are useful for representing experimental records, biological metadata, and analysis results.
+- Custom methods can be added when a data class needs behavior beyond storing values.
 """
-
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 
 
-# --------------------------------------------------------------------------- #
-# University Level
-# --------------------------------------------------------------------------- #
 @dataclass
-class UniversityPlantSample:
-    """A simple dataclass: __init__, __repr__, and __eq__ are generated
-    automatically from the type-annotated fields."""
-
-    species: str
-    height_cm: float
-
-
-class UniversityDataclasses:
-    @staticmethod
-    def run() -> None:
-        print("--- UniversityDataclasses ---")
-        sample_a = UniversityPlantSample(species="Oryza sativa", height_cm=30.0)
-        sample_b = UniversityPlantSample(species="Oryza sativa", height_cm=30.0)
-
-        print(sample_a)
-        print(f"Equal by value? {sample_a == sample_b}")
-
-
-# --------------------------------------------------------------------------- #
-# Interview Level
-# --------------------------------------------------------------------------- #
-@dataclass
-class InterviewExperimentMeasurement:
-    """Uses defaults, default_factory, and __post_init__ validation for a
-    single experimental measurement record."""
+class BiologicalSample:
+    """Store structured metadata for a biological sample."""
 
     sample_id: str
-    value: float
-    unit: str = "ng/uL"
+    organism: str
+    tissue: str
+    condition: str
+    collection_day: int = 1
+
+    # Each object receives its own list.
     tags: list[str] = field(default_factory=list)
 
-    def __post_init__(self) -> None:
-        if not self.sample_id.strip():
-            raise ValueError("sample_id cannot be empty")
-        if self.value < 0:
-            raise ValueError("value cannot be negative")
+    # Each object receives its own dictionary.
+    measurements: dict[str, float] = field(default_factory=dict)
+
+    def add_tag(self, tag: str) -> None:
+        self.tags.append(tag)
+
+    def record_measurement(
+        self,
+        measurement_name: str,
+        value: float
+    ) -> None:
+        if value < 0:
+            raise ValueError("Measurement cannot be negative.")
+
+        self.measurements[measurement_name] = value
+
+    def describe(self) -> None:
+        print(f"Sample ID: {self.sample_id}")
+        print(f"Organism: {self.organism}")
+        print(f"Tissue: {self.tissue}")
+        print(f"Condition: {self.condition}")
+        print(f"Collection day: {self.collection_day}")
+        print(f"Tags: {self.tags}")
+        print(f"Measurements: {self.measurements}")
 
 
-class InterviewDataclasses:
-    @staticmethod
-    def run() -> None:
-        print("--- InterviewDataclasses ---")
-        measurement = InterviewExperimentMeasurement(sample_id="S-11", value=45.2)
-        measurement.tags.append("qc-passed")
-        print(measurement)
+# Create a biological sample without writing a custom __init__().
+sample_1 = BiologicalSample(
+    sample_id="SAMPLE_001",
+    organism="Homo sapiens",
+    tissue="Blood",
+    condition="Control",
+    collection_day=1
+)
 
-        try:
-            InterviewExperimentMeasurement(sample_id="S-12", value=-3.0)
-        except ValueError as error:
-            print(f"Rejected invalid measurement: {error}")
+sample_2 = BiologicalSample(
+    sample_id="SAMPLE_002",
+    organism="Mus musculus",
+    tissue="Liver",
+    condition="Treatment",
+    collection_day=7
+)
+
+sample_1.add_tag("DNA_extraction")
+sample_1.add_tag("Baseline")
+
+sample_1.record_measurement("DNA_concentration_ng_uL", 45.2)
+sample_1.record_measurement("A260_A280_ratio", 1.87)
+
+sample_2.add_tag("Drug_response")
+sample_2.record_measurement("DNA_concentration_ng_uL", 62.8)
+
+sample_1.describe()
+
+print()
+
+sample_2.describe()
+
+# Dataclasses generate a useful representation.
+print(sample_1)
+
+# Dataclasses generate equality based on their declared fields.
+sample_3 = BiologicalSample(
+    sample_id="SAMPLE_001",
+    organism="Homo sapiens",
+    tissue="Blood",
+    condition="Control",
+    collection_day=1
+)
+
+print("Same data:", sample_1 == sample_3)
+
+# Mutable fields are independent between objects.
+print("Sample 1 tags:", sample_1.tags)
+print("Sample 2 tags:", sample_2.tags)
+
+# Convert a dataclass instance into a dictionary.
+from dataclasses import asdict
+
+sample_record = asdict(sample_1)
+
+print("Dictionary representation:")
+print(sample_record)
 
 
-# --------------------------------------------------------------------------- #
-# Industry Level
-# --------------------------------------------------------------------------- #
+# A separate immutable-style record.
 @dataclass(frozen=True)
-class IndustryCompoundRecord:
-    """An immutable, carefully controlled scientific data model: once a
-    compound record is created and validated, it cannot be mutated,
-    which makes it safe to share across a pipeline without defensive
-    copying.
-    """
+class GeneRecord:
+    gene_id: str
+    organism: str
+    chromosome: str
+    start_position: int
+    end_position: int
 
-    compound_id: str
-    molecular_weight: float
-    logp: float
-    descriptors: tuple[str, ...] = field(default_factory=tuple)
-
-    def __post_init__(self) -> None:
-        if not self.compound_id.strip():
-            raise ValueError("compound_id cannot be empty")
-        if self.molecular_weight < 0:
-            raise ValueError("molecular_weight cannot be negative")
-
-    def with_additional_descriptor(self, descriptor: str) -> "IndustryCompoundRecord":
-        """Since the dataclass is frozen, 'changing' it means returning a
-        new instance rather than mutating the existing one."""
-        return IndustryCompoundRecord(
-            compound_id=self.compound_id,
-            molecular_weight=self.molecular_weight,
-            logp=self.logp,
-            descriptors=self.descriptors + (descriptor,),
-        )
+    def gene_length(self) -> int:
+        return self.end_position - self.start_position + 1
 
 
-class IndustryDataclasses:
-    @staticmethod
-    def run() -> None:
-        print("--- IndustryDataclasses ---")
-        record = IndustryCompoundRecord(
-            compound_id="CMP-900", molecular_weight=298.4, logp=1.9
-        )
-        updated_record = record.with_additional_descriptor("passes-lipinski")
+gene = GeneRecord(
+    gene_id="BRCA1",
+    organism="Homo sapiens",
+    chromosome="17",
+    start_position=43044295,
+    end_position=43125482
+)
 
-        print(record)
-        print(updated_record)
+print(gene)
+print("Genomic interval length:", gene.gene_length())
 
-        try:
-            record.molecular_weight = 500.0  # type: ignore[misc]
-        except Exception as error:  # dataclasses.FrozenInstanceError
-            print(f"Mutation rejected on frozen record: {type(error).__name__}: {error}")
-
-
-if __name__ == "__main__":
-    UniversityDataclasses.run()
-    InterviewDataclasses.run()
-    IndustryDataclasses.run()
+# This would raise an error because the dataclass is frozen.
+# gene.gene_id = "TP53"

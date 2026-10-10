@@ -1,109 +1,83 @@
-"""zip(): combining multiple biological iterables into paired/aligned data."""
+"""
+TOPIC: zip()
+
+MAIN POINTS
+- zip() combines corresponding elements from multiple iterables.
+- It returns a lazy iterator of tuples.
+- By default, iteration stops when the shortest iterable is exhausted.
+- Use strict=True in Python 3.10+ when equal iterable lengths are required.
+- zip() is useful for associating gene IDs with expression values or sample IDs with measurements.
+- Incorrect ordering or mismatched lengths can produce incorrect scientific analyses.
+"""
+
+# Example 1: Associate gene IDs with expression values.
+gene_ids = ["BRCA1", "TP53", "EGFR", "MYC"]
+expression_values = [24.6, 18.2, 42.8, 35.1]
+
+gene_expression = zip(
+    gene_ids,
+    expression_values
+)
+
+print("Gene expression records:")
+for gene, expression in gene_expression:
+    print(f"{gene}: {expression}")
 
 
-class UniversityZip:
-    def __init__(self, plant_ids: list[str], heights_cm: list[float]) -> None:
-        self.plant_ids = plant_ids
-        self.heights_cm = heights_cm
+# Example 2: Build a dictionary from two lists.
+gene_ids = ["BRCA1", "TP53", "EGFR"]
+expression_values = [24.6, 18.2, 42.8]
 
-    def pair_ids_with_heights(self) -> list[tuple[str, float]]:
-        return list(zip(self.plant_ids, self.heights_cm))
+expression_dictionary = dict(
+    zip(gene_ids, expression_values)
+)
 
-    @staticmethod
-    def run() -> None:
-        plant_ids = ["P001", "P002", "P003"]
-        heights_cm = [28.5, 31.2, 24.0]
-
-        processor = UniversityZip(plant_ids, heights_cm)
-        pairs = processor.pair_ids_with_heights()
-
-        print(f"Plant IDs: {plant_ids}")
-        print(f"Heights: {heights_cm}")
-        print(f"Paired (id, height): {pairs}")
+print("\nExpression dictionary:")
+print(expression_dictionary)
 
 
-class InterviewZip:
-    def __init__(self, species: list[str], observations: list[str]) -> None:
-        self.species = species
-        self.observations = observations
+# Example 3: Compare control and treatment measurements.
+control = [10.0, 20.0, 30.0]
+treatment = [15.0, 18.0, 45.0]
 
-    def safe_pair(self) -> list[tuple[str, str]]:
-        """zip() silently truncates to the shortest iterable; demonstrate that."""
-        return list(zip(self.species, self.observations))
+comparisons = zip(control, treatment)
 
-    def strict_pair(self) -> list[tuple[str, str]] | str:
-        """Uses strict=True to catch mismatched lengths explicitly."""
-        try:
-            return list(zip(self.species, self.observations, strict=True))
-        except ValueError as error:
-            return f"Length mismatch detected: {error}"
+print("\nControl versus treatment:")
+for control_value, treatment_value in comparisons:
+    difference = treatment_value - control_value
 
-    @staticmethod
-    def run() -> None:
-        species_equal = ["Wheat", "Rice"]
-        observations_equal = ["healthy", "stressed"]
-        processor = InterviewZip(species_equal, observations_equal)
-        print(f"Equal-length pairing: {processor.safe_pair()}")
-        print(f"Equal-length strict pairing: {processor.strict_pair()}")
-
-        species_unequal = ["Wheat", "Rice", "Barley"]
-        observations_unequal = ["healthy", "stressed"]
-        processor = InterviewZip(species_unequal, observations_unequal)
-        print(f"Unequal-length lenient pairing: {processor.safe_pair()}")
-        print(f"Unequal-length strict pairing: {processor.strict_pair()}")
+    print(
+        f"Control={control_value}, "
+        f"Treatment={treatment_value}, "
+        f"Difference={difference}"
+    )
 
 
-class IndustryZip:
-    def __init__(
-        self,
-        gene_names: list[str],
-        expression_values: list[float],
-        sample_ids: list[str],
-    ) -> None:
-        self.gene_names = gene_names
-        self.expression_values = expression_values
-        self.sample_ids = sample_ids
+# Example 4: Combine three experimental columns.
+sample_ids = ["S001", "S002", "S003"]
+dna_concentrations = [42.5, 58.1, 36.4]
+purity_ratios = [1.87, 1.92, 1.75]
 
-    def build_expression_records(self) -> list[dict]:
-        """Aligns three related data sources into structured records.
-
-        Uses strict=True so silent data misalignment is never tolerated
-        in a production scientific pipeline.
-        """
-        try:
-            combined = zip(
-                self.sample_ids,
-                self.gene_names,
-                self.expression_values,
-                strict=True,
-            )
-        except ValueError as error:
-            raise ValueError(f"Cannot align mismatched data sources: {error}") from error
-
-        return [
-            {"sample_id": sample_id, "gene": gene, "expression_level": level}
-            for sample_id, gene, level in combined
-        ]
-
-    def process(self) -> dict[str, object]:
-        records = self.build_expression_records()
-        return {
-            "total_records": len(records),
-            "records": records,
-        }
-
-    @staticmethod
-    def run() -> None:
-        sample_ids = ["RNA001", "RNA002", "RNA003"]
-        gene_names = ["GA20ox", "WUS1", "CRY1AB"]
-        expression_values = [12.4, 8.7, 18.2]
-
-        processor = IndustryZip(gene_names, expression_values, sample_ids)
-        report = processor.process()
-        print(f"Experiment report: {report}")
+for sample_id, concentration, purity in zip(
+    sample_ids,
+    dna_concentrations,
+    purity_ratios,
+    strict=True
+):
+    print(
+        sample_id,
+        concentration,
+        purity
+    )
 
 
-if __name__ == "__main__":
-    UniversityZip.run()
-    InterviewZip.run()
-    IndustryZip.run()
+# Example 5: Understand unequal lengths.
+gene_ids = ["BRCA1", "TP53", "EGFR"]
+expression_values = [24.6, 18.2]
+
+# Default zip() silently stops at the shortest iterable.
+print("\nDefault zip:")
+print(list(zip(gene_ids, expression_values)))
+
+# Uncomment to raise ValueError for unequal lengths.
+# print(list(zip(gene_ids, expression_values, strict=True)))

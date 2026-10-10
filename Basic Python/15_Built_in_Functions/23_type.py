@@ -1,85 +1,73 @@
-"""Demonstrations of the built-in type() function for biological data inspection."""
+"""
+TOPIC: type()
+
+MAIN POINTS
+- type(object) returns the object's type.
+- type() is useful for inspecting values during development.
+- type(value) is often used to distinguish exact built-in types.
+- isinstance() is usually better when inheritance and subclasses should be accepted.
+- type() can also be used to create classes dynamically, although class statements are clearer for ordinary use.
+"""
+
+# Example 1: Inspect biological data types.
+dna_sequence = "ATGCGTAC"
+sequence_length = len(dna_sequence)
+gc_percentage = 50.0
+
+print(type(dna_sequence))
+print(type(sequence_length))
+print(type(gc_percentage))
+
+# Example 2: Inspect collections.
+gene_expression = {
+    "BRCA1": 24.6,
+    "TP53": 18.2
+}
+
+samples = ["S001", "S002"]
+
+print(type(gene_expression))
+print(type(samples))
+
+# Example 3: Compare type() with isinstance().
+print(type(True))
+print(isinstance(True, int))
+
+# Example 4: Inspect a biological class.
+class BiologicalSample:
+    def __init__(self, sample_id, organism):
+        self.sample_id = sample_id
+        self.organism = organism
 
 
-class UniversityType:
-    """Teach the fundamental behavior of type() for runtime type inspection."""
+sample = BiologicalSample("S001", "Homo sapiens")
 
-    def __init__(self, value: object) -> None:
-        self.value = value
+print(type(sample))
+print(type(sample) is BiologicalSample)
+print(isinstance(sample, BiologicalSample))
 
-    def type_name(self) -> str:
-        return type(self.value).__name__
-
-    @staticmethod
-    def run() -> None:
-        height_value = UniversityType(58.2)
-        species_value = UniversityType("Wheat")
-        measurements_value = UniversityType([1.1, 1.2, 1.3])
-
-        print(f"Type of 58.2: {height_value.type_name()}")
-        print(f"Type of 'Wheat': {species_value.type_name()}")
-        print(f"Type of [1.1, 1.2, 1.3]: {measurements_value.type_name()}")
+# Example 5: Demonstrate subclass behavior.
+class DNA_Sample(BiologicalSample):
+    pass
 
 
-class InterviewType:
-    """Practical debugging: comparing type() output across biological data structures.
+dna_sample = DNA_Sample("DNA001", "Homo sapiens")
 
-    type() checks exact type only. isinstance() (see 22_isinstance.py) is
-    generally preferred for validation because it also respects subclasses.
-    """
+print(type(dna_sample) is BiologicalSample)
+print(isinstance(dna_sample, BiologicalSample))
+print(isinstance(dna_sample, DNA_Sample))
 
-    @staticmethod
-    def describe_structure(value: object) -> str:
-        return f"{value!r} -> {type(value)}"
+# Example 6: Inspect a function's return type.
+def calculate_gc_percentage(sequence):
+    if not sequence:
+        return 0.0
 
-    @staticmethod
-    def exact_type_matches(value: object, expected_type: type) -> bool:
-        """Exact type check: True only if value's type is precisely expected_type."""
-        return type(value) is expected_type
+    gc_count = sequence.count("G") + sequence.count("C")
 
-    @staticmethod
-    def run() -> None:
-        sample_values: list[object] = [58.2, "Wheat", [1.1, 1.2], {"sample_id": "P001"}, True]
-
-        for value in sample_values:
-            print(InterviewType.describe_structure(value))
-
-        # A subtle pitfall: bool is technically a subclass of int in Python.
-        print(f"type(True) is bool: {InterviewType.exact_type_matches(True, bool)}")
-        print(f"type(True) is int (exact match, False despite bool subclassing int): "
-              f"{InterviewType.exact_type_matches(True, int)}")
+    return gc_count / len(sequence) * 100
 
 
-class IndustryType:
-    """Controlled diagnostic utility for reporting data types across a dataset."""
+result = calculate_gc_percentage("ATGCGC")
 
-    def __init__(self, records: list[dict[str, object]]) -> None:
-        self.records = records
-
-    def field_type_report(self, field: str) -> dict[str, int]:
-        """Count how many records have each distinct type for a given field."""
-        counts: dict[str, int] = {}
-        for record in self.records:
-            if field not in record:
-                continue
-            type_name = type(record[field]).__name__
-            counts[type_name] = counts.get(type_name, 0) + 1
-        return counts
-
-    @staticmethod
-    def run() -> None:
-        records: list[dict[str, object]] = [
-            {"sample_id": "P001", "height": 58.2},
-            {"sample_id": "P002", "height": 61},  # int instead of float
-            {"sample_id": "P003", "height": "unknown"},  # inconsistent data
-        ]
-
-        diagnostics = IndustryType(records)
-        report = diagnostics.field_type_report("height")
-        print(f"Type distribution for 'height' field: {report}")
-
-
-if __name__ == "__main__":
-    UniversityType.run()
-    InterviewType.run()
-    IndustryType.run()
+print("Result:", result)
+print("Result type:", type(result))

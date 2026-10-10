@@ -1,142 +1,78 @@
 """
-08_Polymorphism.py
+TOPIC: Polymorphism
 
-Concept: Polymorphism
-Polymorphism lets different objects respond to the same operation with
-their own implementation, so calling code can treat them uniformly. This
-file progresses from a single overridden method to clean, duck-typed
-polymorphism that avoids explicit type checks.
+MAIN POINTS
+- Polymorphism means that different objects can respond to the same operation in different ways.
+- Method overriding allows subclasses to customize inherited behavior.
+- Python supports duck typing: objects can be used according to the methods they provide.
+- The same method call can produce different results depending on the object's class.
+- Polymorphism reduces the need for repetitive type-checking conditions.
+- It is useful when a biological pipeline processes different types of samples through a shared interface.
 """
 
-from __future__ import annotations
+class BiologicalSample:
+    """Base class defining a shared sample interface."""
+
+    def __init__(self, sample_id, organism):
+        self.sample_id = sample_id
+        self.organism = organism
+
+    def analyze(self):
+        return "Performing general biological sample analysis"
 
 
-# --------------------------------------------------------------------------- #
-# University Level
-# --------------------------------------------------------------------------- #
-class UniversityPolymorphism:
-    """Base class with a method meant to be overridden."""
+class DNA_Sample(BiologicalSample):
+    """Specialized DNA analysis."""
 
-    def sound_of_growth(self) -> str:
-        return "..."
-
-    @staticmethod
-    def run() -> None:
-        print("--- UniversityPolymorphism ---")
-
-        class FastGrowingPlant(UniversityPolymorphism):
-            def sound_of_growth(self) -> str:
-                return "rapid rustling"
-
-        class SlowGrowingPlant(UniversityPolymorphism):
-            def sound_of_growth(self) -> str:
-                return "barely audible"
-
-        for plant in (FastGrowingPlant(), SlowGrowingPlant()):
-            print(plant.sound_of_growth())
+    def analyze(self):
+        return f"{self.sample_id}: Calculating DNA sequence statistics"
 
 
-# --------------------------------------------------------------------------- #
-# Interview Level
-# --------------------------------------------------------------------------- #
-class InterviewPolymorphism:
-    """Common base defining a shared operation; subclasses process
-    different sample types through the same interface."""
+class RNA_Sample(BiologicalSample):
+    """Specialized RNA analysis."""
 
-    def analyze(self) -> str:
-        raise NotImplementedError
-
-    @staticmethod
-    def run() -> None:
-        print("--- InterviewPolymorphism ---")
-
-        class DNASample(InterviewPolymorphism):
-            def __init__(self, sequence: str) -> None:
-                self.sequence = sequence.upper()
-
-            def analyze(self) -> str:
-                gc = sum(1 for b in self.sequence if b in "GC")
-                pct = (gc / len(self.sequence) * 100) if self.sequence else 0.0
-                return f"DNA sample: GC content {pct:.1f}%"
-
-        class ProteinSample(InterviewPolymorphism):
-            def __init__(self, residues: str) -> None:
-                self.residues = residues.upper()
-
-            def analyze(self) -> str:
-                return f"Protein sample: {len(self.residues)} residues"
-
-        samples: list[InterviewPolymorphism] = [
-            DNASample("ACGTACGT"),
-            ProteinSample("MKTAYIAKQR"),
-        ]
-
-        for sample in samples:
-            # Calling code uses one interface; it never checks concrete type.
-            print(sample.analyze())
+    def analyze(self):
+        return f"{self.sample_id}: Preparing gene expression measurements"
 
 
-# --------------------------------------------------------------------------- #
-# Industry Level
-# --------------------------------------------------------------------------- #
-class _AnalysisStrategy:
-    """Common interface implemented by every concrete analysis strategy."""
+class Protein_Sample(BiologicalSample):
+    """Specialized protein analysis."""
 
-    def analyze(self, payload: str) -> float:
-        raise NotImplementedError
+    def analyze(self):
+        return f"{self.sample_id}: Calculating protein sequence statistics"
 
 
-class _GCContentStrategy(_AnalysisStrategy):
-    def analyze(self, payload: str) -> float:
-        sequence = payload.upper()
-        if not sequence:
-            return 0.0
-        gc = sum(1 for base in sequence if base in "GC")
-        return round(gc / len(sequence) * 100.0, 2)
+class Metabolite_Sample(BiologicalSample):
+    """Specialized metabolomics analysis."""
+
+    def analyze(self):
+        return f"{self.sample_id}: Preparing metabolite abundance measurements"
 
 
-class _MeanResidueHydrophobicityStrategy(_AnalysisStrategy):
-    _HYDROPHOBIC = set("AVLIPFMW")
+# Store different object types in one collection.
+samples = [
+    DNA_Sample("DNA_001", "Homo sapiens"),
+    RNA_Sample("RNA_001", "Homo sapiens"),
+    Protein_Sample("PROT_001", "Mus musculus"),
+    Metabolite_Sample("MET_001", "Arabidopsis thaliana")
+]
 
-    def analyze(self, payload: str) -> float:
-        residues = payload.upper()
-        if not residues:
-            return 0.0
-        hydrophobic_count = sum(1 for r in residues if r in self._HYDROPHOBIC)
-        return round(hydrophobic_count / len(residues) * 100.0, 2)
-
-
-class IndustryPolymorphism:
-    """Demonstrates clean polymorphism: the calling code (run_pipeline)
-    never needs isinstance() checks to know which strategy it is using,
-    it only relies on the shared analyze() contract.
-    """
-
-    def __init__(self) -> None:
-        self._strategies: dict[str, _AnalysisStrategy] = {
-            "gc_content": _GCContentStrategy(),
-            "hydrophobicity": _MeanResidueHydrophobicityStrategy(),
-        }
-
-    def run_pipeline(self, strategy_name: str, payload: str) -> float:
-        if strategy_name not in self._strategies:
-            raise KeyError(f"unknown strategy '{strategy_name}'")
-        strategy = self._strategies[strategy_name]
-        return strategy.analyze(payload)
-
-    @staticmethod
-    def run() -> None:
-        print("--- IndustryPolymorphism ---")
-        pipeline = IndustryPolymorphism()
-
-        gc_result = pipeline.run_pipeline("gc_content", "ACGTGGCCAA")
-        hydro_result = pipeline.run_pipeline("hydrophobicity", "MKTAYIAKQRQISFVK")
-
-        print(f"GC content result: {gc_result}%")
-        print(f"Hydrophobicity result: {hydro_result}%")
+# The same operation works for every sample.
+for sample in samples:
+    print(sample.analyze())
 
 
-if __name__ == "__main__":
-    UniversityPolymorphism.run()
-    InterviewPolymorphism.run()
-    IndustryPolymorphism.run()
+# Duck typing: this object does not inherit from BiologicalSample.
+class CustomAnalysis:
+    def analyze(self):
+        return "Running a custom bioinformatics analysis"
+
+
+custom_analysis = CustomAnalysis()
+
+# It still works because it provides the required method.
+analyses = samples + [custom_analysis]
+
+print()
+for analysis in analyses:
+    print(analysis.analyze())

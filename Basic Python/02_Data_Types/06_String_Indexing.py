@@ -1,40 +1,38 @@
-﻿"""Indexing DNA/RNA sequences."""
 
+"""
+06. String Indexing
 
-class StringIndexingUniversity:
-    def __init__(self, sequence: str) -> None:
-        self.sequence = sequence
+Main points
+- Indexing accesses an individual character in a string.
+- Positive indexing starts at 0 from the left.
+- Negative indexing starts at -1 from the right.
+- String indexing returns a string containing one character.
+- Accessing an out-of-range index raises IndexError.
+- Strings are immutable.
+"""
 
-    def first_base(self) -> str:
-        return self.sequence[0]
+sequence = "ATGCGT"
 
+# Positive indexing
+print("First character:", sequence[0])
+print("Second character:", sequence[1])
+print("Fourth character:", sequence[3])
 
-class StringIndexingInterview:
-    def __init__(self, sequence: str) -> None:
-        self.sequence = sequence
+# Negative indexing
+print("Last character:", sequence[-1])
+print("Second-last character:", sequence[-2])
 
-    def last_base(self) -> str:
-        return self.sequence[-1]
+# Index positions
+print("Sequence:", sequence)
+print("Length:", len(sequence))
 
-    def at(self, i: int) -> str:
-        return self.sequence[i]
+# Access the middle character
+middle_index = len(sequence) // 2
+print("Character at middle index:", sequence[middle_index])
 
+# Iterate through indexed characters
+for index in range(len(sequence)):
+    print(index, sequence[index])
 
-class StringIndexingIndustry:
-    def __init__(self, sequence: str) -> None:
-        self.sequence = sequence
-
-    def codon_at(self, start: int) -> str:
-        if start + 3 > len(self.sequence):
-            return ""
-        return self.sequence[start:start + 3]
-
-
-if __name__ == "__main__":
-    print(StringIndexingUniversity("ATGC").first_base())
-
-    seq = StringIndexingInterview("ATGCAT")
-    print(seq.last_base())
-    print(seq.at(2))
-
-    print(StringIndexingIndustry("ATGCATGC").codon_at(1))
+# Uncomment to observe IndexError:
+# print(sequence[100])

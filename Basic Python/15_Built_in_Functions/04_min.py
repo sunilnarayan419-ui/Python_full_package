@@ -1,84 +1,56 @@
-"""Demonstrations of the built-in min() function using plant/expression data."""
+"""
+TOPIC: min()
 
+MAIN POINTS
+- min() returns the smallest item or value.
+- key= allows comparison using a derived property.
+- default= provides a fallback for an empty iterable.
+- min() is useful for finding minimum expression values, shortest sequences, and lowest sample concentrations.
+- A minimum value should be interpreted in the context of the measurement and its units.
+"""
 
-class UniversityMin:
-    """Teach the fundamental behavior of min() on numeric biological data."""
+# Example 1: Minimum gene expression.
+expression_values = [24.6, 18.2, 42.8, 35.1]
 
-    def __init__(self, plant_heights: list[float]) -> None:
-        self.plant_heights = plant_heights
+print("Minimum expression:", min(expression_values))
 
-    def shortest_plant_height(self) -> float:
-        return min(self.plant_heights)
+# Example 2: Shortest DNA sequence.
+dna_sequences = ["ATGC", "ATGCGTAC", "GCTA", "GGCCATTA"]
 
-    @staticmethod
-    def run() -> None:
-        plant_heights = [55.2, 61.8, 49.3, 72.1, 66.4]
+shortest_sequence = min(dna_sequences, key=len)
 
-        processor = UniversityMin(plant_heights)
-        print(f"Shortest plant height: {processor.shortest_plant_height()} cm")
+print("Shortest sequence:", shortest_sequence)
+print("Length:", len(shortest_sequence))
 
+# Example 3: Gene with the lowest expression.
+gene_expression = {
+    "BRCA1": 24.6,
+    "TP53": 18.2,
+    "EGFR": 42.8,
+    "MYC": 35.1
+}
 
-class InterviewMin:
-    """Find minimum biological measurements safely, using key= for dictionaries."""
+lowest_gene = min(
+    gene_expression,
+    key=gene_expression.get
+)
 
-    def __init__(self, gene_records: list[dict[str, object]]) -> None:
-        self.gene_records = gene_records
+print("Lowest-expression gene:", lowest_gene)
+print("Expression:", gene_expression[lowest_gene])
 
-    def lowest_expression_gene(self) -> dict[str, object] | None:
-        """Return the record with the lowest expression value, or None if empty."""
-        if not self.gene_records:
-            return None
-        return min(self.gene_records, key=lambda record: record["expression_level"])
+# Example 4: Sample with the lowest concentration.
+samples = [
+    {"sample_id": "S001", "concentration": 42.5},
+    {"sample_id": "S002", "concentration": 58.1},
+    {"sample_id": "S003", "concentration": 36.4}
+]
 
-    @staticmethod
-    def run() -> None:
-        case_one: list[dict[str, object]] = [
-            {"gene": "GENE1", "expression_level": 4.2},
-            {"gene": "GENE2", "expression_level": 9.1},
-            {"gene": "GENE3", "expression_level": 1.3},
-        ]
-        case_two: list[dict[str, object]] = []
+lowest_sample = min(
+    samples,
+    key=lambda sample: sample["concentration"]
+)
 
-        analyzer_one = InterviewMin(case_one)
-        analyzer_two = InterviewMin(case_two)
+print("Lowest-concentration sample:", lowest_sample)
 
-        low_gene = analyzer_one.lowest_expression_gene()
-        print(f"Lowest expressing gene: {low_gene['gene'] if low_gene else None}")
-
-        low_gene_empty = analyzer_two.lowest_expression_gene()
-        print(f"Lowest expressing gene (empty dataset): {low_gene_empty}")
-
-
-class IndustryMin:
-    """Identify the lowest-value/lowest-risk sample within a scientific dataset."""
-
-    def __init__(self, samples: list[dict[str, object]]) -> None:
-        self.samples = samples
-
-    def lowest_risk_sample(self, metric: str) -> dict[str, object] | None:
-        """Return the sample with the lowest value for the given risk metric."""
-        candidates = [sample for sample in self.samples if metric in sample]
-        if not candidates:
-            return None
-        return min(candidates, key=lambda sample: sample[metric])
-
-    @staticmethod
-    def run() -> None:
-        samples: list[dict[str, object]] = [
-            {"sample_id": "S001", "contamination_risk": 0.12, "cost": 45.0},
-            {"sample_id": "S002", "contamination_risk": 0.03, "cost": 60.0},
-            {"sample_id": "S003", "contamination_risk": 0.20},
-        ]
-
-        reporter = IndustryMin(samples)
-        lowest_risk = reporter.lowest_risk_sample("contamination_risk")
-        lowest_cost = reporter.lowest_risk_sample("cost")
-
-        print(f"Lowest contamination risk sample: {lowest_risk['sample_id']}")
-        print(f"Lowest cost sample: {lowest_cost['sample_id']}")
-
-
-if __name__ == "__main__":
-    UniversityMin.run()
-    InterviewMin.run()
-    IndustryMin.run()
+# Example 5: Handle an empty iterable.
+print("Minimum of empty list:", min([], default=None))

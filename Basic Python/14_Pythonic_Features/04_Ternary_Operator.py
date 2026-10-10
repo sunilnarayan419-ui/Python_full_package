@@ -1,85 +1,95 @@
-"""Ternary (conditional) expressions demonstrated through plant health checks."""
+"""
+TOPIC: Ternary Operator
+
+MAIN POINTS
+- The conditional expression selects one of two values.
+- Syntax: value_if_true if condition else value_if_false.
+- It is useful for short, simple decisions.
+- It can replace a small if-else block that assigns a value.
+- Nested ternary expressions can become difficult to read.
+- Use regular if-elif-else statements for complex scientific decision logic.
+"""
+
+# Example 1: Classify a DNA sequence by length.
+sequence = "ATGCGTAC"
+
+length_category = (
+    "Long sequence"
+    if len(sequence) >= 8
+    else "Short sequence"
+)
+
+print("Length category:", length_category)
 
 
-class UniversityTernaryOperator:
-    """Teach the fundamental syntax of the conditional expression."""
+# Example 2: Calculate a GC percentage safely.
+sequence = "ATGCGC"
 
-    def __init__(self, plant_height_cm: float) -> None:
-        self.plant_height_cm = plant_height_cm
+gc_percentage = (
+    (sequence.count("G") + sequence.count("C"))
+    / len(sequence) * 100
+    if sequence
+    else 0.0
+)
 
-    def classify_growth(self, threshold_cm: float) -> str:
-        """Label a plant as 'tall' or 'short' using a single expression."""
-        return "tall" if self.plant_height_cm >= threshold_cm else "short"
-
-    @staticmethod
-    def run() -> None:
-        plant_a = UniversityTernaryOperator(plant_height_cm=42.0)
-        plant_b = UniversityTernaryOperator(plant_height_cm=15.0)
-
-        print(f"Plant A classification: {plant_a.classify_growth(30.0)}")
-        print(f"Plant B classification: {plant_b.classify_growth(30.0)}")
+print("GC percentage:", gc_percentage)
 
 
-class InterviewTernaryOperator:
-    """Solve a practical sample-status classification problem."""
+# Example 3: Classify an illustrative purity ratio.
+purity_ratio = 1.92
 
-    def __init__(self, sample_reading: float | None) -> None:
-        self.sample_reading = sample_reading
+quality_status = (
+    "Within illustrative range"
+    if 1.8 <= purity_ratio <= 2.0
+    else "Outside illustrative range"
+)
 
-    def determine_status(self, pass_threshold: float) -> str:
-        """Determine pass/fail/invalid status for a single sample reading.
-
-        Handles a missing (None) reading as an explicit invalid case rather
-        than letting a comparison against None raise an error.
-        """
-        return (
-            "invalid"
-            if self.sample_reading is None
-            else "pass" if self.sample_reading >= pass_threshold else "fail"
-        )
-
-    @staticmethod
-    def run() -> None:
-        valid_sample = InterviewTernaryOperator(sample_reading=0.92)
-        failing_sample = InterviewTernaryOperator(sample_reading=0.41)
-        missing_sample = InterviewTernaryOperator(sample_reading=None)
-
-        print(f"Valid sample status: {valid_sample.determine_status(0.75)}")
-        print(f"Failing sample status: {failing_sample.determine_status(0.75)}")
-        print(f"Missing sample status: {missing_sample.determine_status(0.75)}")
+print("Quality status:", quality_status)
 
 
-class IndustryTernaryOperator:
-    """Apply concise, readable scientific rule evaluation across a dataset."""
+# Example 4: Assign an expression category.
+expression = 42.8
 
-    def __init__(self, expression_levels: dict[str, float]) -> None:
-        self.expression_levels = expression_levels
+expression_category = (
+    "High"
+    if expression >= 40
+    else "Moderate"
+    if expression >= 20
+    else "Low"
+)
 
-    def classify_expression_level(self, gene: str, high_threshold: float) -> str:
-        """Classify a single gene's expression as 'high' or 'normal'."""
-        value = self.expression_levels.get(gene, 0.0)
-        return "high" if value >= high_threshold else "normal"
-
-    def classify_all_genes(self, high_threshold: float) -> dict[str, str]:
-        """Classify every gene in the dataset using the same clear rule."""
-        return {
-            gene: ("high" if value >= high_threshold else "normal")
-            for gene, value in self.expression_levels.items()
-        }
-
-    @staticmethod
-    def run() -> None:
-        expression_data = {"BRCA1": 6.2, "TP53": 2.1, "EGFR": 5.9}
-
-        classifier = IndustryTernaryOperator(expression_data)
-        single_result = classifier.classify_expression_level("BRCA1", high_threshold=5.0)
-        all_results = classifier.classify_all_genes(high_threshold=5.0)
-
-        print(f"BRCA1 classification: {single_result}")
-        print(f"All gene classifications: {all_results}")
+print("Expression category:", expression_category)
 
 
-if __name__ == "__main__":
-    UniversityTernaryOperator.run()
-    InterviewTernaryOperator.run()
-    IndustryTernaryOperator.run()
+# Example 5: Process multiple genes.
+gene_expression = {
+    "BRCA1": 24.6,
+    "TP53": 18.2,
+    "EGFR": 42.8,
+    "MYC": 35.1
+}
+
+for gene, expression in gene_expression.items():
+    category = (
+        "High"
+        if expression >= 40
+        else "Moderate"
+        if expression >= 20
+        else "Low"
+    )
+
+    print(f"{gene}: {expression} -> {category}")
+
+
+# Example 6: Use ordinary if-elif-else for complex logic.
+sample_purity = 1.92
+sample_concentration = 45.0
+
+if sample_concentration <= 0:
+    status = "Invalid concentration"
+elif not 1.8 <= sample_purity <= 2.0:
+    status = "Review purity"
+else:
+    status = "Passes illustrative checks"
+
+print("Sample status:", status)

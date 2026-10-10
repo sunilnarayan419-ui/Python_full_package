@@ -1,142 +1,129 @@
 """
-07_Inheritance.py
+TOPIC: Inheritance
 
-Concept: Inheritance
-Inheritance models a genuine IS-A relationship: a derived class reuses
-and specializes the behavior of a base class. This file shows single
-inheritance, overriding with super(), and a judgment call about when
-inheritance is (and is not) the right tool.
+MAIN POINTS
+- Inheritance allows one class to reuse and extend another class.
+- The parent class is also called the base class or superclass.
+- The child class is also called the derived class or subclass.
+- A child class inherits accessible attributes and methods from its parent.
+- Use super() to invoke parent-class behavior.
+- A child class can override inherited methods to customize behavior.
+- Inheritance is useful when biological sample types share common attributes but require specialized behavior.
 """
 
-from __future__ import annotations
-
-
-# --------------------------------------------------------------------------- #
-# University Level
-# --------------------------------------------------------------------------- #
-class UniversityInheritance:
-    """Base class: a generic biological sample."""
-
-    def __init__(self, sample_id: str) -> None:
-        self.sample_id = sample_id
-
-    def describe(self) -> str:
-        return f"Sample {self.sample_id}"
-
-    @staticmethod
-    def run() -> None:
-        print("--- UniversityInheritance ---")
-
-        class PlantSample(UniversityInheritance):
-            """PlantSample IS-A biological sample, specialized for plants."""
-
-            def __init__(self, sample_id: str, species: str) -> None:
-                super().__init__(sample_id)
-                self.species = species
-
-        plant = PlantSample(sample_id="P-01", species="Solanum lycopersicum")
-        print(plant.describe())
-        print(f"Species: {plant.species}")
-
-
-# --------------------------------------------------------------------------- #
-# Interview Level
-# --------------------------------------------------------------------------- #
-class InterviewInheritance:
-    """Base class with a method designed to be overridden by subclasses."""
-
-    def __init__(self, sample_id: str) -> None:
-        self.sample_id = sample_id
-
-    def describe(self) -> str:
-        return f"Generic sample {self.sample_id}"
-
-    @staticmethod
-    def run() -> None:
-        print("--- InterviewInheritance ---")
-
-        class MicrobialSample(InterviewInheritance):
-            """MicrobialSample overrides describe() to add microbe-specific
-            detail, while reusing the base constructor via super()."""
-
-            def __init__(self, sample_id: str, organism: str, colony_count: int) -> None:
-                super().__init__(sample_id)
-                if colony_count < 0:
-                    raise ValueError("colony_count cannot be negative")
-                self.organism = organism
-                self.colony_count = colony_count
-
-            def describe(self) -> str:
-                base_description = super().describe()
-                return f"{base_description} -> {self.organism}, {self.colony_count} CFU"
-
-        culture = MicrobialSample(sample_id="M-07", organism="E. coli", colony_count=1523)
-        print(culture.describe())
-
-
-# --------------------------------------------------------------------------- #
-# Industry Level
-# --------------------------------------------------------------------------- #
 class BiologicalSample:
-    """Genuine shared abstraction: every sample in the lab has an ID and
-    a collection date, regardless of what kind of sample it is."""
-
-    def __init__(self, sample_id: str, collection_date: str) -> None:
-        if not sample_id.strip():
-            raise ValueError("sample_id cannot be empty")
-        self.sample_id = sample_id
-        self.collection_date = collection_date
-
-    def describe(self) -> str:
-        return f"Sample {self.sample_id} collected {self.collection_date}"
-
-
-class PlantSample(BiologicalSample):
-    """PlantSample IS-A BiologicalSample: a real specialization, not an
-    artificial one, since every plant sample is also a biological sample."""
-
-    def __init__(self, sample_id: str, collection_date: str, species: str) -> None:
-        super().__init__(sample_id, collection_date)
-        self.species = species
-
-    def describe(self) -> str:
-        return f"{super().describe()} ({self.species})"
-
-
-class MicrobialSample(BiologicalSample):
-    """A second, independent specialization of the same base class."""
+    """Base class for all biological samples."""
 
     def __init__(
-        self, sample_id: str, collection_date: str, organism: str, colony_count: int
-    ) -> None:
-        super().__init__(sample_id, collection_date)
-        if colony_count < 0:
-            raise ValueError("colony_count cannot be negative")
+        self,
+        sample_id,
+        organism,
+        collection_date
+    ):
+        self.sample_id = sample_id
         self.organism = organism
-        self.colony_count = colony_count
+        self.collection_date = collection_date
 
-    def describe(self) -> str:
-        return f"{super().describe()} ({self.organism}, {self.colony_count} CFU)"
+    def describe(self):
+        print(f"Sample ID: {self.sample_id}")
+        print(f"Organism: {self.organism}")
+        print(f"Collection date: {self.collection_date}")
 
-
-class IndustryInheritance:
-    """Demonstrates inheritance used only where a genuine polymorphic
-    hierarchy exists (BiologicalSample -> PlantSample / MicrobialSample),
-    kept intentionally shallow rather than deep.
-    """
-
-    @staticmethod
-    def run() -> None:
-        print("--- IndustryInheritance ---")
-        samples: list[BiologicalSample] = [
-            PlantSample("P-11", "2026-02-01", "Glycine max"),
-            MicrobialSample("M-11", "2026-02-02", "B. subtilis", 842),
-        ]
-        for sample in samples:
-            print(sample.describe())
+    def sample_type(self):
+        return "General biological sample"
 
 
-if __name__ == "__main__":
-    UniversityInheritance.run()
-    InterviewInheritance.run()
-    IndustryInheritance.run()
+class DNA_Sample(BiologicalSample):
+    """Represent a sample intended for DNA analysis."""
+
+    def __init__(
+        self,
+        sample_id,
+        organism,
+        collection_date,
+        dna_concentration,
+        purity_ratio
+    ):
+        super().__init__(
+            sample_id,
+            organism,
+            collection_date
+        )
+
+        self.dna_concentration = dna_concentration
+        self.purity_ratio = purity_ratio
+
+    def sample_type(self):
+        return "DNA sample"
+
+    def calculate_dna_mass(self, volume_microliters):
+        if volume_microliters < 0:
+            raise ValueError("Volume cannot be negative.")
+
+        return self.dna_concentration * volume_microliters
+
+    def describe(self):
+        # Reuse the parent's description.
+        super().describe()
+
+        print("Sample type:", self.sample_type())
+        print("DNA concentration:", self.dna_concentration, "ng/µL")
+        print("Purity ratio:", self.purity_ratio)
+
+
+class RNA_Sample(BiologicalSample):
+    """Represent a sample intended for RNA analysis."""
+
+    def __init__(
+        self,
+        sample_id,
+        organism,
+        collection_date,
+        rna_concentration
+    ):
+        super().__init__(
+            sample_id,
+            organism,
+            collection_date
+        )
+
+        self.rna_concentration = rna_concentration
+
+    def sample_type(self):
+        return "RNA sample"
+
+    def describe(self):
+        super().describe()
+
+        print("Sample type:", self.sample_type())
+        print("RNA concentration:", self.rna_concentration, "ng/µL")
+
+
+dna_sample = DNA_Sample(
+    "DNA_001",
+    "Homo sapiens",
+    "2026-10-01",
+    45.0,
+    1.87
+)
+
+rna_sample = RNA_Sample(
+    "RNA_001",
+    "Mus musculus",
+    "2026-10-02",
+    32.0
+)
+
+dna_sample.describe()
+
+print()
+
+rna_sample.describe()
+
+print()
+print("DNA mass in 5 µL:", dna_sample.calculate_dna_mass(5))
+
+# Check the inheritance relationships.
+print(isinstance(dna_sample, DNA_Sample))
+print(isinstance(dna_sample, BiologicalSample))
+print(issubclass(DNA_Sample, BiologicalSample))

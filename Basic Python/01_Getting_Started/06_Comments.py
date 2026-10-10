@@ -1,40 +1,36 @@
 """
-06_Comments.py
-==============
-This file demonstrates Python comments and best practices for documentation.
+06. Comments
+Main points
+- Comments explain code to human readers.
+- Single-line comments begin with #.
+- Python has no dedicated multiline-comment syntax. Multiple # lines are the conventional approach.
+- Triple-quoted strings are often used for docstrings, not as a special comment syntax.
+- Comments should explain purpose or reasoning rather than repeat obvious code.
 """
 
-def example_function():
-    """Example function with a proper docstring.
 
-    This function simply prints a message.
-    It showcases how to write a multi‑line docstring correctly.
-    """
-    print("Function executed")
+# This is a single-line comment.
 
-# Single‑line comments (use #)
-example_var = 42  # This is an inline comment
+# Store the temperature measured in a laboratory.
+temperature_celsius = 25.5
 
-# Functions with comments
-# We comment the next few lines to describe them.
-def calculate_area(radius):
-    """Calculate the area of a circle.
+# Convert Celsius to Fahrenheit.
+temperature_fahrenheit = (
+    temperature_celsius * 9 / 5
+) + 32
 
-    Args:
-        radius (float): The radius of the circle.
+print("Celsius:", temperature_celsius)
+print("Fahrenheit:", temperature_fahrenheit)
 
-    Returns:
-        float: The area of the circle.
-    """
-    return 3.14159 * radius * radius
+# A block comment can span several lines:
+# 1. Collect the measurement.
+# 2. Convert the unit.
+# 3. Display the result.
 
-# Demonstrate comments in action
-example_function()
-area = calculate_area(5)
-print(f"The area of the circle is: {area}")
 
-# Comments should explain *why*, not *what*
-# Good: # Use float division to avoid integer truncation
-# Bad:  # Multiply the two numbers
+def calculate_area(length, width):
+    """Calculate the area of a rectangle."""
+    return length * width
 
-print("All comment examples completed.")
+
+print("Area:", calculate_area(5, 4))

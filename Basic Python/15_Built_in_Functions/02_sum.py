@@ -1,78 +1,60 @@
-"""Demonstrations of the built-in sum() function using experimental measurement data."""
+"""
+TOPIC: sum()
 
+MAIN POINTS
+- sum() calculates the total of numeric values in an iterable.
+- Syntax: sum(iterable, start=0).
+- The optional start value determines the initial accumulator.
+- sum() works with integers, floats, and other compatible numeric types.
+- It is useful for total nucleotide counts, experimental measurements, and gene-expression summaries.
+- Use a suitable data type and meaningful units when combining measurements.
+"""
 
-class UniversitySum:
-    """Teach the fundamental behavior of sum() on numeric biological data."""
+# Example 1: Total DNA nucleotides.
+sequence_lengths = [120, 250, 180, 400]
 
-    def __init__(self, leaf_counts: list[int]) -> None:
-        self.leaf_counts = leaf_counts
+total_nucleotides = sum(sequence_lengths)
 
-    def total_leaf_count(self) -> int:
-        return sum(self.leaf_counts)
+print("Total nucleotides:", total_nucleotides)
 
-    @staticmethod
-    def run() -> None:
-        leaf_counts = [12, 15, 9, 20, 11]
+# Example 2: Total gene expression measurements.
+expression_values = [24.6, 18.2, 42.8, 35.1]
 
-        processor = UniversitySum(leaf_counts)
-        print(f"Total leaf count across plants: {processor.total_leaf_count()}")
+print("Total expression:", sum(expression_values))
 
+# Example 3: Calculate the mean expression.
+mean_expression = sum(expression_values) / len(expression_values)
 
-class InterviewSum:
-    """Aggregate scientific measurements while handling missing/invalid values."""
+print("Mean expression:", round(mean_expression, 2))
 
-    def __init__(self, measurements: list[float | None]) -> None:
-        self.measurements = measurements
+# Example 4: Sum values from biological records.
+samples = [
+    {"sample_id": "S001", "dna_mass": 120.5},
+    {"sample_id": "S002", "dna_mass": 95.0},
+    {"sample_id": "S003", "dna_mass": 145.2}
+]
 
-    def total_valid_measurements(self) -> float:
-        """Sum only numeric measurements, skipping None values."""
-        return sum(value for value in self.measurements if value is not None)
+total_dna_mass = sum(
+    sample["dna_mass"]
+    for sample in samples
+)
 
-    def total_with_baseline(self, baseline: float) -> float:
-        """Sum valid measurements starting from a baseline offset."""
-        return sum((value for value in self.measurements if value is not None), baseline)
+print("Total DNA mass:", total_dna_mass)
 
-    @staticmethod
-    def run() -> None:
-        case_one: list[float | None] = [1.2, 3.4, None, 2.1, None]
-        case_two: list[float | None] = [None, None]
+# Example 5: Sum only measurements from treated samples.
+measurements = [
+    {"condition": "Control", "expression": 10.0},
+    {"condition": "Treatment", "expression": 18.5},
+    {"condition": "Treatment", "expression": 22.0}
+]
 
-        analyzer_one = InterviewSum(case_one)
-        analyzer_two = InterviewSum(case_two)
+treatment_total = sum(
+    record["expression"]
+    for record in measurements
+    if record["condition"] == "Treatment"
+)
 
-        print(f"Case 1 total: {analyzer_one.total_valid_measurements()}")
-        print(f"Case 1 total with 5.0 baseline: {analyzer_one.total_with_baseline(5.0)}")
-        print(f"Case 2 total (all missing): {analyzer_two.total_valid_measurements()}")
+print("Total treatment expression:", treatment_total)
 
-
-class IndustrySum:
-    """Aggregate and report scientific measurements across experiment batches."""
-
-    def __init__(self, experiment_batches: dict[str, list[float]]) -> None:
-        self.experiment_batches = experiment_batches
-
-    def batch_totals(self) -> dict[str, float]:
-        return {batch: sum(values) for batch, values in self.experiment_batches.items()}
-
-    def grand_total(self) -> float:
-        return sum(sum(values) for values in self.experiment_batches.values())
-
-    @staticmethod
-    def run() -> None:
-        experiment_batches = {
-            "batch_a": [10.5, 12.3, 9.8],
-            "batch_b": [8.1, 7.6],
-            "batch_c": [],
-        }
-
-        reporter = IndustrySum(experiment_batches)
-        for batch, total in reporter.batch_totals().items():
-            print(f"{batch}: total concentration {total:.2f}")
-
-        print(f"Grand total concentration: {reporter.grand_total():.2f}")
-
-
-if __name__ == "__main__":
-    UniversitySum.run()
-    InterviewSum.run()
-    IndustrySum.run()
+# Example 6: Empty iterable.
+print("Sum of an empty list:", sum([]))

@@ -1,38 +1,46 @@
-"""range() for indexed scientific iteration."""
 
+"""
+03. range()
 
-class SampleNumberer:
-    def __init__(self, n: int) -> None:
-        self.n = n
+Main points
+- range() generates a sequence of integers.
+- range(stop) starts at 0 and stops before stop.
+- range(start, stop) starts at start and stops before stop.
+- range(start, stop, step) specifies the increment.
+- The stop value is excluded.
+- The step can be positive or negative, but cannot be zero.
+- range() is useful for controlled repetition and index-based iteration.
+"""
 
-    def labels(self) -> list[str]:
-        result: list[str] = []
-        for i in range(self.n):
-            result.append(f"sample_{i + 1}")
-        return result
+# Example 1: Simulate five PCR cycles.
+for cycle in range(1, 6):
+    print("PCR cycle:", cycle)
 
+# Example 2: Generate sample numbers from 0 to 4.
+for sample_number in range(5):
+    print("Sample index:", sample_number)
 
-class ChromosomeWindow:
-    def __init__(self, start: int, stop: int) -> None:
-        self.start = start
-        self.stop = stop
+# Example 3: Iterate through a DNA sequence using indices.
+dna_sequence = "ATGCGT"
 
-    def positions(self) -> list[int]:
-        return list(range(self.start, self.stop))
+for index in range(len(dna_sequence)):
+    print(index, dna_sequence[index])
 
+# Example 4: Process every second nucleotide position.
+dna_sequence = "ATGCGTAC"
 
-class SteppedSequence:
-    def __init__(self, length: int, step: int) -> None:
-        self.length = length
-        self.step = step
+for index in range(0, len(dna_sequence), 2):
+    print("Position:", index, "Nucleotide:", dna_sequence[index])
 
-    def positions(self) -> list[int]:
-        return list(range(0, self.length, self.step))
+# Example 5: Count backwards through an experiment.
+for minute in range(10, 0, -2):
+    print("Minutes remaining:", minute)
 
+# Example 6: Calculate ideal DNA amplification by cycle.
+initial_copies = 100
 
-if __name__ == "__main__":
-    print(SampleNumberer(3).labels())
+for cycle in range(1, 6):
+    copies = initial_copies * (2 ** cycle)
+    print(f"Cycle {cycle}: {copies} theoretical copies")
 
-    print(ChromosomeWindow(100, 105).positions())
-
-    print(SteppedSequence(20, 5).positions())
+# The amplification model assumes ideal doubling in every cycle.

@@ -1,101 +1,116 @@
-"""Unpacking demonstrated through biological records and metadata merging."""
+"""
+TOPIC: Unpacking
+
+MAIN POINTS
+- Unpacking extracts elements from an iterable into variables.
+- The number of targets must match the number of elements unless starred unpacking is used.
+- The * operator captures remaining elements into a list.
+- The ** operator unpacks dictionary entries as keyword arguments.
+- Iterable unpacking is useful for processing sequence records and structured measurements.
+- Dictionary unpacking is useful for combining metadata dictionaries.
+"""
+
+# Example 1: Unpack a biological record.
+sample_record = (
+    "S001",
+    "Homo sapiens",
+    "Blood",
+    45.2
+)
+
+sample_id, organism, tissue, concentration = sample_record
+
+print("Sample ID:", sample_id)
+print("Organism:", organism)
+print("Tissue:", tissue)
+print("DNA concentration:", concentration)
 
 
-class UniversityUnpacking:
-    """Teach the fundamental syntax of tuple and list unpacking."""
+# Example 2: Starred unpacking.
+measurements = (
+    "S001",
+    45.2,
+    1.87,
+    20.0,
+    "Control"
+)
 
-    def __init__(self, record: tuple[str, str, float]) -> None:
-        self.record = record
+sample_id, *numeric_values, condition = measurements
 
-    def describe_record(self) -> str:
-        """Unpack a sample record into its component fields."""
-        sample_id, species, height_cm = self.record
-        return f"{sample_id} is a {species} measuring {height_cm}cm"
-
-    @staticmethod
-    def run() -> None:
-        record = ("S001", "Arabidopsis", 12.5)
-
-        processor = UniversityUnpacking(record)
-        print(processor.describe_record())
-
-        first, *remaining = [1, 2, 3, 4, 5]
-        print(f"First: {first}, Remaining: {remaining}")
+print("\nSample ID:", sample_id)
+print("Numeric values:", numeric_values)
+print("Condition:", condition)
 
 
-class InterviewUnpacking:
-    """Solve a practical structured-data unpacking problem with edge cases."""
+# Example 3: Unpack the first and last elements.
+gene_expression = [
+    24.6,
+    18.2,
+    42.8,
+    35.1,
+    29.7
+]
 
-    def __init__(self, records: list[tuple[str, ...]]) -> None:
-        self.records = records
+first_expression, *middle_expression, last_expression = gene_expression
 
-    def separate_ids_and_values(self) -> tuple[list[str], list[tuple[float, ...]]]:
-        """Split sample IDs from their trailing numeric measurements.
-
-        Handles records of varying length using starred unpacking, and
-        skips records that are missing measurement data entirely.
-        """
-        sample_ids: list[str] = []
-        value_groups: list[tuple[float, ...]] = []
-
-        for record in self.records:
-            if len(record) < 2:
-                continue
-            sample_id, *values = record
-            sample_ids.append(sample_id)
-            value_groups.append(tuple(float(value) for value in values))
-
-        return sample_ids, value_groups
-
-    @staticmethod
-    def run() -> None:
-        records: list[tuple[str, ...]] = [
-            ("S001", "12.5", "0.95"),
-            ("S002", "14.1"),
-            ("S003",),
-        ]
-
-        processor = InterviewUnpacking(records)
-        ids, values = processor.separate_ids_and_values()
-
-        print(f"Sample IDs: {ids}")
-        print(f"Value groups: {values}")
+print("\nFirst expression:", first_expression)
+print("Middle values:", middle_expression)
+print("Last expression:", last_expression)
 
 
-class IndustryUnpacking:
-    """Compose clean, structured biological records from separate sources."""
-
-    def __init__(
-        self,
-        metadata: dict[str, str],
-        measurements: dict[str, float],
-    ) -> None:
-        self.metadata = metadata
-        self.measurements = measurements
-
-    def merge_record(self) -> dict[str, str | float]:
-        """Combine metadata and measurement dictionaries into one record."""
-        return {**self.metadata, **self.measurements}
-
-    def unpack_function_arguments(self, *ids: str, **overrides: float) -> dict[str, float]:
-        """Demonstrate unpacking positional and keyword arguments together."""
-        base_scores = {sample_id: 0.0 for sample_id in ids}
-        return {**base_scores, **overrides}
-
-    @staticmethod
-    def run() -> None:
-        metadata = {"sample_id": "S001", "species": "Arabidopsis"}
-        measurements = {"height_cm": 12.5, "purity_score": 0.95}
-
-        composer = IndustryUnpacking(metadata, measurements)
-        merged = composer.merge_record()
-        overridden = composer.unpack_function_arguments("S001", "S002", S001=0.92)
-
-        print(f"Merged record: {merged}")
-        print(f"Overridden scores: {overridden}")
+# Example 4: Unpack a dictionary into function arguments.
+def register_sample(sample_id, organism, tissue):
+    return (
+        f"{sample_id}: {organism}, "
+        f"{tissue}"
+    )
 
 
-if __name__ == "__main__":
-    UniversityUnpacking.run()
-    InterviewUnpacking.run()
-    IndustryUnpacking.run()
+sample_metadata = {
+    "sample_id": "S002",
+    "organism": "Mus musculus",
+    "tissue": "Liver"
+}
+
+print("\nRegistered sample:")
+print(register_sample(**sample_metadata))
+
+
+# Example 5: Merge dictionaries using unpacking.
+identity = {
+    "sample_id": "S003",
+    "organism": "Homo sapiens"
+}
+
+measurements = {
+    "dna_concentration": 58.1,
+    "purity_ratio": 1.92
+}
+
+complete_record = {
+    **identity,
+    **measurements
+}
+
+print("\nComplete sample record:")
+print(complete_record)
+
+
+# Example 6: Unpack sequences in a loop.
+gene_records = [
+    ("BRCA1", 24.6),
+    ("TP53", 18.2),
+    ("EGFR", 42.8)
+]
+
+for gene, expression in gene_records:
+    print(f"{gene}: {expression}")
+
+
+# Example 7: Unpack the remainder of a DNA sequence.
+dna_sequence = "ATGCGTAC"
+
+first_base, *remaining_bases = dna_sequence
+
+print("\nFirst nucleotide:", first_base)
+print("Remaining nucleotides:", remaining_bases)

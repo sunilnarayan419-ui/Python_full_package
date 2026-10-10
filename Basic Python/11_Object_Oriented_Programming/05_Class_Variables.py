@@ -1,124 +1,75 @@
 """
-05_Class_Variables.py
+TOPIC: Class Variables
 
-Concept: Class Variables
-Class variables hold state shared by every instance of a class, as
-opposed to instance variables which belong to one object. This file
-shows correct use of class-level state and how to avoid accidental
-shared mutability.
+MAIN POINTS
+- Class variables are defined directly inside the class body.
+- They are shared through the class unless an individual instance overrides the attribute.
+- They are useful for constants and information common to all objects.
+- Instance variables store object-specific information.
+- Access class variables using ClassName.variable_name when you want to reference the class-level value explicitly.
+- Mutable class variables, such as lists and dictionaries, can accidentally share changing data between instances.
+- Use class variables carefully when managing laboratory-wide settings or sample categories.
 """
 
-from __future__ import annotations
+class BiologicalSample:
+    """Represent a biological sample in a shared research project."""
 
+    laboratory_name = "Molecular Biology Laboratory"
+    project_code = "BIO_PROJECT_2026"
+    total_samples_created = 0
 
-# --------------------------------------------------------------------------- #
-# University Level
-# --------------------------------------------------------------------------- #
-class UniversityClassVariables:
-    """A simple shared class variable: the taxonomic kingdom for every
-    plant sample created through this class."""
-
-    kingdom: str = "Plantae"
-
-    def __init__(self, species: str) -> None:
-        self.species = species
-
-    @staticmethod
-    def run() -> None:
-        print("--- UniversityClassVariables ---")
-        plant_a = UniversityClassVariables("Rosa")
-        plant_b = UniversityClassVariables("Tulipa")
-
-        print(f"{plant_a.species} kingdom: {plant_a.kingdom}")
-        print(f"{plant_b.species} kingdom: {plant_b.kingdom}")
-        print(f"Shared reference? {plant_a.kingdom is plant_b.kingdom}")
-
-
-# --------------------------------------------------------------------------- #
-# Interview Level
-# --------------------------------------------------------------------------- #
-class InterviewClassVariables:
-    """Demonstrates the distinction between class-level and instance-level
-    state using a running count of created samples.
-
-    Purpose: a class variable tracks how many objects have been created
-    in total, while each object still keeps its own sample_id.
-    """
-
-    total_samples_created: int = 0
-
-    def __init__(self, sample_id: str) -> None:
-        if not sample_id.strip():
-            raise ValueError("sample_id cannot be empty")
+    def __init__(self, sample_id, organism, tissue):
         self.sample_id = sample_id
-        InterviewClassVariables.total_samples_created += 1
+        self.organism = organism
+        self.tissue = tissue
 
-    @classmethod
-    def reset_counter(cls) -> None:
-        cls.total_samples_created = 0
+        # Update the shared class-level counter.
+        BiologicalSample.total_samples_created += 1
 
-    @staticmethod
-    def run() -> None:
-        print("--- InterviewClassVariables ---")
-        InterviewClassVariables.reset_counter()
-
-        InterviewClassVariables("S-01")
-        InterviewClassVariables("S-02")
-        InterviewClassVariables("S-03")
-
-        print(f"Total samples created: {InterviewClassVariables.total_samples_created}")
+    def describe(self):
+        print(f"Laboratory: {self.laboratory_name}")
+        print(f"Project: {self.project_code}")
+        print(f"Sample ID: {self.sample_id}")
+        print(f"Organism: {self.organism}")
+        print(f"Tissue: {self.tissue}")
 
 
-# --------------------------------------------------------------------------- #
-# Industry Level
-# --------------------------------------------------------------------------- #
-class IndustryClassVariables:
-    """Uses class variables only where shared state is genuinely
-    appropriate: a fixed reference-genome build shared by every record,
-    while explicitly avoiding accidental shared mutable state (e.g. a
-    shared list) by keeping per-instance collections in the instance
-    namespace instead.
-    """
+sample_1 = BiologicalSample(
+    "SAMPLE_001",
+    "Homo sapiens",
+    "Blood"
+)
 
-    # Immutable shared configuration: safe to share across all instances.
-    REFERENCE_GENOME_BUILD: str = "GRCh38"
+sample_2 = BiologicalSample(
+    "SAMPLE_002",
+    "Mus musculus",
+    "Liver"
+)
 
-    def __init__(self, sample_id: str) -> None:
-        if not sample_id.strip():
-            raise ValueError("sample_id cannot be empty")
-        self.sample_id = sample_id
-        # Deliberately an instance variable, not a class variable: each
-        # record must own its own mutable list of variant calls.
-        self._variant_calls: list[str] = []
+sample_3 = BiologicalSample(
+    "SAMPLE_003",
+    "Arabidopsis thaliana",
+    "Root"
+)
 
-    def add_variant_call(self, variant: str) -> None:
-        if not variant.strip():
-            raise ValueError("variant cannot be empty")
-        self._variant_calls.append(variant)
+sample_1.describe()
 
-    @property
-    def variant_calls(self) -> tuple[str, ...]:
-        return tuple(self._variant_calls)
+print()
 
-    @classmethod
-    def genome_build(cls) -> str:
-        return cls.REFERENCE_GENOME_BUILD
+sample_2.describe()
 
-    @staticmethod
-    def run() -> None:
-        print("--- IndustryClassVariables ---")
-        record_a = IndustryClassVariables("S-301")
-        record_b = IndustryClassVariables("S-302")
+print()
+print("Total samples created:", BiologicalSample.total_samples_created)
 
-        record_a.add_variant_call("chr17:g.43094692G>A")
-        record_b.add_variant_call("chr13:g.32398489del")
+# Change the shared class attribute.
+BiologicalSample.laboratory_name = "Genomics Research Laboratory"
 
-        print(f"Genome build (shared): {IndustryClassVariables.genome_build()}")
-        print(f"record_a variants: {record_a.variant_calls}")
-        print(f"record_b variants: {record_b.variant_calls}")
+print(sample_1.laboratory_name)
+print(sample_2.laboratory_name)
 
+# An instance assignment creates an instance-level override.
+sample_1.laboratory_name = "Independent Research Unit"
 
-if __name__ == "__main__":
-    UniversityClassVariables.run()
-    InterviewClassVariables.run()
-    IndustryClassVariables.run()
+print(sample_1.laboratory_name)
+print(sample_2.laboratory_name)
+print(BiologicalSample.laboratory_name)

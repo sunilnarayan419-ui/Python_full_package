@@ -1,37 +1,41 @@
-﻿"""Complex numbers in scientific computing."""
 
+"""
+04. Complex Numbers
 
-class ComplexUniversity:
-    def __init__(self, z: complex) -> None:
-        self.z = z
+Main points
+- complex numbers contain real and imaginary components.
+- Python uses j to represent the imaginary unit.
+- Example: 3 + 4j has real part 3 and imaginary part 4.
+- Use .real and .imag to access the components.
+- Use abs() to calculate the magnitude.
+- Use the conjugate() method to obtain the complex conjugate.
+- Complex numbers are useful in signal processing, physics,
+  electrical engineering, and mathematical modelling.
+"""
 
-    def conjugate(self) -> complex:
-        return self.z.conjugate()
+# Create complex numbers
+z1 = 3 + 4j
+z2 = 2 + 1j
 
+# Access components
+print("Real part:", z1.real)
+print("Imaginary part:", z1.imag)
 
-class ComplexInterview:
-    @staticmethod
-    def from_polar(r: float, theta: float) -> complex:
-        import math
-        return complex(r * math.cos(theta), r * math.sin(theta))
+# Arithmetic operations
+print("Addition:", z1 + z2)
+print("Subtraction:", z1 - z2)
+print("Multiplication:", z1 * z2)
+print("Division:", z1 / z2)
 
+# Magnitude
+print("Magnitude:", abs(z1))
 
-class ComplexIndustry:
-    def __init__(self, signal: list[complex]) -> None:
-        self.signal = signal
+# Complex conjugate
+print("Conjugate:", z1.conjugate())
 
-    def magnitude_spectrum(self) -> list[float]:
-        return [abs(c) for c in self.signal]
+# Create a complex number using complex()
+z3 = complex(5, 6)
+print("Created complex number:", z3)
 
-    def mean_magnitude(self) -> float:
-        if not self.signal:
-            return 0.0
-        return sum(abs(c) for c in self.signal) / len(self.signal)
-
-
-if __name__ == "__main__":
-    print(ComplexUniversity(1 + 2j).conjugate())
-
-    print(ComplexInterview.from_polar(1.0, 0.0))
-
-    print(ComplexIndustry([1 + 0j, 0 + 1j, 1 + 1j]).mean_magnitude())
+# Type inspection
+print("Type:", type(z1))

@@ -1,47 +1,48 @@
-"""Using f-strings for formatted scientific/genomic output."""
 
+"""
+09. f-Strings
 
-class FStringUniversity:
-    def __init__(self, name: str, value: float) -> None:
-        self.name = name
-        self.value = value
+Main points
+- f-strings format expressions directly inside string literals.
+- Prefix a string with f or F.
+- Expressions are enclosed in curly braces: {}.
+- Formatting specifications follow a colon inside the braces.
+- :.2f formats a floating-point number to two decimal places.
+- Commas can be used as thousands separators.
+- f-strings support calculations and function calls inside expressions.
+"""
 
-    def get_label(self) -> str:
-        return f"{self.name}={self.value}"
+name = "Sunil"
+sample_count = 1250
+temperature = 25.6789
+ph_value = 7.4
 
+# Basic interpolation
+print(f"Student: {name}")
+print(f"Sample count: {sample_count}")
 
-class FStringInterview:
-    def __init__(self, name: str, values: list[float]) -> None:
-        self.name = name
-        self.values = values
+# Format decimal places
+print(f"Temperature: {temperature:.2f} °C")
+print(f"pH: {ph_value:.1f}")
 
-    def summarize(self) -> str:
-        if not self.values:
-            return f"No {self.name} values"
-        mean = sum(self.values) / len(self.values)
-        return f"{self.name}: n={len(self.values)}, mean={mean:.2f}"
+# Thousands separator
+print(f"Processed samples: {sample_count:,}")
 
+# Expressions inside f-strings
+length = 10
+width = 5
 
-class FStringIndustry:
-    def __init__(self, sample_id: str, species: str, gc: float, length: int) -> None:
-        self.sample_id = sample_id
-        self.species = species
-        self.gc = gc
-        self.length = length
+print(f"Area: {length * width}")
 
-    def report(self) -> str:
-        return (
-            f"[{self.sample_id}] {self.species:<10} "
-            f"len={self.length:>6,} GC={self.gc:.2%}"
-        )
+# Alignment
+print(f"{'Sample':<15}{'Mass':>10}")
+print(f"{'S001':<15}{12.5:>10.2f}")
+print(f"{'S002':<15}{8.75:>10.2f}")
 
+# Percentage formatting
+completion = 0.875
+print(f"Completion: {completion:.1%}")
 
-if __name__ == "__main__":
-    u = FStringUniversity(name="Height_cm", value=12.5)
-    print(u.get_label())
-
-    i = FStringInterview(name="Height", values=[10.0, 11.5, 12.0])
-    print(i.summarize())
-
-    ind = FStringIndustry(sample_id="S001", species="Wheat", gc=0.45, length=1234)
-    print(ind.report())
+# Scientific notation
+concentration = 0.0000125
+print(f"Concentration: {concentration:.2e}")

@@ -1,53 +1,61 @@
-"""if/elif/else multi-category classification."""
 
+"""
+03. if-elif-else Statement
 
-class HeightClassifier:
-    def __init__(self, height_cm: float) -> None:
-        self.height_cm = height_cm
+Main points
+- elif means "else if" and tests another condition.
+- Python evaluates conditions from top to bottom.
+- The first condition that evaluates to True has its block executed.
+- Remaining branches are skipped once a matching branch is found.
+- else executes if none of the preceding conditions is True.
+- Branch ordering matters when conditions overlap.
+- This structure is useful for classification and multi-level decisions.
+"""
 
-    def category(self) -> str:
-        if self.height_cm < 20:
-            return "short"
-        elif self.height_cm < 50:
-            return "medium"
-        else:
-            return "tall"
+# Example 1: Classify DNA concentration.
+dna_concentration = 45.0  # ng/uL
 
+if dna_concentration < 10.0:
+    print("Very low DNA concentration.")
+elif dna_concentration < 20.0:
+    print("Low DNA concentration.")
+elif dna_concentration < 50.0:
+    print("Moderate DNA concentration.")
+else:
+    print("High DNA concentration.")
 
-class ExpressionLevel:
-    def __init__(self, value: float) -> None:
-        self.value = value
+# Example 2: Classify sequencing read depth.
+read_count = 2_500_000
 
-    def level(self) -> str:
-        if self.value < 1.0:
-            return "low"
-        elif self.value < 5.0:
-            return "normal"
-        elif self.value < 20.0:
-            return "high"
-        else:
-            return "very_high"
+if read_count < 100_000:
+    print("Very low read count.")
+elif read_count < 1_000_000:
+    print("Low read count.")
+elif read_count < 5_000_000:
+    print("Moderate read count.")
+else:
+    print("High read count.")
 
+# Example 3: Classify a gene expression change.
+fold_change = 2.4
 
-class PlantStressCategory:
-    def __init__(self, water_pct: float, temperature_c: float) -> None:
-        self.water_pct = water_pct
-        self.temperature_c = temperature_c
+if fold_change < 1.0:
+    print("Expression is lower than the reference.")
+elif fold_change == 1.0:
+    print("Expression is unchanged.")
+else:
+    print("Expression is higher than the reference.")
 
-    def category(self) -> str:
-        if self.water_pct < 30:
-            return "drought_stress"
-        elif self.water_pct > 80 and self.temperature_c > 30:
-            return "heat_humidity_stress"
-        elif self.temperature_c < 5:
-            return "cold_stress"
-        else:
-            return "normal"
+# Example 4: Classify a simplified quality-control result.
+purity_ratio = 1.85
 
+if purity_ratio < 1.6:
+    print("Purity ratio is below the illustrative range.")
+elif purity_ratio <= 2.0:
+    print("Purity ratio is within the illustrative range.")
+else:
+    print("Purity ratio is above the illustrative range.")
 
-if __name__ == "__main__":
-    print(HeightClassifier(45.0).category())
-
-    print(ExpressionLevel(8.0).level())
-
-    print(PlantStressCategory(water_pct=85, temperature_c=32).category())
+# Important:
+# A fold change alone does not establish statistical significance.
+# Thresholds must be appropriate for the specific experiment.

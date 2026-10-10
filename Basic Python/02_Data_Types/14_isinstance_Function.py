@@ -1,36 +1,56 @@
-"""Safe runtime type checking of scientific data."""
 
+"""
+14. isinstance() Function
 
-class IsInstanceFunctionUniversity:
-    def __init__(self, value: object) -> None:
-        self.value = value
+Main points
+- isinstance(object, classinfo) checks whether an object belongs
+  to a specified type or one of its subclasses.
+- It returns True or False.
+- The second argument can be a type or a tuple of types.
+- isinstance() is generally preferred over type() for type validation
+  when subclasses should also be accepted.
+- bool is a subclass of int, so isinstance(True, int) returns True.
+- Type checks should be used when they help enforce meaningful
+  requirements, not automatically for every variable.
+"""
 
-    def is_numeric(self) -> bool:
-        return isinstance(self.value, (int, float))
+# Basic checks
+count = 10
+temperature = 25.5
+organism = "Arabidopsis"
 
+print(isinstance(count, int))
+print(isinstance(temperature, float))
+print(isinstance(organism, str))
 
-class IsInstanceFunctionInterview:
-    @staticmethod
-    def is_sequence(value: object) -> bool:
-        return isinstance(value, str) and all(c in "ACGTNacgtn" for c in value)
+# Check against multiple types
+value = 25.5
 
+print(isinstance(value, (int, float)))
 
-class IsInstanceFunctionIndustry:
-    @staticmethod
-    def validate_record(record: dict[str, object]) -> list[str]:
-        errors: list[str] = []
-        if not isinstance(record.get("sample_id"), str):
-            errors.append("sample_id must be str")
-        if not isinstance(record.get("reads"), int):
-            errors.append("reads must be int")
-        if not isinstance(record.get("gc"), (int, float)):
-            errors.append("gc must be numeric")
-        return errors
+# Boolean is a subclass of int
+print(isinstance(True, int))
+print(type(True) is int)
 
+# Validate a sample count
+sample_count = 15
 
-if __name__ == "__main__":
-    print(IsInstanceFunctionUniversity(0.5).is_numeric())
-    print(IsInstanceFunctionInterview.is_sequence("ATGC"))
-    print(IsInstanceFunctionIndustry.validate_record(
-        {"sample_id": "S1", "reads": 100, "gc": 0.5}
-    ))
+if isinstance(sample_count, int):
+    print("Sample count is an integer.")
+else:
+    print("Sample count is not an integer.")
+
+# Note: bool is also an int subclass.
+# Exclude bool explicitly when only genuine integers are allowed.
+sample_count = True
+
+if isinstance(sample_count, int) and not isinstance(sample_count, bool):
+    print("Valid integer sample count.")
+else:
+    print("Expected an integer, not a boolean.")
+
+# Check a collection
+gene_expression = [2.1, 3.4, 1.8]
+
+print(isinstance(gene_expression, list))
+print(isinstance(gene_expression, (tuple, list)))

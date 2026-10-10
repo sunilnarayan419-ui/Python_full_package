@@ -1,56 +1,54 @@
-"""Using None to represent missing/unknown scientific data."""
+
+"""
+11. None
+
+Main points
+- None is Python's singleton object representing the absence of a value.
+- Its type is NoneType.
+- None is different from 0, False, and an empty string.
+- Use 'is None' to check whether a value is None.
+- Functions without an explicit return value return None.
+- None is commonly used for optional values and uninitialized results.
+"""
+
+# Assign None
+result = None
+sample_id = None
+
+print("Result:", result)
+print("Sample ID:", sample_id)
+print("Type:", type(result))
+
+# Correct way to check None
+if result is None:
+    print("No result is available.")
+
+# None is different from other values
+print(None == 0)
+print(None == False)
+print(None == "")
+
+# Function without an explicit return
+def display_message():
+    print("Processing sample...")
+
+returned_value = display_message()
+
+print("Returned value:", returned_value)
+print("Is None:", returned_value is None)
+
+# Function that may return None
+def find_sample(sample_ids, target):
+    if target in sample_ids:
+        return target
+
+    return None
 
 
-class NoneUniversity:
-    def __init__(self, sample_id: str, height_cm: float | None) -> None:
-        self.sample_id = sample_id
-        self.height_cm = height_cm
+samples = ["S001", "S002", "S003"]
+found = find_sample(samples, "S004")
 
-    def get_height(self) -> float | None:
-        return self.height_cm
-
-    @staticmethod
-    def run() -> None:
-        s = NoneUniversity(sample_id="P001", height_cm=None)
-        print(f"Height: {s.get_height()}")
-
-
-class NoneInterview:
-    def __init__(self, measurements: list[float | None]) -> None:
-        self.measurements = measurements
-
-    def count_missing(self) -> int:
-        return sum(1 for m in self.measurements if m is None)
-
-    def count_present(self) -> int:
-        return sum(1 for m in self.measurements if m is not None)
-
-    @staticmethod
-    def run() -> None:
-        data = [12.5, None, 14.0, None, 11.8]
-        checker = NoneInterview(data)
-        print(f"Missing: {checker.count_missing()}")
-        print(f"Present: {checker.count_present()}")
-
-
-class NoneIndustry:
-    def __init__(self, field: str, value: float | None) -> None:
-        self.field = field
-        self.value = value
-
-    def is_reported(self) -> bool:
-        return self.value is not None
-
-    def display(self) -> str:
-        if self.value is None:
-            return f"{self.field}: NA"
-        return f"{self.field}: {self.value}"
-
-
-if __name__ == "__main__":
-    NoneUniversity.run()
-    NoneInterview.run()
-    NoneIndustry.run()
-
-    chlorophyll = NoneIndustry(field="Chlorophyll", value=None)
-    print(chlorophyll.display())
+if found is None:
+    print("Sample not found.")
+else:
+    print("Found:", found)

@@ -1,135 +1,138 @@
 """
-06_Methods.py
+TOPIC: Methods
 
-Concept: Methods
-Instance methods operate on object state; class methods operate on the
-class itself; static methods are utility functions grouped inside a
-class for organizational reasons. This file introduces each kind
-progressively.
+MAIN POINTS
+- Methods are functions defined inside a class.
+- Instance methods receive self as their first parameter.
+- Instance methods can read and modify instance attributes.
+- Class methods use @classmethod and receive cls as their first parameter.
+- Static methods use @staticmethod when the operation does not require instance or class state.
+- Methods can model biological operations, calculations, validations, and state changes.
+- Keep each method focused on a clear responsibility.
 """
 
-from __future__ import annotations
+class BiologicalSample:
+    """Represent a biological sample and its basic analysis."""
 
+    laboratory_name = "Molecular Biology Laboratory"
+    total_samples_created = 0
 
-# --------------------------------------------------------------------------- #
-# University Level
-# --------------------------------------------------------------------------- #
-class UniversityMethods:
-    """Focuses on instance methods that read and modify object state."""
+    def __init__(
+        self,
+        sample_id,
+        organism,
+        tissue,
+        dna_concentration,
+        purity_ratio
+    ):
+        self.sample_id = sample_id
+        self.organism = organism
+        self.tissue = tissue
+        self.dna_concentration = dna_concentration
+        self.purity_ratio = purity_ratio
 
-    def __init__(self, species: str, height_cm: float) -> None:
-        self.species = species
-        self.height_cm = height_cm
+        BiologicalSample.total_samples_created += 1
 
-    def grow(self, amount_cm: float) -> None:
-        if amount_cm < 0:
-            raise ValueError("amount_cm cannot be negative")
-        self.height_cm += amount_cm
+    # Instance method: accesses the current object's attributes.
+    def calculate_dna_mass(self, volume_microliters):
+        if volume_microliters < 0:
+            raise ValueError("Volume cannot be negative.")
 
-    def describe(self) -> str:
-        return f"{self.species}: {self.height_cm:.1f} cm"
+        return self.dna_concentration * volume_microliters
 
-    @staticmethod
-    def run() -> None:
-        print("--- UniversityMethods ---")
-        plant = UniversityMethods("Helianthus annuus", 20.0)
-        plant.grow(5.5)
-        print(plant.describe())
+    # Instance method: evaluates the sample's purity ratio.
+    def evaluate_purity(self):
+        if 1.8 <= self.purity_ratio <= 2.0:
+            return "Within the illustrative DNA purity range"
 
+        return "Outside the illustrative DNA purity range"
 
-# --------------------------------------------------------------------------- #
-# Interview Level
-# --------------------------------------------------------------------------- #
-class InterviewMethods:
-    """Introduces classmethod (alternate constructor) and staticmethod
-    (stateless helper) alongside instance methods.
-    """
+    # Instance method: modifies object state.
+    def update_concentration(self, new_concentration):
+        if new_concentration < 0:
+            raise ValueError("Concentration cannot be negative.")
 
-    def __init__(self, sequence: str) -> None:
-        self.sequence = sequence.upper()
+        self.dna_concentration = new_concentration
 
-    def gc_content(self) -> float:
-        if not self.sequence:
-            return 0.0
-        gc_count = sum(1 for base in self.sequence if base in "GC")
-        return gc_count / len(self.sequence) * 100.0
-
+    # Class method: accesses class-level information.
     @classmethod
-    def from_fasta_line(cls, fasta_line: str) -> "InterviewMethods":
-        """Alternate constructor: build directly from a raw FASTA data
-        line (ignoring a leading '>' header line if present)."""
-        cleaned = fasta_line.strip()
-        if cleaned.startswith(">"):
-            raise ValueError("expected a sequence line, not a FASTA header")
-        return cls(sequence=cleaned)
+    def get_total_samples(cls):
+        return cls.total_samples_created
 
-    @staticmethod
-    def is_valid_dna(sequence: str) -> bool:
-        return set(sequence.upper()).issubset(set("ACGT"))
-
-    @staticmethod
-    def run() -> None:
-        print("--- InterviewMethods ---")
-        record = InterviewMethods.from_fasta_line("acgtGGCC")
-        print(f"GC content: {record.gc_content():.1f}%")
-        print(f"Valid DNA? {InterviewMethods.is_valid_dna('ACGTX')}")
-
-
-# --------------------------------------------------------------------------- #
-# Industry Level
-# --------------------------------------------------------------------------- #
-class IndustryMethods:
-    """Demonstrates choosing between instance, class, and static methods
-    based purely on responsibility, for a compound-scoring workflow.
-
-    - Instance method: acts on this specific compound's state.
-    - Class method: builds instances, tied to the class as a whole.
-    - Static method: pure utility with no dependency on class or
-      instance state, grouped here only for discoverability.
-    """
-
-    _scoring_version: str = "1.2"
-
-    def __init__(self, compound_id: str, molecular_weight: float, logp: float) -> None:
-        if molecular_weight < 0:
-            raise ValueError("molecular_weight cannot be negative")
-        self.compound_id = compound_id
-        self.molecular_weight = molecular_weight
-        self.logp = logp
-
-    def drug_likeness_score(self) -> float:
-        """Instance method: score depends entirely on this object's own
-        molecular_weight and logp."""
-        weight_score = 1.0 if self.molecular_weight <= 500.0 else 0.5
-        logp_score = 1.0 if -0.4 <= self.logp <= 5.6 else 0.5
-        return round((weight_score + logp_score) / 2.0, 2)
-
+    # Alternative constructor.
     @classmethod
-    def scoring_version(cls) -> str:
-        """Class method: reports metadata about the class as a whole,
-        not about any single compound."""
-        return cls._scoring_version
-
-    @staticmethod
-    def molar_mass_to_daltons(molar_mass_g_per_mol: float) -> float:
-        """Static method: a pure unit conversion, unrelated to any
-        particular class or instance state."""
-        return molar_mass_g_per_mol  # g/mol and Da are numerically equal.
-
-    @staticmethod
-    def run() -> None:
-        print("--- IndustryMethods ---")
-        compound = IndustryMethods("CMP-77", molecular_weight=410.5, logp=3.2)
-
-        print(f"Scoring engine version: {IndustryMethods.scoring_version()}")
-        print(f"Drug-likeness score: {compound.drug_likeness_score()}")
-        print(
-            "410.5 g/mol equals "
-            f"{IndustryMethods.molar_mass_to_daltons(410.5)} Da"
+    def from_dictionary(cls, data):
+        return cls(
+            sample_id=data["sample_id"],
+            organism=data["organism"],
+            tissue=data["tissue"],
+            dna_concentration=data["dna_concentration"],
+            purity_ratio=data["purity_ratio"]
         )
 
+    # Static method: performs a calculation independent of object state.
+    @staticmethod
+    def calculate_dilution_volume(
+        initial_concentration,
+        target_concentration,
+        final_volume
+    ):
+        if initial_concentration <= 0:
+            raise ValueError("Initial concentration must be positive.")
 
-if __name__ == "__main__":
-    UniversityMethods.run()
-    InterviewMethods.run()
-    IndustryMethods.run()
+        if not 0 < target_concentration <= initial_concentration:
+            raise ValueError("Target concentration must be positive and no greater than the initial concentration.")
+
+        if final_volume < 0:
+            raise ValueError("Final volume cannot be negative.")
+
+        # C1V1 = C2V2
+        return (
+            target_concentration * final_volume
+        ) / initial_concentration
+
+
+sample_1 = BiologicalSample(
+    "DNA_001",
+    "Homo sapiens",
+    "Blood",
+    40.0,
+    1.85
+)
+
+print("DNA mass in 10 µL:", sample_1.calculate_dna_mass(10))
+print("Purity assessment:", sample_1.evaluate_purity())
+
+sample_1.update_concentration(45.0)
+print("Updated concentration:", sample_1.dna_concentration)
+
+print("Samples created:", BiologicalSample.get_total_samples())
+
+# Create an object from structured data.
+sample_data = {
+    "sample_id": "DNA_002",
+    "organism": "Mus musculus",
+    "tissue": "Liver",
+    "dna_concentration": 60.0,
+    "purity_ratio": 1.92
+}
+
+sample_2 = BiologicalSample.from_dictionary(sample_data)
+
+print("New sample ID:", sample_2.sample_id)
+
+# Calculate a dilution independently of any particular sample.
+stock_concentration = 100.0
+target_concentration = 20.0
+final_volume = 500.0
+
+stock_volume = BiologicalSample.calculate_dilution_volume(
+    stock_concentration,
+    target_concentration,
+    final_volume
+)
+
+diluent_volume = final_volume - stock_volume
+
+print("Stock volume:", stock_volume, "µL")
+print("Diluent volume:", diluent_volume, "µL")

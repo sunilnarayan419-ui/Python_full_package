@@ -1,53 +1,74 @@
-"""for/while loop else clause in scientific search."""
 
+"""
+08. else With Loops
 
-class PatternSearcher:
-    def __init__(self, sequence: str, pattern: str) -> None:
-        self.sequence = sequence.upper()
-        self.pattern = pattern.upper()
+Main points
+- Python allows else clauses on both for and while loops.
+- A loop's else block executes if the loop finishes normally.
+- The else block does not execute if the loop terminates through break.
+- continue does not prevent the loop's else block from executing.
+- A while loop's else executes when its condition becomes False.
+- Loop-else is useful for search operations where no match is found.
+- It differs from the else clause of an if statement.
+"""
 
-    def find(self) -> str:
-        for i in range(len(self.sequence) - len(self.pattern) + 1):
-            if self.sequence[i:i + len(self.pattern)] == self.pattern:
-                return f"found at {i}"
-        else:
-            return "not found"
+# Example 1: Search for a gene.
+gene_list = ["ACTB", "GAPDH", "TP53", "BRCA1"]
+target_gene = "TP53"
 
+for gene in gene_list:
+    print("Checking:", gene)
 
-class SampleLookup:
-    def __init__(self, sample_ids: list[str], target: str) -> None:
-        self.sample_ids = sample_ids
-        self.target = target
+    if gene == target_gene:
+        print("Target gene found:", gene)
+        break
+else:
+    print("Target gene was not found.")
 
-    def locate(self) -> str:
-        for s in self.sample_ids:
-            if s == self.target:
-                return f"located {s}"
-            if len(s) > len(self.target):
-                break
-        else:
-            return "missing from batch"
-        return "search terminated early"
+# Example 2: Search for a missing gene.
+target_gene = "MYC"
 
+for gene in gene_list:
+    if gene == target_gene:
+        print("Target gene found:", gene)
+        break
+else:
+    print("Target gene was not found.")
 
-class QualityBatchValidator:
-    def __init__(self, qualities: list[float], min_quality: float) -> None:
-        self.qualities = qualities
-        self.min_quality = min_quality
+# Example 3: Use continue without preventing loop-else.
+expression_values = [None, None, 12.5, 18.0]
 
-    def validate(self) -> str:
-        for q in self.qualities:
-            if q < self.min_quality:
-                break
-        else:
-            return "all_passed"
-        return "rejected"
+for expression in expression_values:
+    if expression is None:
+        continue
 
+    print("Valid measurement:", expression)
+else:
+    print("All available records were processed.")
 
-if __name__ == "__main__":
-    print(PatternSearcher("ATGCAT", "GC").find())
+# Example 4: Use while-else for a bounded search.
+target_copy_count = 100
+current_copy_count = 1
+maximum_cycles = 8
+cycle = 0
 
-    print(SampleLookup(["S1", "S2"], "S3").locate())
+while current_copy_count < target_copy_count and cycle < maximum_cycles:
+    current_copy_count *= 2
+    cycle += 1
 
-    print(QualityBatchValidator([35.0, 32.0, 30.0], 30.0).validate())
-    print(QualityBatchValidator([35.0, 25.0], 30.0).validate())
+    print("Cycle:", cycle, "Copies:", current_copy_count)
+else:
+    print("Loop ended without break.")
+
+# Example 5: Show that break skips loop-else.
+for attempt in range(1, 6):
+    print("Attempt:", attempt)
+
+    if attempt == 2:
+        print("Stopping early.")
+        break
+else:
+    print("All attempts completed without break.")
+
+# Important:
+# Loop-else means "no break occurred", not simply "the loop had no errors."

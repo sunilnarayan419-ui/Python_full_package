@@ -1,52 +1,85 @@
-"""match/case for biological classification."""
 
+"""
+05. match-case Statement
 
-class NucleotideLabel:
-    @staticmethod
-    def label(base: str) -> str:
-        match base.upper():
-            case "A":
-                return "Adenine"
-            case "T":
-                return "Thymine"
-            case "G":
-                return "Guanine"
-            case "C":
-                return "Cytosine"
-            case _:
-                return "Unknown"
+Main points
+- match-case was introduced in Python 3.10.
+- It performs structural pattern matching.
+- match evaluates a subject against case patterns in order.
+- The first matching case is selected.
+- case _ acts as a catch-all fallback pattern.
+- Patterns can match literal values, sequences, mappings, and class structures.
+- A guard using if can add a condition to a case.
+- match-case is useful when handling discrete commands or known categories.
+- It is not a direct replacement for every if-elif chain.
+"""
 
+# Example 1: Choose a bioinformatics analysis operation.
+analysis_type = "alignment"
 
-class TissueTypeCheck:
-    @staticmethod
-    def is_focus(tissue: str) -> bool:
-        match tissue.lower():
-            case "leaf" | "root" | "stem":
-                return True
-            case _:
-                return False
+match analysis_type:
+    case "quality_control":
+        print("Running sequencing quality-control analysis.")
 
+    case "alignment":
+        print("Aligning reads to a reference genome.")
 
-class SequencingStatus:
-    @staticmethod
-    def action(status: str, coverage: float) -> str:
-        match (status.lower(), coverage):
-            case ("pending", _):
-                return "queue"
-            case ("running", c) if c < 10.0:
-                return "low_coverage"
-            case ("running", _):
-                return "in_progress"
-            case ("complete", _):
-                return "archive"
-            case _:
-                return "unknown"
+    case "variant_calling":
+        print("Identifying candidate genetic variants.")
 
+    case "gene_expression":
+        print("Quantifying gene expression.")
 
-if __name__ == "__main__":
-    print(NucleotideLabel.label("A"))
+    case _:
+        print("Unknown analysis type.")
 
-    print(TissueTypeCheck.is_focus("leaf"))
+# Example 2: Interpret a simplified laboratory status code.
+sample_status = 2
 
-    print(SequencingStatus.action("running", 5.0))
-    print(SequencingStatus.action("complete", 30.0))
+match sample_status:
+    case 0:
+        print("Sample registered.")
+
+    case 1:
+        print("Sample processing.")
+
+    case 2:
+        print("Sample analysis completed.")
+
+    case 3:
+        print("Sample requires review.")
+
+    case _:
+        print("Unrecognized sample status.")
+
+# Example 3: Match a tuple describing an experiment.
+experiment = ("RNA-seq", "human")
+
+match experiment:
+    case ("RNA-seq", "human"):
+        print("Human RNA sequencing workflow selected.")
+
+    case ("RNA-seq", "plant"):
+        print("Plant RNA sequencing workflow selected.")
+
+    case ("WGS", organism):
+        print(f"Whole-genome sequencing workflow: {organism}")
+
+    case _:
+        print("Workflow not configured.")
+
+# Example 4: Use a guard condition.
+read_count = 2_000_000
+
+match read_count:
+    case count if count < 100_000:
+        print("Low sequencing depth.")
+
+    case count if count < 5_000_000:
+        print("Intermediate sequencing depth.")
+
+    case _:
+        print("High sequencing depth.")
+
+# Python 3.10 or later is required for match-case.
+# The categories and thresholds above are illustrative.

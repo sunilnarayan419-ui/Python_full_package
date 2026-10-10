@@ -1,46 +1,49 @@
-"""Basic if statement applied to plant/genomic data."""
 
+"""
+01. if Statement
 
-class HeightThresholdScreener:
-    def __init__(self, height_cm: float, threshold_cm: float) -> None:
-        self.height_cm = height_cm
-        self.threshold_cm = threshold_cm
+Main points
+- The if statement executes a block when a condition evaluates to True.
+- A condition is usually a comparison, logical expression, or Boolean value.
+- A colon (:) introduces the conditional block.
+- Indentation defines the block of code to execute.
+- Python treats certain values as falsy, including False, None, 0, and empty collections.
+- If the condition is False, the block is skipped.
+- Use if when an action should occur only when a specific condition is met.
+"""
 
-    def passes(self) -> bool:
-        if self.height_cm > self.threshold_cm:
-            return True
-        return False
+# Example 1: Check whether DNA concentration is sufficient.
+dna_concentration = 35.0  # ng/uL
+minimum_concentration = 20.0  # ng/uL
 
+if dna_concentration >= minimum_concentration:
+    print("DNA concentration is sufficient for further evaluation.")
 
-class PlantSampleGate:
-    def __init__(self, samples: list[dict]) -> None:
-        self.samples = samples
+# Example 2: Detect a gene in a sample.
+gene_detected = True
 
-    def find_tall(self) -> list[dict]:
-        tall: list[dict] = []
-        for s in self.samples:
-            if s["height_cm"] > 30:
-                tall.append(s)
-        return tall
+if gene_detected:
+    print("Target gene detected.")
 
+# Example 3: Check whether a sequencing dataset contains reads.
+sequencing_reads = 1_500_000
 
-class SequencePresenceCheck:
-    def __init__(self, sequence: str) -> None:
-        self.sequence = sequence
+if sequencing_reads > 0:
+    print("Sequencing data is available.")
 
-    def has_data(self) -> bool:
-        if self.sequence:
-            return True
-        return False
+# Example 4: Check whether a gene expression value exceeds a threshold.
+gene_expression = 12.5
+expression_threshold = 10.0
 
+if gene_expression > expression_threshold:
+    print("Gene expression exceeds the selected threshold.")
 
-if __name__ == "__main__":
-    print(HeightThresholdScreener(45.0, 30.0).passes())
+# Example 5: Check whether a biological dataset is non-empty.
+gene_list = ["BRCA1", "TP53", "EGFR"]
 
-    gate = PlantSampleGate([
-        {"id": "P1", "height_cm": 35.0},
-        {"id": "P2", "height_cm": 20.0},
-    ])
-    print(gate.find_tall())
+if gene_list:
+    print("Genes available for analysis:", gene_list)
 
-    print(SequencePresenceCheck("ATGC").has_data())
+# Important:
+# Passing one condition does not establish statistical significance
+# or biological importance.

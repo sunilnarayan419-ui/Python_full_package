@@ -1,104 +1,68 @@
-"""11_Set_Methods.py — Python set methods through plant science and genomics."""
-from __future__ import annotations
 
+"""
+11. Set Methods
 
-class PlantGeneSetMethodsUniversity:
-    """University level: basic set modification with add, update, remove, discard, pop, clear."""
+Main points
+- add(x) adds one element.
+- update(iterable) adds multiple elements.
+- remove(x) removes an element and raises KeyError if it is absent.
+- discard(x) removes an element without raising KeyError if absent.
+- pop() removes and returns an arbitrary element.
+- clear() removes all elements.
+- intersection_update() retains only common elements.
+- difference_update() removes elements found in another collection.
+- symmetric_difference_update() retains elements found in exactly one set.
+- Mutating set methods generally return None.
+"""
 
-    def __init__(self) -> None:
-        self.genes: set[str] = set()
+detected_genes = {"TP53", "BRCA1", "EGFR"}
 
-    def demonstrate(self) -> None:
-        self.genes.add("AT1G01010")
-        self.genes.update(["AT1G01020", "AT1G01030"])
-        print(f"After add/update: {sorted(self.genes)}")
-        self.genes.discard("AT1G01099")
-        self.genes.remove("AT1G01020")
-        print(f"After discard/remove: {sorted(self.genes)}")
-        popped = self.genes.pop()
-        print(f"After pop() -> {popped}: {sorted(self.genes)}")
-        self.genes.clear()
-        print(f"After clear: {self.genes}")
+# Add one gene
+detected_genes.add("MYC")
+print("After add:", detected_genes)
 
-    @staticmethod
-    def run() -> None:
-        demo = PlantGeneSetMethodsUniversity()
-        demo.demonstrate()
+# Add multiple genes
+detected_genes.update(["APOE", "CFTR", "MYC"])
+print("After update:", detected_genes)
 
+# Remove a known gene
+detected_genes.remove("EGFR")
+print("After remove:", detected_genes)
 
-class IdentifierCleanerInterview:
-    """Interview level: update and clean biological identifier collections."""
+# Discard an absent gene safely
+detected_genes.discard("UNKNOWN")
+print("After discard:", detected_genes)
 
-    def __init__(self, identifiers: set[str]) -> None:
-        self.identifiers = identifiers
+# Retain only genes found in a reference panel
+reference_panel = {"TP53", "BRCA1", "MYC"}
 
-    def add_batch(self, new_ids: list[str]) -> None:
-        self.identifiers.update(new_ids)
+filtered_genes = detected_genes.copy()
+filtered_genes.intersection_update(reference_panel)
 
-    def remove_if_present(self, target: str) -> bool:
-        if target in self.identifiers:
-            self.identifiers.remove(target)
-            return True
-        return False
+print("Reference-panel overlap:", filtered_genes)
 
-    def safe_remove(self, target: str) -> None:
-        self.identifiers.discard(target)
+# Remove genes belonging to a reference set
+genes_to_exclude = {"BRCA1"}
 
-    @staticmethod
-    def run() -> None:
-        ids = {"AT1G01010", "AT1G01020", "AT1G01030"}
-        cleaner = IdentifierCleanerInterview(ids)
-        cleaner.add_batch(["AT1G01040", "AT1G01050"])
-        found = cleaner.remove_if_present("AT1G01020")
-        cleaner.safe_remove("AT1G01099")
-        print("Interview — Cleaned identifiers:")
-        print(f"  Removed AT1G01020 found={found}")
-        print(f"  Remaining: {sorted(cleaner.identifiers)}")
+remaining_genes = detected_genes.copy()
+remaining_genes.difference_update(genes_to_exclude)
 
+print("After exclusion:", remaining_genes)
 
-class GenomicIdentifierManagerIndustry:
-    """Industry level: genomic identifier management with error handling."""
+# Symmetric difference update
+set_a = {"TP53", "BRCA1"}
+set_b = {"BRCA1", "EGFR"}
 
-    def __init__(self) -> None:
-        self.primary: set[str] = set()
-        self.backup: set[str] = set()
+set_a.symmetric_difference_update(set_b)
+print("Symmetric difference:", set_a)
 
-    def register_primary(self, gene_id: str) -> None:
-        if not gene_id or not isinstance(gene_id, str):
-            raise ValueError("gene_id must be a non-empty string")
-        self.primary.add(gene_id)
+# Pop removes an arbitrary element; its identity is not guaranteed.
+temporary_set = {"S001", "S002", "S003"}
+removed_item = temporary_set.pop()
 
-    def promote_from_backup(self, gene_id: str) -> None:
-        if gene_id in self.backup:
-            self.backup.remove(gene_id)
-            self.primary.add(gene_id)
-        else:
-            raise KeyError(f"{gene_id} not in backup set")
+print("Removed item:", removed_item)
+print("Remaining items:", temporary_set)
 
-    def archive_primary(self, gene_id: str) -> None:
-        if gene_id in self.primary:
-            self.primary.discard(gene_id)
-            self.backup.add(gene_id)
-
-    def purge_backup(self) -> None:
-        self.backup.clear()
-
-    @staticmethod
-    def run() -> None:
-        manager = GenomicIdentifierManagerIndustry()
-        for gid in ["AT1G01010", "AT1G01020", "AT1G01030"]:
-            manager.register_primary(gid)
-        manager.archive_primary("AT1G01020")
-        manager.promote_from_backup("AT1G01020")
-        manager.purge_backup()
-        print("Industry — Identifier manager state:")
-        print(f"  Primary: {sorted(manager.primary)}")
-        print(f"  Backup:  {sorted(manager.backup)}")
-
-
-if __name__ == "__main__":
-    PlantGeneSetMethodsUniversity.run()
-    print()
-    IdentifierCleanerInterview.run()
-    print()
-    GenomicIdentifierManagerIndustry.run()
+# Clear all elements
+temporary_set.clear()
+print("Cleared set:", temporary_set)

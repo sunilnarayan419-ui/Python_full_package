@@ -1,84 +1,134 @@
+
 """
-06_Packages.py
+06. Packages
 
-Topic: Python packages.
-
-Demonstrates the `bioutils` package located alongside this file, showing
-package namespace organization and importing functionality from package
-modules.
+Main points
+- A package organizes related Python modules into a directory structure.
+- A regular package commonly contains an __init__.py file.
+- Subpackages organize functionality into additional directories.
+- Packages help prevent large projects from becoming a single collection
+  of unrelated Python files.
+- Import paths use dots to identify modules inside packages.
+- A package can separate sequence analysis, statistics, data handling,
+  and reporting into distinct components.
+- __init__.py can be empty or contain package initialization code.
+- Python also supports namespace packages, which do not require __init__.py.
 """
 
-from bioutils import gc_content, reverse_complement, summarize_measurements
-from bioutils.sequence_tools import gc_content as gc_content_direct
+# ------------------------------------------------------------
+# EXAMPLE PROJECT STRUCTURE
+# ------------------------------------------------------------
 
+"""
+biotech_project/
+    main.py
+    biotech_tools/
+        __init__.py
+        sequences.py
+        statistics_tools.py
+"""
 
-class UniversityPackages:
-    """Introduces importing from a package's top-level namespace."""
+# ------------------------------------------------------------
+# FILE 1: biotech_tools/sequences.py
+# ------------------------------------------------------------
 
-    @staticmethod
-    def run() -> None:
-        dna_sequence = "ATGCCGTATAGC"
+"""
+def count_bases(sequence):
+    sequence = sequence.upper()
 
-        content = gc_content(dna_sequence)
-        complement = reverse_complement(dna_sequence)
+    invalid_bases = set(sequence) - set("ATGC")
 
-        print("University: package imports")
-        print(f"  Sequence: {dna_sequence}")
-        print(f"  GC content: {content:.2f}%")
-        print(f"  Reverse complement: {complement}")
-
-
-class InterviewPackages:
-    """Uses package functionality to solve a realistic sequence-analysis task."""
-
-    @staticmethod
-    def run() -> None:
-        sequences = ["ATGCGTAC", "GGCCATTA", "TTAAGGCC"]
-
-        gc_contents = [round(gc_content(seq), 2) for seq in sequences]
-        summary = summarize_measurements(gc_contents)
-
-        print("Interview: package imports")
-        print(f"  Sequences: {sequences}")
-        print(f"  GC contents: {gc_contents}")
-        print(f"  Summary across sequences: {summary}")
-
-
-class IndustryPackages:
-    """Demonstrates how a small bioinformatics package supports maintainable code."""
-
-    def __init__(self, sequences: list[str]) -> None:
-        if not sequences:
-            raise ValueError("sequences must contain at least one entry.")
-        self._sequences = sequences
-
-    def analyze(self) -> dict[str, float]:
-        gc_values = [gc_content(seq) for seq in self._sequences]
-        return summarize_measurements(gc_values)
-
-    def complements(self) -> list[str]:
-        return [reverse_complement(seq) for seq in self._sequences]
-
-    def report(self) -> str:
-        summary = self.analyze()
-        return (
-            f"n={len(self._sequences)} | "
-            f"mean_gc={summary['mean']:.2f}% | "
-            f"stdev_gc={summary['stdev']:.3f}"
+    if invalid_bases:
+        raise ValueError(
+            f"Invalid DNA bases: {invalid_bases}"
         )
 
-    @staticmethod
-    def run() -> None:
-        sequences = ["ATGCGTACGT", "CGGATCCGTA", "TATAGCGCTA", "GGCATGCTAA"]
-
-        analyzer = IndustryPackages(sequences)
-        print("Industry: package imports")
-        print(f"  {analyzer.report()}")
-        print(f"  Complements: {analyzer.complements()}")
-        print(f"  Direct submodule import check: {gc_content_direct(sequences[0]):.2f}%")
+    return {
+        base: sequence.count(base)
+        for base in "ATGC"
+    }
 
 
-if __name__ == "__main__":
-    UniversityPackages.run()
-    InterviewPackages.run()
-    IndustryPackages.run()
+def gc_percentage(sequence):
+    if not sequence:
+        raise ValueError("Sequence cannot be empty.")
+
+    counts = count_bases(sequence)
+    total_bases = sum(counts.values())
+
+    return (counts["G"] + counts["C"]) / total_bases * 100
+"""
+
+# ------------------------------------------------------------
+# FILE 2: biotech_tools/statistics_tools.py
+# ------------------------------------------------------------
+
+"""
+def calculate_mean(values):
+    if not values:
+        raise ValueError("Values cannot be empty.")
+
+    return sum(values) / len(values)
+
+
+def find_maximum(values):
+    if not values:
+        raise ValueError("Values cannot be empty.")
+
+    return max(values)
+"""
+
+# ------------------------------------------------------------
+# FILE 3: biotech_tools/__init__.py
+# ------------------------------------------------------------
+
+"""
+from .sequences import count_bases, gc_percentage
+from .statistics_tools import calculate_mean, find_maximum
+
+__all__ = [
+    "count_bases",
+    "gc_percentage",
+    "calculate_mean",
+    "find_maximum",
+]
+"""
+
+# ------------------------------------------------------------
+# FILE 4: main.py
+# ------------------------------------------------------------
+
+"""
+from biotech_tools import (
+    count_bases,
+    gc_percentage,
+    calculate_mean,
+    find_maximum,
+)
+
+dna_sequence = "ATGCGTAA"
+expression_values = [10.5, 12.0, 15.5, 18.0]
+
+print("Base counts:", count_bases(dna_sequence))
+print("GC percentage:", gc_percentage(dna_sequence))
+print("Mean expression:", calculate_mean(expression_values))
+print("Maximum expression:", find_maximum(expression_values))
+"""
+
+# ------------------------------------------------------------
+# HOW TO RUN
+# ------------------------------------------------------------
+
+"""
+Open a terminal in the biotech_project directory:
+
+python main.py
+
+The import paths assume the directory structure shown above.
+The package directory is discoverable because the project root is
+on Python's import path during this execution.
+"""
+
+# Important:
+# The quoted sections represent separate files, not code that should
+# all be pasted into one executable Python file.

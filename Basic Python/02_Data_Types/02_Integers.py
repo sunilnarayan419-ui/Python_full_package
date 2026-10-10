@@ -1,40 +1,41 @@
-﻿"""Integer operations in plant/genomic data."""
 
+"""
+02. Integers
 
-class IntegerUniversity:
-    def __init__(self, count: int) -> None:
-        self.count = count
+Main points
+- int represents whole numbers without a fractional component.
+- Python integers support positive, negative, and zero values.
+- Python integers have arbitrary precision, limited by available memory.
+- The int() function converts suitable values to integers.
+- Division using / returns a float, while // performs floor division.
+- Boolean values are technically a subclass of int in Python.
+"""
 
-    def double(self) -> int:
-        return self.count * 2
+# Integer values
+positive_number = 100
+negative_number = -25
+zero = 0
+large_number = 123456789012345678901234567890
 
+# Arithmetic operations
+print("Addition:", 10 + 20)
+print("Multiplication:", 5 * 4)
+print("Floor division:", 17 // 5)
+print("Remainder:", 17 % 5)
 
-class IntegerInterview:
-    def __init__(self, reads: list[int]) -> None:
-        self.reads = reads
+# Division versus floor division
+print("Normal division:", 17 / 5)
+print("Floor division:", 17 // 5)
 
-    def count_above(self, threshold: int) -> int:
-        return sum(1 for r in self.reads if r > threshold)
+# Convert a string to an integer
+sample_count = int("250")
+print("Sample count:", sample_count, type(sample_count))
 
+# Boolean and integer relationship
+print("True as integer:", int(True))
+print("Is bool a subclass of int?", issubclass(bool, int))
 
-class IntegerIndustry:
-    def __init__(self, total_reads: int) -> None:
-        self.total_reads = total_reads
-
-    def allocate(self, lanes: int) -> int:
-        if lanes <= 0:
-            raise ValueError("lanes must be positive")
-        return self.total_reads // lanes
-
-    def remainder(self, lanes: int) -> int:
-        return self.total_reads % lanes
-
-
-if __name__ == "__main__":
-    print(IntegerUniversity(21).double())
-
-    print(IntegerInterview([100, 200, 300]).count_above(150))
-
-    alloc = IntegerIndustry(1000)
-    print(alloc.allocate(7))
-    print(alloc.remainder(7))
+# Inspect integer types
+print(type(positive_number))
+print(type(negative_number))
+print(type(large_number))

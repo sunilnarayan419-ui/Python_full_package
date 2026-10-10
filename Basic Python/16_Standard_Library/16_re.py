@@ -1,116 +1,51 @@
-"""Demonstrates the re module for validating and extracting scientific identifiers."""
+"""
+TOPIC: re
+MAIN POINTS:
+- Search text using regular expressions.
+- Extract matching patterns.
+- Replace text with sub().
+- Find every match with findall().
+"""
 
 import re
 
+# Example: simple FASTA record
+fasta_text = """>gene_001
+ATGCGTACGTAA
+>gene_002
+ATGAAACCCGGG
+"""
 
-class UniversityRe:
-    """Introduces basic pattern matching using sample ID validation."""
+# Find all FASTA headers
+headers = re.findall(r"^>(.+)$", fasta_text, flags=re.MULTILINE)
+print("FASTA headers:", headers)
 
-    SAMPLE_ID_PATTERN = re.compile(r"^PL-\d{3,5}$")
+# Extract DNA sequences from the example
+sequences = re.findall(
+    r"^[ACGT]+$",
+    fasta_text,
+    flags=re.MULTILINE
+)
+print("DNA sequences:", sequences)
 
-    def is_valid_sample_id(self, sample_id: str) -> bool:
-        return bool(self.SAMPLE_ID_PATTERN.match(sample_id))
+# Search for a start codon
+sequence = "CCCATGAAATTT"
+match = re.search(r"ATG", sequence)
 
-    @staticmethod
-    def run() -> None:
-        demo = UniversityRe()
-        for sample_id in ["PL-042", "PL-1", "sample_042"]:
-            print(f"'{sample_id}' is a valid sample ID: {demo.is_valid_sample_id(sample_id)}")
+if match:
+    print("Start codon found at index:", match.start())
 
+# Replace repeated whitespace with one space
+text = "Gene   expression    analysis"
+cleaned_text = re.sub(r"\s+", " ", text)
+print("Cleaned text:", cleaned_text)
 
-class InterviewRe:
-    """Solves a gene-identifier extraction problem, handling malformed input."""
+# Validate a simple sample ID format, such as EXP123
+sample_id = "EXP123"
+is_valid = re.fullmatch(r"EXP\d{3}", sample_id) is not None
 
-    GENE_ID_PATTERN = re.compile(r"\b([A-Z0-9]{2,10})_(\d{3,6})\b")
+print("Valid sample ID:", is_valid)
 
-    def extract_gene_identifiers(self, text: str) -> list[tuple[str, str]]:
-        """Extract (gene_symbol, numeric_id) pairs from free-form text.
-
-        Returns an empty list rather than raising when no matches are found,
-        since text legitimately containing zero gene identifiers is expected.
-        """
-        return self.GENE_ID_PATTERN.findall(text)
-
-    def validate_dna_sequence(self, sequence: str) -> bool:
-        """Validate that a string contains only standard DNA bases."""
-        if not sequence:
-            return False
-        return bool(re.fullmatch(r"[ACGT]+", sequence))
-
-    @staticmethod
-    def run() -> None:
-        solver = InterviewRe()
-
-        # Test case 1: text containing valid gene identifiers
-        text = "Notes: BRCA1_001 was upregulated; see also TP53_00042 for context."
-        identifiers = solver.extract_gene_identifiers(text)
-        print(f"Extracted gene identifiers: {identifiers}")
-
-        # Test case 2: edge case, no matches
-        print(f"Extracted from unrelated text: {solver.extract_gene_identifiers('no ids here')}")
-
-        # Test case 3: DNA sequence validation, valid and invalid cases
-        print(f"'ACGTACGT' is valid DNA: {solver.validate_dna_sequence('ACGTACGT')}")
-        print(f"'ACGTXYZT' is valid DNA: {solver.validate_dna_sequence('ACGTXYZT')}")
-        print(f"'' is valid DNA: {solver.validate_dna_sequence('')}")
-
-
-class IndustryRe:
-    """Reusable scientific metadata parser built on precompiled regex patterns.
-
-    Regular expressions are used here only for validating and extracting simple,
-    well-defined tokens (IDs, motifs). Parsing complex structured formats (e.g.
-    full FASTA or GFF files) should use a dedicated parser instead.
-    """
-
-    LAB_ID_PATTERN = re.compile(r"^(?P<lab>[A-Z]{2,4})-(?P<year>\d{4})-(?P<sequence>\d{3,5})$")
-    WHITESPACE_PATTERN = re.compile(r"\s+")
-
-    def parse_lab_identifier(self, identifier: str) -> dict[str, str]:
-        """Parse a structured laboratory identifier like 'GEN-2026-00042'.
-
-        Raises ValueError for an identifier that does not match the expected
-        structure, since silently returning partial data could mislead a
-        downstream reporting pipeline.
-        """
-        match = self.LAB_ID_PATTERN.fullmatch(identifier)
-        if match is None:
-            raise ValueError(f"Identifier does not match expected format: '{identifier}'")
-        return match.groupdict()
-
-    def clean_metadata_text(self, raw_text: str) -> str:
-        """Collapse irregular whitespace in free-form metadata text."""
-        return self.WHITESPACE_PATTERN.sub(" ", raw_text).strip()
-
-    def find_motif_positions(self, sequence: str, motif: str) -> list[int]:
-        """Find all zero-based start positions of a DNA motif within a sequence."""
-        if not re.fullmatch(r"[ACGT]*", sequence):
-            raise ValueError("sequence must contain only A, C, G, T bases.")
-        if not re.fullmatch(r"[ACGT]+", motif):
-            raise ValueError("motif must contain only A, C, G, T bases.")
-
-        return [match.start() for match in re.finditer(f"(?={re.escape(motif)})", sequence)]
-
-    @staticmethod
-    def run() -> None:
-        parser = IndustryRe()
-
-        parsed = parser.parse_lab_identifier("GEN-2026-00042")
-        print(f"Parsed lab identifier: {parsed}")
-
-        try:
-            parser.parse_lab_identifier("invalid-id")
-        except ValueError as error:
-            print(f"Handled invalid identifier: {error}")
-
-        cleaned = parser.clean_metadata_text("species:   Zea mays \n\t height: 88cm")
-        print(f"Cleaned metadata text: '{cleaned}'")
-
-        positions = parser.find_motif_positions("ACGTACGTACGT", "GTA")
-        print(f"Motif 'GTA' found at positions: {positions}")
-
-
-if __name__ == "__main__":
-    UniversityRe.run()
-    InterviewRe.run()
-    IndustryRe.run()
+# These are illustrative text checks, not biological validation.
+# For complex biological formats, use a suitable parser and
+# validate against the relevant format specification.

@@ -1,96 +1,88 @@
-"""map(): applying transformations to biological measurement collections."""
+"""
+TOPIC: map()
+
+MAIN POINTS
+- map() applies a function to every item in an iterable.
+- Syntax: map(function, iterable).
+- It returns a lazy map iterator in Python 3.
+- Convert it to list() when you need all results immediately.
+- map() is useful for transforming biological measurements and sequences.
+- Multiple iterables can be passed if the function accepts corresponding arguments.
+"""
+
+# Example 1: Convert DNA sequences to uppercase.
+dna_sequences = [
+    "atgcgt",
+    "ttaggc",
+    "cgatcg"
+]
+
+uppercase_sequences = map(str.upper, dna_sequences)
+
+print("Uppercase DNA sequences:")
+print(list(uppercase_sequences))
 
 
-class UniversityMap:
-    def __init__(self, plant_heights_cm: list[float]) -> None:
-        self.plant_heights_cm = plant_heights_cm
+# Example 2: Convert gene expression values to floats.
+expression_values = ["24.6", "18.2", "42.8", "35.1"]
 
-    def convert_to_meters(self) -> list[float]:
-        return list(map(lambda height: height / 100, self.plant_heights_cm))
+expression_values = map(float, expression_values)
 
-    @staticmethod
-    def run() -> None:
-        heights_cm = [25.5, 31.2, 42.8, 19.0]
-
-        processor = UniversityMap(heights_cm)
-        heights_m = processor.convert_to_meters()
-
-        print(f"Plant heights in cm: {heights_cm}")
-        print(f"Plant heights in meters: {heights_m}")
+print("\nNumeric expression values:")
+print(list(expression_values))
 
 
-class InterviewMap:
-    def __init__(self, expression_records: list[dict]) -> None:
-        self.expression_records = expression_records
+# Example 3: Calculate DNA sequence lengths.
+dna_sequences = [
+    "ATGCGTAC",
+    "TTAGGCAT",
+    "CGATCGAT"
+]
 
-    def normalize_expression(self, baseline: float) -> list[float]:
-        """Maps raw expression values to fold-change vs a baseline.
+sequence_lengths = map(len, dna_sequences)
 
-        Skips records with missing or non-numeric expression values.
-        """
-        if baseline == 0:
-            raise ValueError("baseline must be non-zero")
-
-        def safe_fold_change(record: dict) -> float | None:
-            value = record.get("expression_level")
-            if not isinstance(value, (int, float)):
-                return None
-            return value / baseline
-
-        mapped = map(safe_fold_change, self.expression_records)
-        return [value for value in mapped if value is not None]
-
-    @staticmethod
-    def run() -> None:
-        empty_case: list[dict] = []
-        processor = InterviewMap(empty_case)
-        print(f"Empty records -> fold changes: {processor.normalize_expression(2.0)}")
-
-        mixed_case = [
-            {"gene": "wus1", "expression_level": 4.0},
-            {"gene": "zmm4", "expression_level": "unreadable"},
-            {"gene": "sb_drought1", "expression_level": 6.0},
-        ]
-        processor = InterviewMap(mixed_case)
-        print(f"Mixed records -> fold changes: {processor.normalize_expression(2.0)}")
+print("\nDNA sequence lengths:")
+print(list(sequence_lengths))
 
 
-class IndustryMap:
-    def __init__(self, experiment_data: list[dict]) -> None:
-        self.data = experiment_data
+# Example 4: Calculate GC percentages.
+def calculate_gc_percentage(sequence):
+    sequence = sequence.upper()
 
-    def transform_concentrations(self, unit_factor: float = 1000.0) -> list[dict]:
-        """Reusable pipeline step: converts concentration units across all samples."""
+    if not sequence:
+        return 0.0
 
-        def convert(record: dict) -> dict:
-            return {
-                "sample_id": record["sample_id"],
-                "concentration_ng_per_ul": record["concentration_ug_per_ml"] * unit_factor,
-            }
+    gc_count = sequence.count("G") + sequence.count("C")
 
-        return list(map(convert, self.data))
-
-    def process(self) -> dict[str, object]:
-        transformed = self.transform_concentrations()
-        return {
-            "total_samples": len(self.data),
-            "transformed_records": transformed,
-        }
-
-    @staticmethod
-    def run() -> None:
-        sample_data = [
-            {"sample_id": "S001", "concentration_ug_per_ml": 0.85},
-            {"sample_id": "S002", "concentration_ug_per_ml": 1.20},
-            {"sample_id": "S003", "concentration_ug_per_ml": 0.63},
-        ]
-
-        processor = IndustryMap(sample_data)
-        report = processor.process()
-        print(f"Experiment report: {report}")
+    return gc_count / len(sequence) * 100
 
 
-if __name__ == "__main__":
-    UniversityMap.run()
-    InterviewMap.run()
-    IndustryMap.run()
+dna_sequences = [
+    "ATGC",
+    "GGCC",
+    "ATAT",
+    "GCGC"
+]
+
+gc_percentages = map(
+    calculate_gc_percentage,
+    dna_sequences
+)
+
+print("\nGC percentages:")
+print(list(gc_percentages))
+
+
+# Example 5: Apply a function to multiple iterables.
+# Calculate the difference between treated and control expression.
+control_expression = [10.0, 20.0, 30.0]
+treated_expression = [15.0, 18.0, 45.0]
+
+differences = map(
+    lambda treated, control: treated - control,
+    treated_expression,
+    control_expression
+)
+
+print("\nTreatment minus control:")
+print(list(differences))

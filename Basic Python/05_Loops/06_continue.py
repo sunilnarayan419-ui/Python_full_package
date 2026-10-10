@@ -1,60 +1,57 @@
-"""continue to skip invalid scientific records."""
 
+"""
+06. continue
 
-class HeightFilter:
-    def __init__(self, samples: list[dict], min_cm: float) -> None:
-        self.samples = samples
-        self.min_cm = min_cm
+Main points
+- continue skips the remaining statements in the current iteration.
+- The loop proceeds to its next iteration.
+- In a for loop, the next item is processed.
+- In a while loop, the condition is checked again.
+- continue is useful for skipping missing, invalid, or irrelevant records.
+- Ensure that while-loop state updates are not accidentally skipped,
+  or the loop may never terminate.
+"""
 
-    def valid_heights(self) -> list[float]:
-        result: list[float] = []
-        for s in self.samples:
-            height = s.get("height_cm")
-            if height is None:
-                continue
-            if height < self.min_cm:
-                continue
-            result.append(height)
-        return result
+# Example 1: Skip samples with failed quality control.
+sample_results = [
+    ("S001", True),
+    ("S002", False),
+    ("S003", True),
+    ("S004", False)
+]
 
+for sample_id, passed_qc in sample_results:
+    if not passed_qc:
+        print("Skipping failed sample:", sample_id)
+        continue
 
-class SequenceCleaner:
-    def __init__(self, sequence: str) -> None:
-        self.sequence = sequence.upper()
+    print("Analyzing sample:", sample_id)
 
-    def keep_dna(self) -> str:
-        kept: list[str] = []
-        for base in self.sequence:
-            if base not in "ACGT":
-                continue
-            kept.append(base)
-        return "".join(kept)
+# Example 2: Skip ambiguous nucleotides.
+dna_sequence = "ATGNCTGA"
 
+for nucleotide in dna_sequence:
+    if nucleotide not in "ATGC":
+        print("Skipping ambiguous symbol:", nucleotide)
+        continue
 
-class QualityRecordProcessor:
-    def __init__(self, records: list[dict], min_quality: float) -> None:
-        self.records = records
-        self.min_quality = min_quality
+    print("Processing nucleotide:", nucleotide)
 
-    def passed(self) -> list[dict]:
-        result: list[dict] = []
-        for r in self.records:
-            if r.get("quality", 0) < self.min_quality:
-                continue
-            result.append(r)
-        return result
+# Example 3: Ignore missing expression measurements.
+expression_values = [12.5, None, 18.0, None, 9.5]
 
+for expression in expression_values:
+    if expression is None:
+        continue
 
-if __name__ == "__main__":
-    print(HeightFilter([
-        {"id": "P1", "height_cm": 25.0},
-        {"id": "P2", "height_cm": None},
-        {"id": "P3", "height_cm": 10.0},
-    ], min_cm=15.0).valid_heights())
+    print("Valid expression measurement:", expression)
 
-    print(SequenceCleaner("ATGCNX").keep_dna())
+# Example 4: Skip even-numbered positions.
+for position in range(1, 11):
+    if position % 2 == 0:
+        continue
 
-    print(QualityRecordProcessor([
-        {"id": "S1", "quality": 35.0},
-        {"id": "S2", "quality": 20.0},
-    ], min_quality=30.0).passed())
+    print("Odd position:", position)
+
+# Note: Skipping data is not always scientifically appropriate.
+# Missing or ambiguous data may need explicit quality-control handling.

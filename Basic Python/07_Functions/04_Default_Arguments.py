@@ -1,108 +1,54 @@
-class UniversityDefaultArguments:
-    def __init__(self, plant_species: str) -> None:
-        self.plant_species = plant_species
 
-    def water_requirement_liters(self, days: int = 7, liters_per_day: float = 1.5) -> float:
-        return days * liters_per_day
+"""
+04. Default Arguments
 
-    def describe_watering_plan(self, days: int = 7, liters_per_day: float = 1.5) -> str:
-        total = self.water_requirement_liters(days, liters_per_day)
-        return f"{self.plant_species} needs {total:.1f} L over {days} days"
+Main points
+- A default argument provides a value when the caller omits that argument.
+- Parameters with defaults must follow parameters without defaults.
+- The caller can override a default value.
+- Default expressions are evaluated once when the function is defined.
+- Avoid mutable defaults such as [] or {} when fresh state is intended.
+- Use None as a default when a new mutable object should be created per call.
+"""
 
-    @staticmethod
-    def run() -> None:
-        plant = UniversityDefaultArguments("Solanum lycopersicum")
-        default_plan = plant.describe_watering_plan()
-        custom_plan = plant.describe_watering_plan(days=14, liters_per_day=2.0)
-        print("University - default plan:", default_plan)
-        print("University - custom plan:", custom_plan)
+# Example 1: Default temperature for a sample report.
+def describe_temperature(temperature_celsius, unit="C"):
+    return f"Temperature: {temperature_celsius} °{unit}"
 
 
-class InterviewDefaultArguments:
-    def __init__(self, experiment_name: str) -> None:
-        self.experiment_name = experiment_name
-        self.readings: list[float] = []
+print(describe_temperature(25))
+print(describe_temperature(37, "C"))
+print(describe_temperature(77, "F"))
 
-    def add_reading(self, value: float) -> None:
-        self.readings.append(value)
-
-    def summarize(self, precision: int = 2, include_count: bool = True) -> str:
-        if not self.readings:
-            return f"{self.experiment_name}: no readings recorded"
-        average = sum(self.readings) / len(self.readings)
-        summary = f"{self.experiment_name}: avg={average:.{precision}f}"
-        if include_count:
-            summary += f" (n={len(self.readings)})"
-        return summary
-
-    @staticmethod
-    def run() -> None:
-        trial = InterviewDefaultArguments("pH-Trial-1")
-        for reading in (6.8, 7.1, 6.9, 7.0):
-            trial.add_reading(reading)
-
-        print("Interview - default summary:", trial.summarize())
-        print("Interview - precise summary:", trial.summarize(precision=4))
-        print("Interview - no count summary:", trial.summarize(include_count=False))
-
-        empty_trial = InterviewDefaultArguments("Empty-Trial")
-        print("Interview - empty summary:", empty_trial.summarize())
+# Example 2: Default threshold for a simple expression filter.
+def is_high_expression(expression, threshold=10.0):
+    return expression > threshold
 
 
-class IndustryDefaultArguments:
-    """Configures a reproducible sequencing quality-control step."""
+print(is_high_expression(12.5))
+print(is_high_expression(12.5, 15.0))
 
-    DEFAULT_MIN_QUALITY_SCORE: float = 30.0
-    DEFAULT_MIN_READ_LENGTH: int = 50
+# Example 3: Avoid a mutable default argument.
+def add_gene(gene, gene_list=None):
+    if gene_list is None:
+        gene_list = []
 
-    def __init__(self, sample_id: str) -> None:
-        if not sample_id.strip():
-            raise ValueError("sample_id must not be empty")
-        self.sample_id = sample_id
-
-    def filter_reads(
-        self,
-        reads: list[dict],
-        min_quality_score: float = DEFAULT_MIN_QUALITY_SCORE,
-        min_read_length: int = DEFAULT_MIN_READ_LENGTH,
-    ) -> list[dict]:
-        return [
-            read
-            for read in reads
-            if read["quality_score"] >= min_quality_score
-            and read["length"] >= min_read_length
-        ]
-
-    def build_qc_report(
-        self,
-        reads: list[dict],
-        min_quality_score: float = DEFAULT_MIN_QUALITY_SCORE,
-        min_read_length: int = DEFAULT_MIN_READ_LENGTH,
-    ) -> dict[str, object]:
-        passed_reads = self.filter_reads(reads, min_quality_score, min_read_length)
-        return {
-            "sample_id": self.sample_id,
-            "total_reads": len(reads),
-            "passed_reads": len(passed_reads),
-            "min_quality_score": min_quality_score,
-            "min_read_length": min_read_length,
-        }
-
-    @staticmethod
-    def run() -> None:
-        pipeline = IndustryDefaultArguments("Sample-A17")
-        reads = [
-            {"quality_score": 35.0, "length": 75},
-            {"quality_score": 22.0, "length": 60},
-            {"quality_score": 40.0, "length": 40},
-        ]
-        default_report = pipeline.build_qc_report(reads)
-        strict_report = pipeline.build_qc_report(reads, min_quality_score=38.0)
-        print("Industry - default QC report:", default_report)
-        print("Industry - strict QC report:", strict_report)
+    gene_list.append(gene)
+    return gene_list
 
 
-if __name__ == "__main__":
-    UniversityDefaultArguments.run()
-    InterviewDefaultArguments.run()
-    IndustryDefaultArguments.run()
+first_list = add_gene("TP53")
+second_list = add_gene("BRCA1")
+
+print("First list:", first_list)
+print("Second list:", second_list)
+
+# Each call creates a separate list when gene_list is omitted.
+
+# Example 4: A supplied list can still be reused intentionally.
+existing_genes = ["EGFR"]
+
+updated_genes = add_gene("MYC", existing_genes)
+
+print("Updated existing list:", updated_genes)
+print("Original reference:", existing_genes)

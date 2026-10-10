@@ -1,50 +1,55 @@
-"""Nested if statements for dependent scientific decisions."""
 
+"""
+04. Nested if Statements
 
-class SampleExistenceCheck:
-    def __init__(self, height_cm: float | None, threshold: float) -> None:
-        self.height_cm = height_cm
-        self.threshold = threshold
+Main points
+- A nested if is an if statement inside another conditional block.
+- The inner condition is evaluated only if execution reaches it.
+- Nested conditions represent decisions that depend on earlier decisions.
+- Indentation determines which condition controls each block.
+- Excessive nesting can reduce readability; logical operators or early returns
+  may provide a simpler alternative.
+- Nested if statements are useful for sequential quality-control decisions.
+"""
 
-    def passes(self) -> bool:
-        if self.height_cm is not None:
-            if self.height_cm > self.threshold:
-                return True
-        return False
+# Example 1: Evaluate a DNA sample through sequential QC checks.
+dna_concentration = 35.0  # ng/uL
+purity_ratio = 1.85
+contamination_detected = False
 
+if dna_concentration >= 20.0:
+    print("Concentration check passed.")
 
-class SequenceValidation:
-    def __init__(self, sequence: str, min_length: int, gc: float) -> None:
-        self.sequence = sequence
-        self.min_length = min_length
-        self.gc = gc
+    if 1.8 <= purity_ratio <= 2.0:
+        print("Purity check passed.")
 
-    def is_valid(self) -> bool:
-        if self.sequence:
-            if len(self.sequence) >= self.min_length:
-                if 0.3 <= self.gc <= 0.7:
-                    return True
-        return False
+        if not contamination_detected:
+            print("Sample passed these illustrative QC checks.")
+        else:
+            print("Sample requires contamination investigation.")
 
+    else:
+        print("Purity check failed.")
 
-class PhenotypeAcceptance:
-    def __init__(self, plant: dict, disease_free: bool) -> None:
-        self.plant = plant
-        self.disease_free = disease_free
+else:
+    print("Concentration check failed.")
 
-    def accepted(self) -> bool:
-        if self.plant.get("height_cm") is not None:
-            height = self.plant["height_cm"]
-            if height > 20:
-                if self.disease_free:
-                    return True
-        return False
+# Example 2: A simplified bioinformatics pipeline.
+dataset_available = True
+reference_genome_available = True
 
+if dataset_available:
+    print("Input dataset found.")
 
-if __name__ == "__main__":
-    print(SampleExistenceCheck(45.0, 30.0).passes())
+    if reference_genome_available:
+        print("Reference genome found.")
+        print("Alignment can be considered for execution.")
+    else:
+        print("Cannot proceed: reference genome is unavailable.")
 
-    print(SequenceValidation("ATGCATGC", min_length=5, gc=0.5).is_valid())
+else:
+    print("Cannot proceed: input dataset is unavailable.")
 
-    p = PhenotypeAcceptance(plant={"height_cm": 35.0}, disease_free=True)
-    print(p.accepted())
+# Important:
+# Passing these example checks is not equivalent to validating an assay
+# or certifying that a bioinformatics pipeline is scientifically correct.

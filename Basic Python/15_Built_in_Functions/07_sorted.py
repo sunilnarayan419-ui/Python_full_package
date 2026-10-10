@@ -1,88 +1,69 @@
-"""Demonstrations of the built-in sorted() function using plant/experiment data."""
+"""
+TOPIC: sorted()
 
+MAIN POINTS
+- sorted() returns a new list containing items in sorted order.
+- The original iterable remains unchanged.
+- reverse=True sorts in descending order.
+- key= determines the value used for comparisons.
+- Sorting is stable when multiple items have equal keys.
+- sorted() is useful for ranking genes, samples, and sequences.
+"""
 
-class UniversitySorted:
-    """Teach the fundamental behavior of sorted() on numeric biological data."""
+# Example 1: Sort numerical measurements.
+expression_values = [24.6, 18.2, 42.8, 35.1]
 
-    def __init__(self, plant_heights: list[float]) -> None:
-        self.plant_heights = plant_heights
+print("Ascending:", sorted(expression_values))
+print("Descending:", sorted(expression_values, reverse=True))
 
-    def ascending_heights(self) -> list[float]:
-        return sorted(self.plant_heights)
+# Example 2: Sort DNA sequences by length.
+dna_sequences = ["ATGC", "ATGCGTAC", "GCTA", "GGCCATTA"]
 
-    def descending_heights(self) -> list[float]:
-        return sorted(self.plant_heights, reverse=True)
+print(
+    "Sequences by length:",
+    sorted(dna_sequences, key=len)
+)
 
-    @staticmethod
-    def run() -> None:
-        plant_heights = [55.2, 61.8, 49.3, 72.1, 66.4]
+# Example 3: Rank genes by expression.
+gene_expression = {
+    "BRCA1": 24.6,
+    "TP53": 18.2,
+    "EGFR": 42.8,
+    "MYC": 35.1
+}
 
-        processor = UniversitySorted(plant_heights)
-        print(f"Ascending heights: {processor.ascending_heights()}")
-        print(f"Descending heights: {processor.descending_heights()}")
+ranked_genes = sorted(
+    gene_expression.items(),
+    key=lambda item: item[1],
+    reverse=True
+)
 
+for rank, (gene, expression) in enumerate(ranked_genes, start=1):
+    print(f"{rank}. {gene}: {expression}")
 
-class InterviewSorted:
-    """Sort structured biological records using key= for realistic problems."""
+# Example 4: Sort samples using multiple criteria.
+samples = [
+    {"sample_id": "S001", "purity": 1.91, "concentration": 42.5},
+    {"sample_id": "S002", "purity": 1.91, "concentration": 58.1},
+    {"sample_id": "S003", "purity": 1.86, "concentration": 36.4}
+]
 
-    def __init__(self, gene_records: list[dict[str, object]]) -> None:
-        self.gene_records = gene_records
+ranked_samples = sorted(
+    samples,
+    key=lambda sample: (
+        sample["purity"],
+        sample["concentration"]
+    ),
+    reverse=True
+)
 
-    def sorted_by_expression(self, reverse: bool = False) -> list[dict[str, object]]:
-        return sorted(
-            self.gene_records,
-            key=lambda record: record["expression_level"],
-            reverse=reverse,
-        )
+print("\nRanked samples:")
+for sample in ranked_samples:
+    print(sample)
 
-    @staticmethod
-    def run() -> None:
-        case_one: list[dict[str, object]] = [
-            {"gene": "GENE1", "expression_level": 4.2},
-            {"gene": "GENE2", "expression_level": 9.1},
-            {"gene": "GENE3", "expression_level": 1.3},
-        ]
-        case_two: list[dict[str, object]] = []
+# Example 5: Sorting does not modify the original list.
+original = [3, 1, 2]
+result = sorted(original)
 
-        analyzer_one = InterviewSorted(case_one)
-        analyzer_two = InterviewSorted(case_two)
-
-        ranked = analyzer_one.sorted_by_expression(reverse=True)
-        print(f"Genes ranked by expression (high to low): {[g['gene'] for g in ranked]}")
-        print(f"Sorted result (empty dataset): {analyzer_two.sorted_by_expression()}")
-
-        # sorted() returns a new list; the original list is left untouched.
-        original_ids = [g["gene"] for g in case_one]
-        print(f"Original order preserved: {original_ids}")
-
-
-class IndustrySorted:
-    """Rank experimental datasets by quality score for reporting workflows."""
-
-    def __init__(self, samples: list[dict[str, object]]) -> None:
-        self.samples = samples
-
-    def ranked_samples(self, metric: str, reverse: bool = True) -> list[dict[str, object]]:
-        """Return samples sorted by metric, using a stable sort for tie order."""
-        return sorted(self.samples, key=lambda sample: sample[metric], reverse=reverse)
-
-    @staticmethod
-    def run() -> None:
-        samples: list[dict[str, object]] = [
-            {"sample_id": "S001", "quality_score": 0.87},
-            {"sample_id": "S002", "quality_score": 0.94},
-            {"sample_id": "S003", "quality_score": 0.94},
-            {"sample_id": "S004", "quality_score": 0.62},
-        ]
-
-        reporter = IndustrySorted(samples)
-        ranked = reporter.ranked_samples("quality_score")
-        print("Sample ranking by quality score:")
-        for rank, sample in enumerate(ranked, start=1):
-            print(f"  {rank}. {sample['sample_id']} ({sample['quality_score']})")
-
-
-if __name__ == "__main__":
-    UniversitySorted.run()
-    InterviewSorted.run()
-    IndustrySorted.run()
+print("Original:", original)
+print("Sorted copy:", result)

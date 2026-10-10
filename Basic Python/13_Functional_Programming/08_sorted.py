@@ -1,92 +1,101 @@
-"""sorted(): ascending/descending ordering of biological measurements and records."""
+"""
+TOPIC: sorted()
+
+MAIN POINTS
+- sorted() returns a new list containing items in sorted order.
+- The original iterable is not modified.
+- reverse=True sorts in descending order.
+- key= specifies a function used to determine sorting order.
+- sorted() can order genes by expression, samples by quality metrics, and sequences by length.
+- Python sorting is stable: items with equal keys preserve their relative order.
+- Sorting materializes the results into a list, unlike lazy map() and filter().
+"""
+
+# Example 1: Sort DNA sequences alphabetically.
+dna_sequences = [
+    "TTAGGCAT",
+    "ATGCGTAC",
+    "CGATCGAT",
+    "GGCCATTA"
+]
+
+alphabetical_sequences = sorted(dna_sequences)
+
+print("Alphabetically sorted sequences:")
+print(alphabetical_sequences)
+
+# The original list remains unchanged.
+print("Original list:")
+print(dna_sequences)
 
 
-class UniversitySorted:
-    def __init__(self, plant_heights_cm: list[float]) -> None:
-        self.plant_heights_cm = plant_heights_cm
+# Example 2: Sort gene expression values.
+expression_values = [24.6, 18.2, 42.8, 35.1]
 
-    def ascending(self) -> list[float]:
-        return sorted(self.plant_heights_cm)
+print("\nAscending expression:")
+print(sorted(expression_values))
 
-    def descending(self) -> list[float]:
-        return sorted(self.plant_heights_cm, reverse=True)
-
-    @staticmethod
-    def run() -> None:
-        heights_cm = [31.2, 18.0, 42.8, 25.5]
-
-        processor = UniversitySorted(heights_cm)
-        print(f"Original heights: {heights_cm}")
-        print(f"Ascending: {processor.ascending()}")
-        print(f"Descending: {processor.descending()}")
-        print(f"Original list unchanged: {heights_cm}")
+print("Descending expression:")
+print(sorted(expression_values, reverse=True))
 
 
-class InterviewSorted:
-    def __init__(self, samples: list[dict]) -> None:
-        self.samples = samples
+# Example 3: Sort sequences by length.
+dna_sequences = [
+    "ATGC",
+    "ATGCGTAC",
+    "GCTA",
+    "ATGCGCGTAA"
+]
 
-    def sort_by_height(self) -> list[dict]:
-        """Sorts structured records; missing heights are treated as lowest."""
-        return sorted(self.samples, key=lambda sample: sample.get("height_cm") or 0.0)
+sequences_by_length = sorted(
+    dna_sequences,
+    key=len
+)
 
-    def sort_by_species_then_height(self) -> list[dict]:
-        """Sorts by multiple attributes: species first, then height descending."""
-        return sorted(
-            self.samples,
-            key=lambda sample: (sample.get("species", ""), -(sample.get("height_cm") or 0.0)),
-        )
-
-    @staticmethod
-    def run() -> None:
-        empty_samples: list[dict] = []
-        processor = InterviewSorted(empty_samples)
-        print(f"Empty samples -> sorted: {processor.sort_by_height()}")
-
-        samples = [
-            {"id": "P001", "species": "Rice", "height_cm": 31.2},
-            {"id": "P002", "species": "Wheat", "height_cm": None},
-            {"id": "P003", "species": "Rice", "height_cm": 24.0},
-            {"id": "P004", "species": "Wheat", "height_cm": 28.5},
-        ]
-        processor = InterviewSorted(samples)
-        print(f"Sorted by height (missing -> lowest): {processor.sort_by_height()}")
-        print(f"Sorted by species then height desc: {processor.sort_by_species_then_height()}")
+print("\nSequences sorted by length:")
+print(sequences_by_length)
 
 
-class IndustrySorted:
-    def __init__(self, experiment_data: list[dict]) -> None:
-        self.data = experiment_data
+# Example 4: Sort gene records by expression.
+gene_expression = [
+    {"gene": "BRCA1", "expression": 24.6},
+    {"gene": "TP53", "expression": 18.2},
+    {"gene": "EGFR", "expression": 42.8},
+    {"gene": "MYC", "expression": 35.1}
+]
 
-    def rank_samples(self) -> list[dict]:
-        return sorted(
-            self.data,
-            key=lambda sample: sample.get("expression_level", 0.0),
-            reverse=True,
-        )
+ranked_genes = sorted(
+    gene_expression,
+    key=lambda record: record["expression"],
+    reverse=True
+)
 
-    def process(self) -> dict[str, object]:
-        ranked = self.rank_samples()
-        return {
-            "total_samples": len(self.data),
-            "ranked_samples": ranked,
-            "top_sample_id": ranked[0]["sample_id"] if ranked else None,
-        }
+print("\nGenes ranked by expression:")
 
-    @staticmethod
-    def run() -> None:
-        experiment_data = [
-            {"sample_id": "RNA001", "gene": "GA20ox", "expression_level": 12.4},
-            {"sample_id": "RNA002", "gene": "GA20ox", "expression_level": 8.7},
-            {"sample_id": "RNA003", "gene": "GA20ox", "expression_level": 18.2},
-        ]
-
-        processor = IndustrySorted(experiment_data)
-        report = processor.process()
-        print(f"Experiment report: {report}")
+for rank, record in enumerate(ranked_genes, start=1):
+    print(
+        f"{rank}. {record['gene']}: "
+        f"{record['expression']}"
+    )
 
 
-if __name__ == "__main__":
-    UniversitySorted.run()
-    InterviewSorted.run()
-    IndustrySorted.run()
+# Example 5: Sort sample records by multiple criteria.
+samples = [
+    {"sample_id": "S001", "purity": 1.91, "concentration": 42.5},
+    {"sample_id": "S002", "purity": 1.91, "concentration": 58.1},
+    {"sample_id": "S003", "purity": 1.86, "concentration": 36.4}
+]
+
+ranked_samples = sorted(
+    samples,
+    key=lambda sample: (
+        sample["purity"],
+        sample["concentration"]
+    ),
+    reverse=True
+)
+
+print("\nSamples ranked by purity and concentration:")
+
+for sample in ranked_samples:
+    print(sample)

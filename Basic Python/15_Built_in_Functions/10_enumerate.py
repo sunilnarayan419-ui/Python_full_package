@@ -1,75 +1,44 @@
-"""Demonstrations of the built-in enumerate() function using sample/observation data."""
+"""
+TOPIC: enumerate()
 
+MAIN POINTS
+- enumerate() yields index-value pairs.
+- Its default starting index is zero.
+- Use start=1 for one-based numbering.
+- It returns an iterator, so values are generated as needed.
+- It is useful for numbering biological records and identifying sequence positions.
+"""
 
-class UniversityEnumerate:
-    """Teach the fundamental behavior of enumerate() for index + value iteration."""
+# Example 1: Number gene records.
+genes = ["BRCA1", "TP53", "EGFR", "MYC"]
 
-    def __init__(self, species_list: list[str]) -> None:
-        self.species_list = species_list
+for index, gene in enumerate(genes):
+    print(index, gene)
 
-    def numbered_species(self) -> list[str]:
-        return [f"{index}: {species}" for index, species in enumerate(self.species_list)]
+# Example 2: Use one-based numbering.
+for number, gene in enumerate(genes, start=1):
+    print(f"Gene {number}: {gene}")
 
-    @staticmethod
-    def run() -> None:
-        species_list = ["Wheat", "Rice", "Maize"]
+# Example 3: Find guanine positions in DNA.
+dna_sequence = "ATGCGTAC"
 
-        processor = UniversityEnumerate(species_list)
-        for line in processor.numbered_species():
-            print(line)
+for index, nucleotide in enumerate(dna_sequence):
+    if nucleotide == "G":
+        print(
+            "Zero-based index:", index,
+            "One-based position:", index + 1
+        )
 
+# Example 4: Number expression records.
+expression_values = [24.6, 18.2, 42.8]
 
-class InterviewEnumerate:
-    """Use enumerate() with start= for realistic biological sample numbering."""
+for sample_number, expression in enumerate(expression_values, start=1):
+    print(f"Sample {sample_number}: {expression}")
 
-    def __init__(self, sample_names: list[str], starting_sample_number: int = 1) -> None:
-        self.sample_names = sample_names
-        self.starting_sample_number = starting_sample_number
+# Example 5: Find the first sequence of sufficient length.
+sequences = ["ATGC", "ATGCGTAC", "GCTA"]
 
-    def sample_id_mapping(self) -> dict[int, str]:
-        """Avoid manual counters entirely; enumerate() supplies the numbering."""
-        return {
-            number: name
-            for number, name in enumerate(self.sample_names, start=self.starting_sample_number)
-        }
-
-    @staticmethod
-    def run() -> None:
-        case_one = InterviewEnumerate(["Leaf-A", "Leaf-B", "Leaf-C"], starting_sample_number=1001)
-        case_two = InterviewEnumerate([], starting_sample_number=1)
-
-        print(f"Sample ID mapping: {case_one.sample_id_mapping()}")
-        print(f"Sample ID mapping (empty): {case_two.sample_id_mapping()}")
-
-
-class IndustryEnumerate:
-    """Generate structured, numbered reports from experimental observations."""
-
-    def __init__(self, observations: list[dict[str, object]]) -> None:
-        self.observations = observations
-
-    def numbered_report_lines(self) -> list[str]:
-        lines: list[str] = []
-        for row_number, observation in enumerate(self.observations, start=1):
-            gene = observation["gene"]
-            expression = observation["expression_level"]
-            lines.append(f"Row {row_number}: {gene} -> {expression}")
-        return lines
-
-    @staticmethod
-    def run() -> None:
-        observations: list[dict[str, object]] = [
-            {"gene": "GENE1", "expression_level": 4.2},
-            {"gene": "GENE2", "expression_level": 9.1},
-            {"gene": "GENE3", "expression_level": 1.3},
-        ]
-
-        reporter = IndustryEnumerate(observations)
-        for line in reporter.numbered_report_lines():
-            print(line)
-
-
-if __name__ == "__main__":
-    UniversityEnumerate.run()
-    InterviewEnumerate.run()
-    IndustryEnumerate.run()
+for number, sequence in enumerate(sequences, start=1):
+    if len(sequence) >= 8:
+        print("First qualifying record:", number, sequence)
+        break

@@ -1,84 +1,40 @@
-"""Demonstrations of the built-in ord() function using scientific text/symbols."""
+"""
+TOPIC: ord()
 
+MAIN POINTS
+- ord() returns the Unicode code point of a single character.
+- It is the conceptual inverse of chr() for valid individual characters.
+- ord() accepts a string containing exactly one character.
+- It is useful for exploring text encoding and character-level data.
+- Biological sequence analysis normally works with nucleotide symbols directly rather than their integer code points.
+"""
 
-class UniversityOrd:
-    """Teach the fundamental behavior of ord() for character-to-code-point conversion."""
+# Example 1: Inspect nucleotide code points.
+for nucleotide in "ATGC":
+    print(nucleotide, ord(nucleotide))
 
-    def __init__(self, character: str) -> None:
-        self.character = character
+# Example 2: Convert a character to an integer and back.
+nucleotide = "G"
 
-    def to_code_point(self) -> int:
-        return ord(self.character)
+code_point = ord(nucleotide)
+recovered_character = chr(code_point)
 
-    @staticmethod
-    def run() -> None:
-        processor = UniversityOrd(character="A")
-        print(f"ord('A') -> {processor.to_code_point()} (DNA base placeholder example)")
+print("Original:", nucleotide)
+print("Code point:", code_point)
+print("Recovered:", recovered_character)
 
+# Example 3: Inspect a gene identifier.
+gene_id = "BRCA1"
 
-class InterviewOrd:
-    """Unicode processing with validation for single-character inputs."""
+for character in gene_id:
+    print(character, ord(character))
 
-    @staticmethod
-    def safe_ord(character: str) -> int | None:
-        """Return the code point for a single character, or None if invalid."""
-        if len(character) != 1:
-            return None
-        return ord(character)
+# Example 4: Unicode characters.
+print("Alpha:", ord("α"))
+print("Beta:", ord("β"))
 
-    @staticmethod
-    def code_points_for_sequence(dna_sequence: str) -> list[int]:
-        return [ord(base) for base in dna_sequence]
-
-    @staticmethod
-    def run() -> None:
-        valid_result = InterviewOrd.safe_ord("G")
-        invalid_result = InterviewOrd.safe_ord("GG")  # more than one character
-        empty_result = InterviewOrd.safe_ord("")
-
-        print(f"Single character 'G': {valid_result}")
-        print(f"Multi-character 'GG': {invalid_result}")
-        print(f"Empty string: {empty_result}")
-
-        print(f"Code points for 'ATCG': {InterviewOrd.code_points_for_sequence('ATCG')}")
-
-
-class IndustryOrd:
-    """Scientific-text encoding/validation utility built on ord() and chr()."""
-
-    ALLOWED_DNA_BASES: frozenset[str] = frozenset("ATCG")
-
-    def validate_and_encode(self, dna_sequence: str) -> list[int]:
-        """Validate that a sequence contains only allowed bases, then encode it."""
-        invalid_bases = {base for base in dna_sequence if base not in self.ALLOWED_DNA_BASES}
-        if invalid_bases:
-            raise ValueError(f"Invalid DNA base(s) found: {sorted(invalid_bases)}")
-
-        return [ord(base) for base in dna_sequence]
-
-    def decode(self, code_points: list[int]) -> str:
-        """Round-trip check: ord() and chr() are inverses of one another."""
-        return "".join(chr(code_point) for code_point in code_points)
-
-    @staticmethod
-    def run() -> None:
-        codec = IndustryOrd()
-        sequence = "ATCGGTA"
-
-        encoded = codec.validate_and_encode(sequence)
-        decoded = codec.decode(encoded)
-
-        print(f"Original sequence: {sequence}")
-        print(f"Encoded code points: {encoded}")
-        print(f"Decoded sequence matches original: {decoded == sequence}")
-
-        try:
-            codec.validate_and_encode("ATXG")
-        except ValueError as error:
-            print(f"Validation error: {error}")
-
-
-if __name__ == "__main__":
-    UniversityOrd.run()
-    InterviewOrd.run()
-    IndustryOrd.run()
+# Example 5: ord() requires exactly one character.
+try:
+    print(ord("ATG"))
+except TypeError as error:
+    print("Invalid input:", error)

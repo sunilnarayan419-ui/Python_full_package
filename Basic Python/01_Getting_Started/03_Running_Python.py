@@ -1,50 +1,28 @@
 """
-03_Running_Python.py
-====================
-This file demonstrates how to run Python code:
-  - From the command line (interactive mode)
-  - From a script file
-  - Using Python's interactive shell
+03. Running Python
+Main points
+Python can be executed in several ways:
+- Interactive interpreter (REPL).
+- Python script (.py file).
+- IDE or code editor.
+- Notebook environment, such as Jupyter.
 """
 
-print("=== How to Run Python ===")
-print()
 
-# Option 1: Interactive mode (REPL)
-print("1. Interactive Mode (REPL):")
-print("   Open a terminal and type: python")
-print("   You will see the Python prompt >>>")
-print("   Type any expression, press Enter, and it evaluates.")
-print("   Example: >>> 2 + 2")
-print("           4")
-print()
+# 1. Display text
+print("Python is running!")
 
-# Option 2: Running a script file
-print("2. Running a Script File:")
-print("   Create a file called script.py with your Python code:")
-print("   python script.py")
-print()
-print("   The script will execute and the output will appear in the terminal.")
-print()
+# 2. Perform calculations
+a = 15
+b = 5
 
-# Option 3: Using the -c flag
-print("3. Using python -c (run a command directly):")
-print("   python -c 'print(\"Hello World\")'")
-print()
+print("Addition:", a + b)
+print("Division:", a / b)
 
-# Option 4: Using the -m flag (module mode)
-print("4. Using python -m (run a module as a script):")
-print("   python -m http.server 8000   (starts a simple HTTP server)")
-print()
+# 3. Use a condition
+if a > b:
+    print("a is greater than b")
 
-print("--- Typical Workflow ---")
-print("  1. Open a terminal or command prompt")
-print("  2. Navigate to your project directory")
-print("  3. Type: python filename.py")
-print("  4. Your Python code runs!")
-print()
-
-# Quick test
-print("--- Quick Test ---")
-import sys
-print(f"Python version: {sys.version}")
+# 4. Repeat an operation
+for number in range(1, 4):
+    print("Iteration:", number)

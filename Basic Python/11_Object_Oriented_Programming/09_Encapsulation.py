@@ -1,145 +1,121 @@
 """
-09_Encapsulation.py
+TOPIC: Encapsulation
 
-Concept: Encapsulation
-Encapsulation protects an object's internal state so that it cannot
-easily become invalid. This file progresses from public attributes, to
-protected/name-mangled attributes, to properties that enforce
-invariants on every write.
+MAIN POINTS
+- Encapsulation combines data and the methods that operate on that data.
+- It helps protect an object's state from invalid changes.
+- A single leading underscore indicates a non-public implementation detail by convention.
+- Double-leading-underscore names trigger name mangling; they are not absolute security barriers.
+- Properties allow attribute-style access with controlled validation.
+- Public methods and properties define how other code should interact with an object.
+- Encapsulation is especially useful when maintaining scientific data integrity.
 """
 
-from __future__ import annotations
+class BiologicalSample:
+    """Manage sample information with controlled data access."""
 
+    def __init__(
+        self,
+        sample_id,
+        organism,
+        dna_concentration,
+        purity_ratio
+    ):
+        self.sample_id = sample_id
+        self.organism = organism
 
-# --------------------------------------------------------------------------- #
-# University Level
-# --------------------------------------------------------------------------- #
-class UniversityEncapsulation:
-    """Demonstrates the basic vocabulary of encapsulation:
-    public, protected-by-convention, and name-mangled attributes.
-    """
+        # Internal implementation details.
+        self._dna_concentration = None
+        self._purity_ratio = None
 
-    def __init__(self, species: str, internal_note: str, secret_code: str) -> None:
-        self.species = species              # public: freely accessible
-        self._internal_note = internal_note  # protected by convention only
-        self.__secret_code = secret_code     # name-mangled, harder to access
+        # Validate values through the properties.
+        self.dna_concentration = dna_concentration
+        self.purity_ratio = purity_ratio
 
-    def reveal_secret_code(self) -> str:
-        return self.__secret_code
-
-    @staticmethod
-    def run() -> None:
-        print("--- UniversityEncapsulation ---")
-        sample = UniversityEncapsulation("Vitis vinifera", "handle with care", "X-42")
-
-        print(f"Public: {sample.species}")
-        print(f"Protected (by convention): {sample._internal_note}")
-        print(f"Name-mangled access via method: {sample.reveal_secret_code()}")
-        # Direct external access still possible via the mangled name,
-        # but it signals clear intent that this is not part of the API:
-        print(f"Name-mangled raw attribute: {sample._UniversityEncapsulation__secret_code}")
-
-
-# --------------------------------------------------------------------------- #
-# Interview Level
-# --------------------------------------------------------------------------- #
-class InterviewEncapsulation:
-    """Uses a property to validate a biological measurement on every
-    assignment, not just at construction time."""
-
-    def __init__(self, height_cm: float) -> None:
-        self.height_cm = height_cm  # goes through the property setter
+        # Name-mangled attribute for illustrative internal use.
+        self.__record_status = "Registered"
 
     @property
-    def height_cm(self) -> float:
-        return self._height_cm
+    def dna_concentration(self):
+        return self._dna_concentration
 
-    @height_cm.setter
-    def height_cm(self, value: float) -> None:
+    @dna_concentration.setter
+    def dna_concentration(self, value):
+        if not isinstance(value, (int, float)) or isinstance(value, bool):
+            raise TypeError("DNA concentration must be numeric.")
+
         if value < 0:
-            raise ValueError("height_cm cannot be negative")
-        self._height_cm = value
+            raise ValueError("DNA concentration cannot be negative.")
 
-    @staticmethod
-    def run() -> None:
-        print("--- InterviewEncapsulation ---")
-        plant = InterviewEncapsulation(height_cm=18.5)
-        print(f"Initial height: {plant.height_cm} cm")
+        self._dna_concentration = float(value)
 
-        plant.height_cm = 24.0
-        print(f"Updated height: {plant.height_cm} cm")
+    @property
+    def purity_ratio(self):
+        return self._purity_ratio
 
-        try:
-            plant.height_cm = -3.0
-        except ValueError as error:
-            print(f"Rejected invalid update: {error}")
+    @purity_ratio.setter
+    def purity_ratio(self, value):
+        if not isinstance(value, (int, float)) or isinstance(value, bool):
+            raise TypeError("Purity ratio must be numeric.")
 
-
-# --------------------------------------------------------------------------- #
-# Industry Level
-# --------------------------------------------------------------------------- #
-class IndustryEncapsulation:
-    """A domain object whose internal state cannot easily become invalid:
-    a titration/concentration record where volume and concentration must
-    always stay non-negative, and total mass is derived rather than
-    stored redundantly.
-
-    Only properties that need validation or derivation get a `@property`;
-    trivial fields remain plain attributes to avoid pointless boilerplate.
-    """
-
-    def __init__(self, sample_id: str, volume_ml: float, concentration_ng_ul: float) -> None:
-        self.sample_id = sample_id  # plain attribute: no invariant to protect
-        self._volume_ml = self._require_non_negative(volume_ml, "volume_ml")
-        self._concentration_ng_ul = self._require_non_negative(
-            concentration_ng_ul, "concentration_ng_ul"
-        )
-
-    @staticmethod
-    def _require_non_negative(value: float, field_name: str) -> float:
         if value < 0:
-            raise ValueError(f"{field_name} cannot be negative")
-        return value
+            raise ValueError("Purity ratio cannot be negative.")
 
-    @property
-    def volume_ml(self) -> float:
-        return self._volume_ml
+        self._purity_ratio = float(value)
 
-    @volume_ml.setter
-    def volume_ml(self, value: float) -> None:
-        self._volume_ml = self._require_non_negative(value, "volume_ml")
+    def get_record_status(self):
+        return self.__record_status
 
-    @property
-    def concentration_ng_ul(self) -> float:
-        return self._concentration_ng_ul
+    def update_record_status(self, new_status):
+        allowed_statuses = {
+            "Registered",
+            "Analyzed",
+            "Archived"
+        }
 
-    @concentration_ng_ul.setter
-    def concentration_ng_ul(self, value: float) -> None:
-        self._concentration_ng_ul = self._require_non_negative(value, "concentration_ng_ul")
+        if new_status not in allowed_statuses:
+            raise ValueError("Invalid record status.")
 
-    @property
-    def total_mass_ng(self) -> float:
-        """Derived value: never stored, so it can never drift out of sync."""
-        return self._volume_ml * 1000.0 * self._concentration_ng_ul / 1000.0
+        self.__record_status = new_status
 
-    @staticmethod
-    def run() -> None:
-        print("--- IndustryEncapsulation ---")
-        record = IndustryEncapsulation(
-            sample_id="S-501", volume_ml=0.05, concentration_ng_ul=120.0
-        )
-        print(f"Total mass: {record.total_mass_ng:.2f} ng")
-
-        record.concentration_ng_ul = 90.0
-        print(f"Recomputed total mass: {record.total_mass_ng:.2f} ng")
-
-        try:
-            record.volume_ml = -0.01
-        except ValueError as error:
-            print(f"Rejected invalid update: {error}")
+    def describe(self):
+        print("Sample ID:", self.sample_id)
+        print("Organism:", self.organism)
+        print("DNA concentration:", self.dna_concentration)
+        print("Purity ratio:", self.purity_ratio)
+        print("Record status:", self.get_record_status())
 
 
-if __name__ == "__main__":
-    UniversityEncapsulation.run()
-    InterviewEncapsulation.run()
-    IndustryEncapsulation.run()
+sample = BiologicalSample(
+    "DNA_001",
+    "Homo sapiens",
+    45.0,
+    1.87
+)
+
+sample.describe()
+
+print()
+
+# Valid modification: the property validates the new value.
+sample.dna_concentration = 52.0
+print("Updated concentration:", sample.dna_concentration)
+
+# Valid state transition.
+sample.update_record_status("Analyzed")
+print("Updated status:", sample.get_record_status())
+
+# Uncomment to observe validation errors.
+# sample.dna_concentration = -10
+# sample.purity_ratio = "unknown"
+# sample.update_record_status("Invalid")
+
+# Python name mangling changes the internal attribute name.
+print(sample.__dict__)
+
+# Direct access using the original double-underscore name fails.
+# print(sample.__record_status)
+
+# Name mangling is not a security mechanism.
+# Internal code can still be accessed through the mangled name.
+print(sample._BiologicalSample__record_status)

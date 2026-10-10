@@ -1,88 +1,105 @@
+
 """
-05_Creating_Modules.py
+05. Creating Modules
 
-Topic: Creating and reusing custom modules.
-
-Demonstrates separating reusable functionality (greeter.py) from
-execution code, and importing a custom module correctly.
+Main points
+- Any Python file can act as a module.
+- A module allows functions and variables to be reused across files.
+- Keep related functionality together in one module.
+- Import a module using its filename without the .py extension.
+- The if __name__ == "__main__": guard distinguishes direct execution
+  from importing a module.
+- When a file runs directly, its __name__ is "__main__".
+- When imported normally, its __name__ is usually the module name.
+- The importing file must be able to locate the module.
 """
 
-from greeter import create_greeting, create_report_label, format_sample_summary
+# ------------------------------------------------------------
+# FILE 1: dna_tools.py
+# Save the following code in a separate file named dna_tools.py.
+# ------------------------------------------------------------
+
+"""
+def calculate_gc_percentage(sequence):
+    sequence = sequence.upper()
+
+    if not sequence:
+        raise ValueError("DNA sequence cannot be empty.")
+
+    invalid_bases = set(sequence) - set("ATGC")
+
+    if invalid_bases:
+        raise ValueError(
+            f"Invalid DNA bases: {invalid_bases}"
+        )
+
+    gc_count = sequence.count("G") + sequence.count("C")
+    return gc_count / len(sequence) * 100
 
 
-class UniversityCreatingModules:
-    """Introduces importing and using a custom module."""
+def count_nucleotides(sequence):
+    sequence = sequence.upper()
 
-    @staticmethod
-    def run() -> None:
-        greeting = create_greeting("Dr. Alvarez", "plant physiologist")
+    invalid_bases = set(sequence) - set("ATGC")
 
-        print("University: creating and importing custom modules")
-        print(f"  {greeting}")
+    if invalid_bases:
+        raise ValueError(
+            f"Invalid DNA bases: {invalid_bases}"
+        )
 
-
-class InterviewCreatingModules:
-    """Uses the custom module to solve a realistic labeling problem."""
-
-    @staticmethod
-    def run() -> None:
-        project_code = "CROP-DROUGHT-STUDY"
-        report_label = create_report_label(project_code)
-
-        sample_ids = ["S1", "S2", "S3"]
-        measurement_counts = [12, 9, 15]
-        summaries = [
-            format_sample_summary(sample_id, count)
-            for sample_id, count in zip(sample_ids, measurement_counts)
-        ]
-
-        print("Interview: creating and importing custom modules")
-        print(f"  Report label: {report_label}")
-        for summary in summaries:
-            print(f"  {summary}")
-
-
-class IndustryCreatingModules:
-    """Demonstrates module-level organization and separation of concerns."""
-
-    def __init__(self, project_code: str) -> None:
-        if not project_code:
-            raise ValueError("project_code must be a non-empty string.")
-        self._project_code = project_code
-
-    def build_report_header(self) -> str:
-        return create_report_label(self._project_code)
-
-    def build_sample_lines(self, sample_measurement_counts: dict[str, int]) -> list[str]:
-        if not sample_measurement_counts:
-            raise ValueError("sample_measurement_counts must not be empty.")
-
-        return [
-            format_sample_summary(sample_id, count)
-            for sample_id, count in sample_measurement_counts.items()
-        ]
-
-    def compile_report(self, sample_measurement_counts: dict[str, int]) -> str:
-        header = self.build_report_header()
-        lines = self.build_sample_lines(sample_measurement_counts)
-        return "\n".join([header, *lines])
-
-    @staticmethod
-    def run() -> None:
-        sample_measurement_counts = {
-            "GENE-EXPR-001": 24,
-            "GENE-EXPR-002": 18,
-            "GENE-EXPR-003": 21,
-        }
-
-        builder = IndustryCreatingModules("GENE-EXPRESSION-PANEL")
-        report_text = builder.compile_report(sample_measurement_counts)
-
-        print("Industry: creating and importing custom modules")
-        print(f"  {report_text}")
+    return {
+        base: sequence.count(base)
+        for base in "ATGC"
+    }
 
 
 if __name__ == "__main__":
-    UniversityCreatingModules.run()
-    InterviewCreatingModules.run()
-    IndustryCreatingModules.run()
+    dna = "ATGCGCGT"
+    print("GC percentage:", calculate_gc_percentage(dna))
+    print("Nucleotide counts:", count_nucleotides(dna))
+"""
+
+# ------------------------------------------------------------
+# FILE 2: main.py
+# Save the following code in another file named main.py.
+# Place both files in the same directory.
+# ------------------------------------------------------------
+
+"""
+from dna_tools import calculate_gc_percentage, count_nucleotides
+
+sequence = "ATGCGTAA"
+
+gc_percentage = calculate_gc_percentage(sequence)
+nucleotide_counts = count_nucleotides(sequence)
+
+print("Sequence:", sequence)
+print("GC percentage:", gc_percentage)
+print("Nucleotide counts:", nucleotide_counts)
+"""
+
+# ------------------------------------------------------------
+# HOW TO RUN
+# ------------------------------------------------------------
+
+"""
+Your folder should look like this:
+
+python_project/
+    dna_tools.py
+    main.py
+
+Open a terminal in python_project and run:
+
+python main.py
+
+To run the module's demonstration directly:
+
+python dna_tools.py
+
+Important:
+The two quoted code sections above are examples of separate files.
+Copy each section into its own actual .py file before running.
+"""
+
+# This file documents the pattern; it does not create the two files.

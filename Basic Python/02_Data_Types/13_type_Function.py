@@ -1,31 +1,48 @@
-"""Inspecting Python data types in scientific data processing."""
 
+"""
+13. type() Function
 
-class TypeFunctionUniversity:
-    @staticmethod
-    def show(value: object) -> str:
-        return f"{value!r} -> {type(value).__name__}"
+Main points
+- type(object) returns the object's type.
+- It is useful for inspecting data during learning and debugging.
+- Common results include int, float, str, bool, list, dict, and NoneType.
+- type() can be used to compare exact types.
+- For checking whether an object belongs to a type or subclass,
+  isinstance() is usually preferred.
+"""
 
+# Values of different types
+count = 10
+temperature = 25.5
+organism = "Arabidopsis"
+is_valid = True
+genes = ["geneA", "geneB"]
+sample = {"id": "S001"}
+result = None
 
-class TypeFunctionInterview:
-    @staticmethod
-    def classify(values: list[object]) -> dict[str, int]:
-        counts: dict[str, int] = {}
-        for v in values:
-            name = type(v).__name__
-            counts[name] = counts.get(name, 0) + 1
-        return counts
+# Inspect their types
+print(type(count))
+print(type(temperature))
+print(type(organism))
+print(type(is_valid))
+print(type(genes))
+print(type(sample))
+print(type(result))
 
+# Store a type in a variable
+value_type = type(count)
+print("Stored type:", value_type)
 
-class TypeFunctionIndustry:
-    @staticmethod
-    def expected(label: str, value: object, expected: type) -> str:
-        if type(value) is not expected:
-            return f"{label}: expected {expected.__name__}, got {type(value).__name__}"
-        return f"{label}: OK ({expected.__name__})"
+# Exact type comparison
+print(type(count) is int)
+print(type(temperature) is float)
+print(type(organism) is str)
 
+# Boolean is a subclass of int, but its exact type is bool
+print(type(True) is bool)
+print(type(True) is int)
 
-if __name__ == "__main__":
-    print(TypeFunctionUniversity.show(0.45))
-    print(TypeFunctionInterview.classify([1, 2.0, "x", 3]))
-    print(TypeFunctionIndustry.expected("gc", 0.5, float))
+# Inspect a calculated result
+total = 10 / 2
+print("Total:", total)
+print("Total type:", type(total))

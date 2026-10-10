@@ -1,45 +1,54 @@
-"""break for early termination in scientific search."""
 
+"""
+05. break
 
-class NucleotideSearch:
-    def __init__(self, sequence: str, target: str) -> None:
-        self.sequence = sequence.upper()
-        self.target = target.upper()
+Main points
+- break immediately terminates the nearest enclosing loop.
+- Execution continues with the first statement after that loop.
+- break is useful when a target is found or a stopping condition is met.
+- In nested loops, break exits only the innermost loop.
+- break can be used in both for and while loops.
+"""
 
-    def first_index(self) -> int:
-        for i, base in enumerate(self.sequence):
-            if base == self.target:
-                return i
-        return -1
+# Example 1: Stop searching when a target gene is found.
+gene_list = ["ACTB", "GAPDH", "TP53", "BRCA1", "EGFR"]
+target_gene = "TP53"
 
+for gene in gene_list:
+    print("Checking:", gene)
 
-class GeneSearcher:
-    def __init__(self, gene_names: list[str], target: str) -> None:
-        self.gene_names = gene_names
-        self.target = target
+    if gene == target_gene:
+        print("Target gene found.")
+        break
 
-    def find(self) -> int:
-        for i, name in enumerate(self.gene_names):
-            if name == self.target:
-                return i
-        return -1
+# Example 2: Stop processing when a failed sample is detected.
+sample_results = [
+    ("S001", True),
+    ("S002", True),
+    ("S003", False),
+    ("S004", True)
+]
 
+for sample_id, passed_qc in sample_results:
+    if not passed_qc:
+        print("QC failure detected in:", sample_id)
+        break
 
-class QCFailureFinder:
-    def __init__(self, qualities: list[float], min_quality: float) -> None:
-        self.qualities = qualities
-        self.min_quality = min_quality
+    print("QC passed:", sample_id)
 
-    def first_failure(self) -> int:
-        for i, q in enumerate(self.qualities):
-            if q < self.min_quality:
-                return i
-        return -1
+# Example 3: Stop a retry loop after success.
+attempt = 0
+maximum_attempts = 5
 
+while attempt < maximum_attempts:
+    attempt += 1
+    print("Attempt:", attempt)
 
-if __name__ == "__main__":
-    print(NucleotideSearch("ATGCAT", "C").first_index())
+    if attempt == 3:
+        print("Simulated pipeline success.")
+        break
 
-    print(GeneSearcher(["BRCA1", "TP53", "EGFR"], "TP53").find())
+print("Retry loop finished.")
 
-    print(QCFailureFinder([35.0, 32.0, 25.0], 30.0).first_failure())
+# Important:
+# In nested loops, break exits only the nearest enclosing loop.

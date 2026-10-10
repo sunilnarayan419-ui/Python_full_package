@@ -1,100 +1,60 @@
-class UniversityNonlocal:
-    def __init__(self, species: str) -> None:
-        self.species = species
 
-    def make_sample_counter(self):
-        sample_count = 0  # enclosing scope variable
+"""
+13. nonlocal
 
-        def record_sample() -> int:
-            nonlocal sample_count
-            sample_count += 1
-            return sample_count
+Main points
+- nonlocal refers to a variable in the nearest enclosing function scope.
+- It is used inside a nested function.
+- nonlocal allows reassignment of an enclosing function's variable.
+- It does not refer to a module-level global variable.
+- The name must already exist in an enclosing function scope.
+- Closures using nonlocal can maintain state between function calls.
+"""
 
-        return record_sample
+# Example 1: Track processed samples using an enclosing scope.
+def create_sample_counter():
+    count = 0
 
-    @staticmethod
-    def run() -> None:
-        plant = UniversityNonlocal("Zea mays")
-        counter = plant.make_sample_counter()
-        print("University - first call:", counter())
-        print("University - second call:", counter())
-        print("University - third call:", counter())
+    def increment():
+        nonlocal count
+        count += 1
+        return count
 
-
-class InterviewNonlocal:
-    def __init__(self, experiment_name: str) -> None:
-        self.experiment_name = experiment_name
-
-    def make_running_average(self):
-        total = 0.0
-        count = 0
-
-        def add_reading(value: float) -> float:
-            nonlocal total, count
-            total += value
-            count += 1
-            return total / count
-
-        return add_reading
-
-    @staticmethod
-    def run() -> None:
-        lab = InterviewNonlocal("pH-Monitoring")
-        running_average = lab.make_running_average()
-        print("Interview - average after 1 reading:", running_average(6.8))
-        print("Interview - average after 2 readings:", running_average(7.2))
-        print("Interview - average after 3 readings:", running_average(7.0))
-
-        independent_average = lab.make_running_average()
-        print("Interview - independent tracker:", independent_average(5.0))
+    return increment
 
 
-global_experiment_registry_count = 0
+count_processed = create_sample_counter()
+
+print("Processed:", count_processed())
+print("Processed:", count_processed())
+print("Processed:", count_processed())
+
+# Example 2: Maintain a configurable threshold.
+def create_threshold_controller(initial_threshold):
+    threshold = initial_threshold
+
+    def update_threshold(new_threshold=None):
+        nonlocal threshold
+
+        if new_threshold is not None:
+            threshold = new_threshold
+
+        return threshold
+
+    return update_threshold
 
 
-class IndustryNonlocal:
-    """
-    Demonstrates the practical difference between 'global' and 'nonlocal' by
-    building an experiment counter factory. Each closure maintains its own
-    isolated count via 'nonlocal', while a separate module-level counter
-    demonstrates 'global' mutation for comparison.
-    """
+control_threshold = create_threshold_controller(10.0)
 
-    def __init__(self, lab_name: str) -> None:
-        self.lab_name = lab_name
+print("Initial threshold:", control_threshold())
+print("Updated threshold:", control_threshold(15.0))
+print("Current threshold:", control_threshold())
 
-    def make_experiment_id_generator(self, prefix: str):
-        sequence_number = 0  # private to this closure via nonlocal
+# Example 3: Separate controllers maintain separate state.
+threshold_a = create_threshold_controller(5.0)
+threshold_b = create_threshold_controller(20.0)
 
-        def next_id() -> str:
-            nonlocal sequence_number
-            sequence_number += 1
-            self._increment_global_registry()
-            return f"{prefix}-{sequence_number:03d}"
+print("Threshold A:", threshold_a())
+print("Threshold B:", threshold_b())
 
-        return next_id
-
-    @staticmethod
-    def _increment_global_registry() -> None:
-        global global_experiment_registry_count
-        global_experiment_registry_count += 1
-
-    @staticmethod
-    def run() -> None:
-        lab = IndustryNonlocal("Central Genomics Lab")
-        soil_experiment_ids = lab.make_experiment_id_generator("SOIL")
-        water_experiment_ids = lab.make_experiment_id_generator("WATER")
-
-        print("Industry - soil id 1:", soil_experiment_ids())
-        print("Industry - soil id 2:", soil_experiment_ids())
-        print("Industry - water id 1:", water_experiment_ids())
-        print(
-            "Industry - global registry total (via 'global'):",
-            global_experiment_registry_count,
-        )
-
-
-if __name__ == "__main__":
-    UniversityNonlocal.run()
-    InterviewNonlocal.run()
-    IndustryNonlocal.run()
+# nonlocal changes the enclosing variable, not a global variable.

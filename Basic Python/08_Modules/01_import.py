@@ -1,107 +1,52 @@
+
 """
-01_import.py
+01. import
 
-Topic: The `import module` statement.
-
-Demonstrates namespace-qualified access to standard-library functionality
-using biological measurement data.
+Main points
+- A module is a Python file containing reusable code.
+- The import statement makes a module available in the current namespace.
+- Use module_name.function_name() to access its functions.
+- Modules can contain functions, classes, variables, and executable statements.
+- Python's standard library provides modules for mathematics, statistics,
+  file handling, dates, random numbers, and more.
+- Importing a module normally executes its top-level code once per module
+  instance in a Python process.
+- Use descriptive module names to make code easier to understand.
 """
 
+# Import the math module.
 import math
+
+# Calculate the square root of a scientific measurement.
+variance = 16.0
+standard_deviation = math.sqrt(variance)
+
+print("Standard deviation:", standard_deviation)
+
+# Calculate a logarithm.
+concentration = 0.001
+log_concentration = math.log10(concentration)
+
+print("Log10 concentration:", log_concentration)
+
+# Import the statistics module.
 import statistics
-import datetime
 
+expression_values = [12.5, 15.0, 18.5, 14.0, 20.0]
 
-class UniversityImport:
-    """Introduces `import module` and namespace-qualified access."""
+mean_expression = statistics.mean(expression_values)
+median_expression = statistics.median(expression_values)
 
-    @staticmethod
-    def run() -> None:
-        leaf_lengths_cm: list[float] = [4.2, 5.1, 3.8, 6.0, 4.9]
+print("Mean expression:", mean_expression)
+print("Median expression:", median_expression)
 
-        mean_length = statistics.mean(leaf_lengths_cm)
-        stdev_length = statistics.stdev(leaf_lengths_cm)
-        rounded_stdev = math.sqrt(stdev_length ** 2)
+# Import the random module.
+import random
 
-        print("University: import module")
-        print(f"  Leaf lengths (cm): {leaf_lengths_cm}")
-        print(f"  Mean length: {mean_length:.2f} cm")
-        print(f"  Std deviation (via math.sqrt check): {rounded_stdev:.2f} cm")
+# Simulate selecting a sample for a demonstration.
+sample_ids = ["S001", "S002", "S003", "S004"]
+selected_sample = random.choice(sample_ids)
 
+print("Selected sample:", selected_sample)
 
-class InterviewImport:
-    """Uses imported modules to solve a small realistic problem."""
-
-    @staticmethod
-    def _summarize_sample(measurements: list[float]) -> dict[str, float]:
-        if not measurements:
-            raise ValueError("Sample must contain at least one measurement.")
-
-        return {
-            "mean": statistics.mean(measurements),
-            "median": statistics.median(measurements),
-            "variance": statistics.variance(measurements) if len(measurements) > 1 else 0.0,
-        }
-
-    @staticmethod
-    def run() -> None:
-        plant_heights_mm: list[float] = [152.3, 148.9, 160.1, 155.4, 149.7, 158.2]
-
-        summary = InterviewImport._summarize_sample(plant_heights_mm)
-        experiment_timestamp = datetime.datetime.now().isoformat(timespec="seconds")
-
-        print("Interview: import module")
-        print(f"  Sample size: {len(plant_heights_mm)}")
-        print(f"  Summary: {summary}")
-        print(f"  Recorded at: {experiment_timestamp}")
-
-
-class IndustryImport:
-    """Demonstrates maintainable use of imported modules in a small workflow."""
-
-    def __init__(self, sample_id: str, measurements: list[float]) -> None:
-        if not sample_id:
-            raise ValueError("sample_id must be a non-empty string.")
-        if not measurements:
-            raise ValueError("measurements must contain at least one value.")
-
-        self._sample_id = sample_id
-        self._measurements = measurements
-        self._collected_at = datetime.datetime.now()
-
-    @property
-    def sample_id(self) -> str:
-        return self._sample_id
-
-    def mean_measurement(self) -> float:
-        return statistics.mean(self._measurements)
-
-    def coefficient_of_variation(self) -> float:
-        mean_value = self.mean_measurement()
-        if mean_value == 0:
-            return 0.0
-        stdev_value = statistics.stdev(self._measurements) if len(self._measurements) > 1 else 0.0
-        return stdev_value / mean_value
-
-    def report(self) -> str:
-        return (
-            f"Sample {self._sample_id} | "
-            f"mean={self.mean_measurement():.2f} | "
-            f"cv={self.coefficient_of_variation():.3f} | "
-            f"n={len(self._measurements)} | "
-            f"collected={self._collected_at.isoformat(timespec='seconds')}"
-        )
-
-    @staticmethod
-    def run() -> None:
-        enzyme_activity_units: list[float] = [12.4, 11.9, 13.1, 12.7, 12.0, 13.4]
-
-        analyzer = IndustryImport("ENZ-2024-018", enzyme_activity_units)
-        print("Industry: import module")
-        print(f"  {analyzer.report()}")
-
-
-if __name__ == "__main__":
-    UniversityImport.run()
-    InterviewImport.run()
-    IndustryImport.run()
+# Random selection is for demonstration only, not experimental design.

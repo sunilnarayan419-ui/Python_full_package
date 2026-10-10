@@ -1,64 +1,63 @@
-"""Arithmetic operators applied to plant/genomic data."""
 
+"""
+01. Arithmetic Operators
 
-class PlantMeasurementCalculator:
-    def __init__(self, height_cm: float, leaf_count: int, biomass_g: float) -> None:
-        self.height_cm = height_cm
-        self.leaf_count = leaf_count
-        self.biomass_g = biomass_g
+Main points
+- Arithmetic operators perform mathematical calculations.
+- + : Addition
+- - : Subtraction
+- * : Multiplication
+- / : Division; returns a float.
+- // : Floor division; rounds the quotient down.
+- % : Modulus; returns the remainder.
+- ** : Exponentiation.
+- Parentheses can control the order of calculations.
+- Be careful with units when performing scientific calculations.
+"""
 
-    def total_height_and_biomass(self) -> float:
-        return self.height_cm + self.biomass_g
+# Example 1: Calculate the total number of DNA samples
+samples_from_lab_a = 48
+samples_from_lab_b = 36
 
-    def leaf_density(self) -> float:
-        return self.leaf_count / self.height_cm if self.height_cm else 0.0
+total_samples = samples_from_lab_a + samples_from_lab_b
+print("Total DNA samples:", total_samples)
 
-    def squared_height(self) -> float:
-        return self.height_cm ** 2
+# Example 2: Calculate remaining samples after quality control
+initial_samples = 120
+failed_samples = 15
 
+valid_samples = initial_samples - failed_samples
+print("Valid samples:", valid_samples)
 
-class GrowthRateAnalyzer:
-    def __init__(self, initial: float, final: float, days: int) -> None:
-        self.initial = initial
-        self.final = final
-        self.days = days
+# Example 3: Calculate total reagent volume
+volume_per_reaction_ml = 0.025
+number_of_reactions = 96
 
-    def absolute_growth(self) -> float:
-        return self.final - self.initial
+total_volume_ml = volume_per_reaction_ml * number_of_reactions
+print("Total reagent volume:", total_volume_ml, "mL")
 
-    def relative_growth(self) -> float:
-        return (self.final - self.initial) / self.initial if self.initial else 0.0
+# Example 4: Calculate the mean concentration
+concentrations = [12.5, 14.0, 13.5, 16.0]
+mean_concentration = sum(concentrations) / len(concentrations)
 
-    def average_daily_growth(self) -> float:
-        return (self.final - self.initial) // self.days if self.days else 0
+print("Mean concentration:", mean_concentration, "ng/uL")
 
+# Example 5: Calculate the number of complete plates
+total_wells = 250
+wells_per_plate = 96
 
-class PhenotypeMetricsBatch:
-    def __init__(self, heights: list[float]) -> None:
-        self.heights = heights
+complete_plates = total_wells // wells_per_plate
+remaining_wells = total_wells % wells_per_plate
 
-    def mean(self) -> float:
-        return sum(self.heights) / len(self.heights) if self.heights else 0.0
+print("Complete plates:", complete_plates)
+print("Remaining wells:", remaining_wells)
 
-    def height_range(self) -> float:
-        if not self.heights:
-            return 0.0
-        return max(self.heights) - min(self.heights)
+# Example 6: Calculate the theoretical number of DNA copies
+# after successive ideal doubling cycles.
+initial_copies = 100
+cycles = 5
 
-    def fold_change(self, baseline: float) -> float:
-        m = self.mean()
-        return m / baseline if baseline else 0.0
+final_copies = initial_copies * (2 ** cycles)
+print("Theoretical DNA copies:", final_copies)
 
-
-if __name__ == "__main__":
-    uni = PlantMeasurementCalculator(height_cm=45.0, leaf_count=12, biomass_g=3.4)
-    print(uni.total_height_and_biomass())
-    print(uni.leaf_density())
-    print(uni.squared_height())
-
-    inter = GrowthRateAnalyzer(initial=10.0, final=25.0, days=5)
-    print(inter.average_daily_growth())
-
-    ind = PhenotypeMetricsBatch(heights=[40.0, 42.0, 45.0])
-    print(ind.height_range())
-    print(ind.fold_change(baseline=10.0))
+# Important: Ideal doubling assumes 100% amplification efficiency.

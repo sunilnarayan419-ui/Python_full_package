@@ -1,124 +1,117 @@
-"""Dictionary comprehensions demonstrated through sample and gene metadata."""
+"""
+TOPIC: Dictionary Comprehensions
+
+MAIN POINTS
+- Dictionary comprehensions create dictionaries concisely.
+- Basic syntax: {key: value for item in iterable}.
+- Conditions can filter dictionary entries.
+- Dictionary comprehensions are useful for constructing lookup tables.
+- Keys must be unique; duplicate keys overwrite previous values.
+- They are useful for gene-expression mappings, sequence metadata, and sample registries.
+"""
+
+# Example 1: Map gene IDs to expression measurements.
+gene_ids = ["BRCA1", "TP53", "EGFR", "MYC"]
+
+expression_values = [24.6, 18.2, 42.8, 35.1]
+
+gene_expression = {
+    gene: expression
+    for gene, expression in zip(
+        gene_ids,
+        expression_values,
+        strict=True
+    )
+}
+
+print("Gene expression dictionary:")
+print(gene_expression)
 
 
-class UniversityDictionaryComprehensions:
-    """Teach the fundamental syntax of building dictionaries from iterables."""
+# Example 2: Calculate DNA sequence lengths.
+dna_sequences = {
+    "Gene_A": "ATGC",
+    "Gene_B": "ATGCGTAC",
+    "Gene_C": "GCTA"
+}
 
-    def __init__(self, sample_ids: list[str], measurements: list[float]) -> None:
-        self.sample_ids = sample_ids
-        self.measurements = measurements
+sequence_lengths = {
+    gene: len(sequence)
+    for gene, sequence in dna_sequences.items()
+}
 
-    def build_sample_lookup(self) -> dict[str, float]:
-        """Map each sample ID to its corresponding measurement."""
-        return {
-            sample_id: value
-            for sample_id, value in zip(self.sample_ids, self.measurements)
-        }
-
-    @staticmethod
-    def run() -> None:
-        sample_ids = ["S001", "S002", "S003"]
-        measurements = [7.2, 5.9, 8.4]
-
-        processor = UniversityDictionaryComprehensions(sample_ids, measurements)
-        lookup = processor.build_sample_lookup()
-
-        print(f"Sample measurement lookup: {lookup}")
+print("\nSequence lengths:")
+print(sequence_lengths)
 
 
-class InterviewDictionaryComprehensions:
-    """Solve a practical gene-expression filtering and mapping problem."""
+# Example 3: Filter genes by expression.
+high_expression_genes = {
+    gene: expression
+    for gene, expression in gene_expression.items()
+    if expression >= 30
+}
 
-    def __init__(self, gene_expression: dict[str, float]) -> None:
-        self.gene_expression = gene_expression
-
-    def filter_significant_genes(self, min_expression: float) -> dict[str, float]:
-        """Return genes whose expression meets a minimum threshold.
-
-        Handles an empty input dictionary gracefully.
-        """
-        if not self.gene_expression:
-            return {}
-
-        return {
-            gene: value
-            for gene, value in self.gene_expression.items()
-            if value >= min_expression
-        }
-
-    def invert_lookup(self) -> dict[float, str]:
-        """Invert gene-to-value mapping, guarding against duplicate values."""
-        seen_values: set[float] = set()
-        inverted: dict[float, str] = {}
-
-        for gene, value in self.gene_expression.items():
-            if value not in seen_values:
-                inverted[value] = gene
-                seen_values.add(value)
-
-        return inverted
-
-    @staticmethod
-    def run() -> None:
-        expression_data = {"BRCA1": 3.4, "TP53": 5.1, "EGFR": 1.2, "MYC": 4.8}
-        empty_data: dict[str, float] = {}
-
-        case_one = InterviewDictionaryComprehensions(expression_data)
-        case_two = InterviewDictionaryComprehensions(empty_data)
-
-        print(f"Significant genes: {case_one.filter_significant_genes(3.0)}")
-        print(f"Empty dataset result: {case_two.filter_significant_genes(3.0)}")
-        print(f"Inverted lookup: {case_one.invert_lookup()}")
+print("\nGenes with expression >= 30:")
+print(high_expression_genes)
 
 
-class IndustryDictionaryComprehensions:
-    """Generate reusable biological metadata indexes from raw sample records."""
+# Example 4: Calculate GC percentages for multiple sequences.
+def gc_percentage(sequence):
+    if not sequence:
+        return 0.0
 
-    def __init__(self, sample_records: list[dict[str, str | float]]) -> None:
-        self.sample_records = sample_records
+    sequence = sequence.upper()
+    gc_count = sequence.count("G") + sequence.count("C")
 
-    def index_by_sample_id(self) -> dict[str, dict[str, str | float]]:
-        """Build a lookup index keyed by sample ID for fast record access."""
-        return {
-            str(record["sample_id"]): record
-            for record in self.sample_records
-            if "sample_id" in record
-        }
-
-    def species_to_average_height(self) -> dict[str, float]:
-        """Compute average plant height per species from sample records."""
-        species_set = {str(record["species"]) for record in self.sample_records}
-
-        return {
-            species: round(
-                sum(
-                    float(record["height_cm"])
-                    for record in self.sample_records
-                    if record["species"] == species
-                )
-                / sum(1 for record in self.sample_records if record["species"] == species),
-                2,
-            )
-            for species in species_set
-        }
-
-    @staticmethod
-    def run() -> None:
-        records: list[dict[str, str | float]] = [
-            {"sample_id": "S001", "species": "Arabidopsis", "height_cm": 12.5},
-            {"sample_id": "S002", "species": "Arabidopsis", "height_cm": 14.1},
-            {"sample_id": "S003", "species": "Oryza sativa", "height_cm": 45.0},
-        ]
-
-        indexer = IndustryDictionaryComprehensions(records)
-        sample_index = indexer.index_by_sample_id()
-        avg_heights = indexer.species_to_average_height()
-
-        print(f"Sample index keys: {list(sample_index.keys())}")
-        print(f"Average height by species: {avg_heights}")
+    return gc_count / len(sequence) * 100
 
 
-if __name__ == "__main__":
-    UniversityDictionaryComprehensions.run()
-    InterviewDictionaryComprehensions.run()
-    IndustryDictionaryComprehensions.run()
+sequence_gc = {
+    gene: gc_percentage(sequence)
+    for gene, sequence in dna_sequences.items()
+}
+
+print("\nGC percentages:")
+print(sequence_gc)
+
+
+# Example 5: Construct a sample registry.
+samples = [
+    {
+        "sample_id": "S001",
+        "organism": "Homo sapiens",
+        "tissue": "Blood"
+    },
+    {
+        "sample_id": "S002",
+        "organism": "Mus musculus",
+        "tissue": "Liver"
+    },
+    {
+        "sample_id": "S003",
+        "organism": "Arabidopsis thaliana",
+        "tissue": "Root"
+    }
+]
+
+sample_registry = {
+    sample["sample_id"]: sample
+    for sample in samples
+}
+
+print("\nSample registry:")
+print(sample_registry)
+
+print("S002 organism:", sample_registry["S002"]["organism"])
+
+
+# Example 6: Normalize expression relative to the maximum.
+maximum_expression = max(gene_expression.values())
+
+relative_expression = {
+    gene: expression / maximum_expression
+    for gene, expression in gene_expression.items()
+}
+
+print("\nRelative expression:")
+print(relative_expression)

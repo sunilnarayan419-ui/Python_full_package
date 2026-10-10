@@ -1,84 +1,61 @@
-"""Demonstrations of the built-in max() function using plant/gene expression data."""
+"""
+TOPIC: max()
 
+MAIN POINTS
+- max() returns the largest item or value.
+- It can accept multiple positional arguments or one iterable.
+- key= determines the comparison value.
+- default= supplies a fallback when an iterable is empty.
+- max() is useful for finding the highest expression measurement or longest sequence.
+- The largest numerical measurement is not automatically the most biologically significant result.
+"""
 
-class UniversityMax:
-    """Teach the fundamental behavior of max() on numeric biological data."""
+# Example 1: Highest gene-expression measurement.
+expression_values = [24.6, 18.2, 42.8, 35.1]
 
-    def __init__(self, plant_heights: list[float]) -> None:
-        self.plant_heights = plant_heights
+print("Maximum expression:", max(expression_values))
 
-    def tallest_plant_height(self) -> float:
-        return max(self.plant_heights)
+# Example 2: Longest DNA sequence.
+dna_sequences = ["ATGC", "ATGCGTAC", "GCTA", "GGCCATTA"]
 
-    @staticmethod
-    def run() -> None:
-        plant_heights = [55.2, 61.8, 49.3, 72.1, 66.4]
+longest_sequence = max(dna_sequences, key=len)
 
-        processor = UniversityMax(plant_heights)
-        print(f"Tallest plant height: {processor.tallest_plant_height()} cm")
+print("Longest sequence:", longest_sequence)
+print("Length:", len(longest_sequence))
 
+# Example 3: Gene with the highest expression.
+gene_expression = {
+    "BRCA1": 24.6,
+    "TP53": 18.2,
+    "EGFR": 42.8,
+    "MYC": 35.1
+}
 
-class InterviewMax:
-    """Find maximum biological measurements safely, using key= for records."""
+highest_gene = max(
+    gene_expression,
+    key=gene_expression.get
+)
 
-    def __init__(self, gene_records: list[dict[str, object]]) -> None:
-        self.gene_records = gene_records
+print("Highest-expression gene:", highest_gene)
+print("Expression:", gene_expression[highest_gene])
 
-    def highest_expression_gene(self) -> dict[str, object] | None:
-        """Return the record with the highest expression value, or None if empty."""
-        if not self.gene_records:
-            return None
-        return max(self.gene_records, key=lambda record: record["expression_level"])
+# Example 4: Highest concentration in a sample dataset.
+samples = [
+    {"sample_id": "S001", "concentration": 42.5},
+    {"sample_id": "S002", "concentration": 58.1},
+    {"sample_id": "S003", "concentration": 36.4}
+]
 
-    @staticmethod
-    def run() -> None:
-        case_one: list[dict[str, object]] = [
-            {"gene": "GENE1", "expression_level": 4.2},
-            {"gene": "GENE2", "expression_level": 9.1},
-            {"gene": "GENE3", "expression_level": 6.7},
-        ]
-        case_two: list[dict[str, object]] = []
+highest_sample = max(
+    samples,
+    key=lambda sample: sample["concentration"]
+)
 
-        analyzer_one = InterviewMax(case_one)
-        analyzer_two = InterviewMax(case_two)
+print("Highest-concentration sample:", highest_sample)
 
-        top_gene = analyzer_one.highest_expression_gene()
-        print(f"Highest expressing gene: {top_gene['gene'] if top_gene else None}")
+# Example 5: Handle an empty iterable.
+sequences = []
 
-        top_gene_empty = analyzer_two.highest_expression_gene()
-        print(f"Highest expressing gene (empty dataset): {top_gene_empty}")
+longest = max(sequences, key=len, default=None)
 
-
-class IndustryMax:
-    """Identify the highest-performing sample within a scientific dataset."""
-
-    def __init__(self, samples: list[dict[str, object]]) -> None:
-        self.samples = samples
-
-    def best_performing_sample(self, metric: str) -> dict[str, object] | None:
-        """Return the sample with the highest value for the given metric."""
-        candidates = [sample for sample in self.samples if metric in sample]
-        if not candidates:
-            return None
-        return max(candidates, key=lambda sample: sample[metric])
-
-    @staticmethod
-    def run() -> None:
-        samples: list[dict[str, object]] = [
-            {"sample_id": "S001", "concentration": 3.4, "purity": 0.91},
-            {"sample_id": "S002", "concentration": 5.9, "purity": 0.87},
-            {"sample_id": "S003", "concentration": 4.1},
-        ]
-
-        reporter = IndustryMax(samples)
-        best_concentration = reporter.best_performing_sample("concentration")
-        best_purity = reporter.best_performing_sample("purity")
-
-        print(f"Highest concentration sample: {best_concentration['sample_id']}")
-        print(f"Highest purity sample: {best_purity['sample_id']}")
-
-
-if __name__ == "__main__":
-    UniversityMax.run()
-    InterviewMax.run()
-    IndustryMax.run()
+print("Longest sequence:", longest)

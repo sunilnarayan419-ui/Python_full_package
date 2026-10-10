@@ -1,87 +1,61 @@
-"""13_Accessing_Dictionary_Values.py — Accessing dictionary values safely."""
-from __future__ import annotations
 
+"""
+13. Accessing Dictionary Values
 
-class PlantTraitAccessorUniversity:
-    """University level: simple value retrieval with direct access and get()."""
+Main points
+- dictionary[key] retrieves a value and raises KeyError if the key is absent.
+- get(key) retrieves a value or returns None by default.
+- get(key, default) returns the supplied default when the key is absent.
+- The in operator checks dictionary keys.
+- Nested dictionaries can represent structured biological records.
+- Chained indexing can raise KeyError when an intermediate key is missing.
+- Use explicit checks or get() when missing keys are expected.
+"""
 
-    def __init__(self, traits: dict[str, str | float | int]) -> None:
-        self.traits = traits
+# Gene annotation database
+gene_database = {
+    "TP53": {
+        "organism": "Homo sapiens",
+        "chromosome": 17,
+        "function": "Tumor suppressor"
+    },
+    "BRCA1": {
+        "organism": "Homo sapiens",
+        "chromosome": 17,
+        "function": "DNA repair"
+    }
+}
 
-    def display(self) -> None:
-        print("University — Plant traits:")
-        print(f"  Direct access species: {self.traits['species']}")
-        print(f"  Safe get height_cm:    {self.traits.get('height_cm')}")
-        print(f"  Safe get missing:      {self.traits.get('root_length', 'N/A')}")
+# Direct access
+print("TP53 annotation:", gene_database["TP53"])
 
-    @staticmethod
-    def run() -> None:
-        traits = {"species": "Maize", "height_cm": 25.8, "leaf_count": 10}
-        demo = PlantTraitAccessorUniversity(traits)
-        demo.display()
+# Access a nested value
+print("TP53 chromosome:", gene_database["TP53"]["chromosome"])
 
+# Safe access using get()
+print("EGFR annotation:", gene_database.get("EGFR"))
 
-class GenomicMetadataAccessorInterview:
-    """Interview level: safely retrieve genomic metadata."""
+# Supply a default value
+print(
+    "EGFR annotation:",
+    gene_database.get("EGFR", "Annotation unavailable")
+)
 
-    def __init__(self, records: dict[str, dict[str, str | float | int]]) -> None:
-        self.records = records
+# Check whether a key exists
+if "BRCA1" in gene_database:
+    print("BRCA1 annotation is available.")
 
-    def get_expression(self, gene_id: str) -> float | None:
-        rec = self.records.get(gene_id)
-        if rec is None:
-            return None
-        expr = rec.get("expression")
-        return float(expr) if isinstance(expr, (int, float)) else None
+# Safely access an optional field
+tp53_function = gene_database.get("TP53", {}).get(
+    "function",
+    "Unknown"
+)
 
-    @staticmethod
-    def run() -> None:
-        records: dict[str, dict[str, str | float | int]] = {
-            "AT1G01010": {"species": "Arabidopsis", "expression": 12.5},
-            "AT1G01020": {"species": "Arabidopsis", "expression": 8.3},
-        }
-        demo = GenomicMetadataAccessorInterview(records)
-        print("Interview — Safe genomic metadata access:")
-        print(f"  AT1G01010 expression: {demo.get_expression('AT1G01010')}")
-        print(f"  AT1G01099 expression: {demo.get_expression('AT1G01099')}")
+print("TP53 function:", tp53_function)
 
+# Iterate over key-value pairs
+for gene, annotation in gene_database.items():
+    print(gene, "->", annotation["function"])
 
-class SampleMetadataAccessorIndustry:
-    """Industry level: metadata-access component with predictable behavior."""
-
-    def __init__(self, samples: dict[str, dict[str, str | float | int]]) -> None:
-        self.samples = samples
-
-    def retrieve(self, sample_id: str, field: str) -> str | float | int | None:
-        sample = self.samples.get(sample_id)
-        if sample is None:
-            return None
-        return sample.get(field)
-
-    def require(self, sample_id: str, field: str) -> str | float | int:
-        sample = self.samples.get(sample_id)
-        if sample is None:
-            raise KeyError(f"sample {sample_id} not found")
-        if field not in sample:
-            raise KeyError(f"field {field} not found in {sample_id}")
-        return sample[field]
-
-    @staticmethod
-    def run() -> None:
-        samples: dict[str, dict[str, str | float | int]] = {
-            "WHT-001": {"species": "Wheat", "height_cm": 28.5},
-            "WHT-002": {"species": "Wheat", "height_cm": 32.1},
-        }
-        accessor = SampleMetadataAccessorIndustry(samples)
-        print("Industry — Metadata accessor:")
-        print(f"  WHT-001 height (safe):   {accessor.retrieve('WHT-001', 'height_cm')}")
-        print(f"  WHT-001 missing (safe):  {accessor.retrieve('WHT-001', 'weight_g')}")
-        print(f"  WHT-001 height (req):    {accessor.require('WHT-001', 'height_cm')}")
-
-
-if __name__ == "__main__":
-    PlantTraitAccessorUniversity.run()
-    print()
-    GenomicMetadataAccessorInterview.run()
-    print()
-    SampleMetadataAccessorIndustry.run()
+# Important:
+# A missing annotation is not proof that a gene lacks a biological function.

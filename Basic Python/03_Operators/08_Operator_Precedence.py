@@ -1,57 +1,82 @@
-"""Operator precedence in scientific calculations."""
 
+"""
+08. Operator Precedence
 
-class ExpressionPrecedence:
-    def __init__(self, a: int, b: int, c: int) -> None:
-        self.a = a
-        self.b = b
-        self.c = c
+Main points
+- Operator precedence determines which operations are evaluated first.
+- Parentheses can explicitly control the order of evaluation.
+- Exponentiation has higher precedence than multiplication and addition.
+- Multiplication and division have higher precedence than addition.
+- Comparisons are evaluated after arithmetic expressions.
+- 'not' has lower precedence than comparisons.
+- 'and' has higher precedence than 'or'.
+- Bitwise operators have their own precedence levels.
+- When in doubt, use parentheses for clarity.
+"""
 
-    def ambiguous(self) -> int:
-        return self.a + self.b * self.c
+# Example 1: Calculate the concentration after dilution
+initial_concentration = 100.0
+initial_volume = 2.0
+final_volume = 10.0
 
-    def explicit(self) -> int:
-        return self.a + (self.b * self.c)
+# Multiplication and division occur before addition or subtraction.
+final_concentration = (
+    initial_concentration * initial_volume
+) / final_volume
 
-    def with_parens(self) -> int:
-        return (self.a + self.b) * self.c
+print("Final concentration:", final_concentration)
 
+# Example 2: Parentheses change the result
+result_a = 2 + 3 * 4
+result_b = (2 + 3) * 4
 
-class GenomicThresholdCheck:
-    def __init__(self, value: float, baseline: float, tolerance: float) -> None:
-        self.value = value
-        self.baseline = baseline
-        self.tolerance = tolerance
+print("Without parentheses:", result_a)
+print("With parentheses:", result_b)
 
-    def within_range_no_parens(self) -> bool:
-        return self.baseline - self.tolerance < self.value < self.baseline + self.tolerance
+# Example 3: Exponentiation versus multiplication
+copies_a = 2 * 3 ** 2
+copies_b = (2 * 3) ** 2
 
-    def within_range_explicit(self) -> bool:
-        low = (self.baseline - self.tolerance)
-        high = (self.baseline + self.tolerance)
-        return low < self.value < high
+print("First result:", copies_a)
+print("Second result:", copies_b)
 
+# Example 4: Compare a laboratory measurement
+temperature = 28
+ph_value = 7.2
 
-class PhenotypeQC:
-    def __init__(self, height: float, leaves: int, threshold: float) -> None:
-        self.height = height
-        self.leaves = leaves
-        self.threshold = threshold
+# Comparisons are evaluated before the logical AND.
+acceptable = 20 <= temperature <= 35 and 6.5 <= ph_value <= 8.0
 
-    def score(self) -> float:
-        height_score = self.height / self.threshold
-        leaf_score = self.leaves * 1.0
-        return (height_score + leaf_score) / 2
+print("Measurements acceptable:", acceptable)
 
+# Example 5: and versus or
+# Parentheses make the intended grouping explicit.
+gene_detected = True
+contamination_detected = False
+control_passed = True
 
-if __name__ == "__main__":
-    e = ExpressionPrecedence(2, 3, 4)
-    print(e.ambiguous())
-    print(e.explicit())
-    print(e.with_parens())
+result = (
+    gene_detected
+    and control_passed
+    or contamination_detected
+)
 
-    qc = GenomicThresholdCheck(value=10.5, baseline=10.0, tolerance=0.6)
-    print(qc.within_range_explicit())
+print("Pipeline condition:", result)
 
-    p = PhenotypeQC(height=45.0, leaves=12, threshold=30.0)
-    print(p.score())
+# Explicit grouping is easier to review.
+result_clear = (
+    (gene_detected and control_passed)
+    or contamination_detected
+)
+
+print("Explicitly grouped result:", result_clear)
+
+# Example 6: Calculate ideal PCR amplification
+initial_copies = 100
+cycles = 10
+
+expected_copies = initial_copies * (2 ** cycles)
+
+print("Ideal theoretical copies:", expected_copies)
+
+# This model assumes perfect doubling per cycle.

@@ -1,116 +1,111 @@
-"""Generator expressions: lazy evaluation, filtering/mapping, vs list comprehensions."""
+"""
+TOPIC: Generator Expressions
+
+MAIN POINTS
+- Generator expressions create generators using compact comprehension-like syntax.
+- Their syntax is (expression for item in iterable).
+- Unlike list comprehensions, generator expressions do not construct a list containing every result.
+- Values are computed as the generator is consumed.
+- Generator expressions are useful with sum(), any(), all(), min(), and max().
+- They can reduce memory usage when processing large collections.
+- They are particularly useful for sequence statistics, gene expression summaries, and filtering biological records.
+- A generator expression is typically consumed only once.
+"""
+
+dna_sequences = [
+    "ATGCGCGT",
+    "TTAGGCAT",
+    "CGATCGAT",
+    "GGCCATTA"
+]
+
+# A list comprehension calculates and stores all lengths.
+sequence_lengths = [
+    len(sequence)
+    for sequence in dna_sequences
+]
+
+print("Sequence lengths:", sequence_lengths)
+
+# A generator expression calculates lengths as needed.
+length_generator = (
+    len(sequence)
+    for sequence in dna_sequences
+)
+
+print("Generator object:", length_generator)
+
+print("First sequence length:", next(length_generator))
+print("Second sequence length:", next(length_generator))
+
+# Consume the remaining values.
+print("Remaining lengths:", list(length_generator))
 
 
-class UniversityGeneratorExpressions:
-    def __init__(self, plant_records: list[dict]) -> None:
-        self.plant_records = plant_records
+# Calculate the total number of nucleotides without
+# constructing a separate list of lengths.
+total_nucleotides = sum(
+    len(sequence)
+    for sequence in dna_sequences
+)
 
-    def height_generator_expression(self):
-        """A generator expression producing heights lazily."""
-        return (record["height_cm"] for record in self.plant_records)
-
-    def tall_species_generator_expression(self, threshold: float):
-        return (
-            record["species"]
-            for record in self.plant_records
-            if record["height_cm"] >= threshold
-        )
-
-    @staticmethod
-    def run() -> None:
-        data = [
-            {"sample_id": "P001", "species": "Wheat", "height_cm": 28.5},
-            {"sample_id": "P002", "species": "Rice", "height_cm": 31.2},
-            {"sample_id": "P003", "species": "Barley", "height_cm": 22.0},
-        ]
-
-        demo = UniversityGeneratorExpressions(data)
-        height_gen = demo.height_generator_expression()
-        print(f"Generator expression type: {type(height_gen).__name__}")
-        print(f"Heights (consumed lazily): {list(height_gen)}")
-
-        tall_gen = demo.tall_species_generator_expression(25.0)
-        print(f"Species taller than 25cm: {list(tall_gen)}")
+print("Total nucleotides:", total_nucleotides)
 
 
-class InterviewGeneratorExpressions:
-    def __init__(self, records: list[dict]) -> None:
-        self.records = records
+# Calculate the total number of G and C nucleotides.
+total_gc_count = sum(
+    sequence.count("G") + sequence.count("C")
+    for sequence in dna_sequences
+)
 
-    def safe_gene_expression_values(self, key: str):
-        """Generator expression that defensively skips missing/invalid values."""
-        return (
-            record[key]
-            for record in self.records
-            if isinstance(record.get(key), (int, float)) and record.get(key) >= 0
-        )
-
-    @staticmethod
-    def run() -> None:
-        empty_case: list[dict] = []
-        processor = InterviewGeneratorExpressions(empty_case)
-        result_empty = list(processor.safe_gene_expression_values("expression_level"))
-        print(f"Empty records -> valid expression values: {result_empty}")
-
-        messy_case = [
-            {"gene": "wus1", "expression_level": 4.2},
-            {"gene": "zmm4", "expression_level": -1.0},
-            {"gene": "sb_drought1", "expression_level": "high"},
-            {"gene": "cry1ab", "expression_level": 7.8},
-        ]
-        processor = InterviewGeneratorExpressions(messy_case)
-        result_messy = list(processor.safe_gene_expression_values("expression_level"))
-        print(f"Messy records -> valid expression values: {result_messy}")
-
-        list_comp_result = [
-            r["expression_level"]
-            for r in messy_case
-            if isinstance(r.get("expression_level"), (int, float))
-            and r.get("expression_level") >= 0
-        ]
-        print(f"Equivalent list comprehension result: {list_comp_result}")
+print("Total GC nucleotides:", total_gc_count)
 
 
-class IndustryGeneratorExpressions:
-    def __init__(self, experiment_data: list[dict]) -> None:
-        self.data = experiment_data
+# Calculate the average GC percentage across all sequences.
+gc_percentages = (
+    (
+        sequence.count("G") + sequence.count("C")
+    ) / len(sequence) * 100
+    for sequence in dna_sequences
+    if sequence
+)
 
-    def high_expression_gene_names(self, threshold: float):
-        """Lazily filters and maps gene names above an expression threshold.
+gc_values = list(gc_percentages)
 
-        Uses a generator expression to avoid building an intermediate
-        list for large datasets.
-        """
-        return (
-            record["gene"]
-            for record in self.data
-            if record.get("expression_level", 0.0) >= threshold
-        )
+mean_gc_percentage = sum(gc_values) / len(gc_values)
 
-    def process(self, threshold: float = 5.0) -> dict[str, object]:
-        matching_genes = list(self.high_expression_gene_names(threshold))
-        return {
-            "total_genes": len(self.data),
-            "threshold": threshold,
-            "high_expression_count": len(matching_genes),
-            "high_expression_genes": matching_genes,
-        }
-
-    @staticmethod
-    def run() -> None:
-        sample_data = [
-            {"gene": "wus1", "expression_level": 4.2},
-            {"gene": "zmm4", "expression_level": 6.1},
-            {"gene": "sb_drought1", "expression_level": 8.9},
-            {"gene": "cry1ab", "expression_level": 2.5},
-        ]
-
-        processor = IndustryGeneratorExpressions(sample_data)
-        report = processor.process(threshold=5.0)
-        print(f"Experiment report: {report}")
+print("Individual GC percentages:", gc_values)
+print("Mean GC percentage:", round(mean_gc_percentage, 2))
 
 
-if __name__ == "__main__":
-    UniversityGeneratorExpressions.run()
-    InterviewGeneratorExpressions.run()
-    IndustryGeneratorExpressions.run()
+# Filter sequences lazily by length.
+long_sequences = (
+    sequence
+    for sequence in dna_sequences
+    if len(sequence) >= 8
+)
+
+print("Sequences with length >= 8:")
+
+for sequence in long_sequences:
+    print(sequence)
+
+
+# Check whether any sequence contains a start codon.
+contains_start_codon = any(
+    sequence.startswith("ATG")
+    for sequence in dna_sequences
+)
+
+print("Any sequence starts with ATG:", contains_start_codon)
+
+
+# Check whether all sequences contain only valid DNA bases.
+valid_bases = {"A", "T", "G", "C"}
+
+all_valid = all(
+    set(sequence.upper()) <= valid_bases
+    for sequence in dna_sequences
+)
+
+print("All sequences contain valid DNA bases:", all_valid)

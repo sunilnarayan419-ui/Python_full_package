@@ -1,83 +1,63 @@
-"""08_Packing_and_Unpacking.py — Python packing and unpacking through plant science and genomics."""
-from __future__ import annotations
 
+"""
+08. Packing and Unpacking
 
-class PlantMeasurementUnpackerUniversity:
-    """University level: simple tuple packing and unpacking."""
+Main points
+- Packing groups multiple values into a tuple.
+- Unpacking assigns iterable elements to multiple variables.
+- The number of assigned variables must match the number of elements,
+  unless starred unpacking is used.
+- *variable captures remaining elements into a list.
+- _ is conventionally used for an intentionally ignored value.
+- Unpacking is useful for experimental records and multiple return values.
+"""
 
-    def __init__(self) -> None:
-        self.measurement: tuple[str, float, int] = ("WHT-001", 28.5, 12)
+# Example 1: Tuple packing
+sample_record = "S001", "TP53", 12.5
 
-    def unpack_and_display(self) -> None:
-        sample_id, height, leaves = self.measurement
-        print(f"University — Unpacked: {sample_id}, {height} cm, {leaves} leaves")
+print("Packed record:", sample_record)
+print("Record type:", type(sample_record))
 
-    @staticmethod
-    def run() -> None:
-        demo = PlantMeasurementUnpackerUniversity()
-        demo.unpack_and_display()
+# Example 2: Unpack sample metadata
+sample_id, gene_name, expression = sample_record
 
+print("Sample:", sample_id)
+print("Gene:", gene_name)
+print("Expression:", expression)
 
-class GenomicRecordUnpackerInterview:
-    """Interview level: unpack scientific records cleanly."""
+# Example 3: Swap two variables
+control_expression = 10.0
+treated_expression = 18.0
 
-    def __init__(self, records: list[tuple[str, str, int, int]]) -> None:
-        self.records = records
+control_expression, treated_expression = (
+    treated_expression,
+    control_expression
+)
 
-    def extract_gene_ranges(self) -> list[tuple[str, int]]:
-        ranges: list[tuple[str, int]] = []
-        for gene_id, chrom, start, end in self.records:
-            length = end - start + 1
-            ranges.append((gene_id, length))
-        return ranges
+print("First value after swap:", control_expression)
+print("Second value after swap:", treated_expression)
 
-    @staticmethod
-    def run() -> None:
-        records: list[tuple[str, str, int, int]] = [
-            ("AT1G01010", "Chr1", 3631, 5899),
-            ("AT1G01020", "Chr1", 6788, 9130),
-            ("AT2G02010", "Chr2", 5000, 8000),
-        ]
-        demo = GenomicRecordUnpackerInterview(records)
-        ranges = demo.extract_gene_ranges()
-        print("Interview — Gene ranges:")
-        for gene_id, length in ranges:
-            print(f"  {gene_id}: {length} bp")
+# Example 4: Starred unpacking
+measurements = (12.5, 14.2, 16.8, 19.1, 20.0)
 
+first, *middle, last = measurements
 
-class SampleMetadataUnpackerIndustry:
-    """Industry level: extended unpacking for readable scientific data processing."""
+print("First:", first)
+print("Middle:", middle)
+print("Last:", last)
 
-    def __init__(self, records: list[tuple[str, str, str, float, int, str]]) -> None:
-        self.records = records
+# Example 5: Ignore an unneeded field
+sample_id, _, concentration = ("S002", "unused", 35.0)
 
-    def summarize(self) -> dict[str, dict[str, float | int]]:
-        summary: dict[str, dict[str, float | int]] = {}
-        for sample_id, species, tissue, height, leaves, *rest in self.records:
-            summary[sample_id] = {
-                "height_cm": height,
-                "leaf_count": leaves,
-                "notes": rest[0] if rest else "",
-            }
-        return summary
+print("Sample:", sample_id)
+print("Concentration:", concentration)
 
-    @staticmethod
-    def run() -> None:
-        records: list[tuple[str, str, str, float, int, str]] = [
-            ("WHT-001", "Triticum aestivum", "leaf", 28.5, 12, "healthy"),
-            ("WHT-002", "Triticum aestivum", "root", 32.1, 15, "stressed"),
-            ("RCE-001", "Oryza sativa", "stem", 25.8, 10),
-        ]
-        unpacker = SampleMetadataUnpackerIndustry(records)
-        summary = unpacker.summarize()
-        print("Industry — Sample summaries:")
-        for sid, data in summary.items():
-            print(f"  {sid}: height={data['height_cm']} cm, leaves={data['leaf_count']}, notes={data['notes']!r}")
+# Example 6: A function returning multiple values
+def summarize_expression(values):
+    return min(values), max(values), sum(values) / len(values)
 
+minimum, maximum, mean = summarize_expression([5.0, 10.0, 15.0])
 
-if __name__ == "__main__":
-    PlantMeasurementUnpackerUniversity.run()
-    print()
-    GenomicRecordUnpackerInterview.run()
-    print()
-    SampleMetadataUnpackerIndustry.run()
+print("Minimum:", minimum)
+print("Maximum:", maximum)
+print("Mean:", mean)

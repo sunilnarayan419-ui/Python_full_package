@@ -1,40 +1,56 @@
-﻿"""Useful string methods for biological data."""
 
+"""
+08. String Methods
 
-class StringMethodsUniversity:
-    @staticmethod
-    def clean(sequence: str) -> str:
-        return sequence.strip().upper()
+Main points
+- String methods perform operations on strings.
+- upper() converts letters to uppercase.
+- lower() converts letters to lowercase.
+- strip() removes leading and trailing whitespace by default.
+- replace() substitutes matching text.
+- split() divides a string into a list.
+- join() combines strings using a separator.
+- find() returns the first matching index or -1.
+- count() counts non-overlapping occurrences.
+- String methods generally return new values because strings are immutable.
+"""
 
+organism = "  Arabidopsis Thaliana  "
+sequence = "atgcgtaatg"
 
-class StringMethodsInterview:
-    def __init__(self, sequence: str) -> None:
-        self.sequence = sequence
+# Change case
+print(organism.upper())
+print(organism.lower())
+print(organism.title())
 
-    def starts_with_atg(self) -> bool:
-        return self.sequence.upper().startswith("ATG")
+# Remove surrounding whitespace
+clean_name = organism.strip()
+print("Clean name:", clean_name)
 
-    def count_gc(self) -> int:
-        return self.sequence.upper().count("G") + self.sequence.upper().count("C")
+# Replace text
+print(clean_name.replace("Thaliana", "plant"))
 
+# Split a string
+csv_line = "sample_01,25.5,7.4"
+fields = csv_line.split(",")
 
-class StringMethodsIndustry:
-    @staticmethod
-    def is_valid_dna(sequence: str) -> bool:
-        s = sequence.upper()
-        return all(c in "ACGT" for c in s)
+print("Fields:", fields)
 
-    @staticmethod
-    def replace_u_with_t(rna: str) -> str:
-        return rna.upper().replace("U", "T")
+# Join strings
+joined_text = " | ".join(fields)
+print("Joined:", joined_text)
 
+# Search and count
+print("Index of 'g':", sequence.find("g"))
+print("Count of 'a':", sequence.count("a"))
 
-if __name__ == "__main__":
-    print(StringMethodsUniversity.clean("  atgc  "))
+# Prefix and suffix checks
+print("Starts with 'atg':", sequence.startswith("atg"))
+print("Ends with 'atg':", sequence.endswith("atg"))
 
-    s = StringMethodsInterview("ATGCGCAT")
-    print(s.starts_with_atg())
-    print(s.count_gc())
+# Check string content
+print("Is alphabetic:", "Python".isalpha())
+print("Is numeric:", "12345".isdigit())
 
-    print(StringMethodsIndustry.is_valid_dna("ATGC"))
-    print(StringMethodsIndustry.replace_u_with_t("AUGC"))
+# Original string remains unchanged
+print("Original organism:", organism)

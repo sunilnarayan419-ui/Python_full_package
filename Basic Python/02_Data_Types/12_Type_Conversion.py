@@ -1,46 +1,55 @@
-"""Converting scientific/genomic input values between types."""
 
+"""
+12. Type Conversion
 
-class TypeConversionUniversity:
-    @staticmethod
-    def to_int(reads: str) -> int:
-        return int(reads)
+Main points
+- Type conversion changes a value from one type to another.
+- Explicit conversion is also called type casting.
+- Common conversion functions include int(), float(), str(), bool(),
+  complex(), list(), tuple(), set(), and dict().
+- int("25") converts a valid integer string to an integer.
+- float("3.14") converts a valid numeric string to a float.
+- Invalid conversions may raise ValueError or TypeError.
+- Converting a float to int truncates the fractional part toward zero.
+- Converting to bool follows Python's truthiness rules.
+"""
 
-    @staticmethod
-    def to_float(value: str) -> float:
-        return float(value)
+# String to integer
+count = int("25")
+print(count, type(count))
 
-    @staticmethod
-    def to_str(value: int) -> str:
-        return str(value)
+# String to float
+temperature = float("27.5")
+print(temperature, type(temperature))
 
+# Integer to float
+measurement = float(10)
+print(measurement, type(measurement))
 
-class TypeConversionInterview:
-    @staticmethod
-    def parse_gc(value: str) -> float:
-        return float(value) / 100.0
+# Number to string
+sample_id = str(1001)
+print(sample_id, type(sample_id))
 
-    @staticmethod
-    def parse_species_code(code: int) -> str:
-        return f"SP-{code:04d}"
+# Float to integer: truncates toward zero
+print(int(9.8))
+print(int(-9.8))
 
+# Convert to boolean
+print(bool(0))
+print(bool(1))
+print(bool(""))
+print(bool("False"))  # Non-empty string is True
 
-class TypeConversionIndustry:
-    @staticmethod
-    def _coerce(value: str, target: type) -> int | float | str:
-        if target is int:
-            return int(value)
-        if target is float:
-            return float(value)
-        return str(value)
+# Convert between collections
+letters = list("DNA")
+print(letters)
 
-    @classmethod
-    def normalize(cls, raw: str, kind: str) -> int | float | str:
-        target = {"int": int, "float": float, "str": str}[kind]
-        return cls._coerce(raw, target)
+unique_values = set([1, 2, 2, 3])
+print(unique_values)
 
+# Convert integer to complex
+number = complex(5)
+print(number, type(number))
 
-if __name__ == "__main__":
-    print(TypeConversionUniversity.to_int("1234"))
-    print(TypeConversionInterview.parse_gc("45.2"))
-    print(TypeConversionIndustry.normalize("3.14", "float"))
+# Uncomment to observe ValueError:
+# invalid_number = int("hello")

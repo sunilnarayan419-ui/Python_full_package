@@ -1,40 +1,60 @@
-"""Logical operators in scientific workflows."""
 
+"""
+04. Logical Operators
 
-class SampleEligibility:
-    def __init__(self, height_cm: float, leaf_count: int) -> None:
-        self.height_cm = height_cm
-        self.leaf_count = leaf_count
+Main points
+- and evaluates whether both operands are truthy.
+- or evaluates whether at least one operand is truthy.
+- not reverses the truth value of an expression.
+- Logical operators short-circuit when the result is already determined.
+- In Python, and and or return one of their operands, not necessarily bool.
+- Use parentheses to make complex conditions easier to understand.
+- Logical conditions can represent quality-control and eligibility rules.
+"""
 
-    def is_healthy(self) -> bool:
-        return self.height_cm > 20 and self.leaf_count >= 5
+# Example 1: DNA sample quality control
+dna_concentration = 35.0
+purity_ratio = 1.85
 
+concentration_ok = dna_concentration >= 20
+purity_ok = 1.8 <= purity_ratio <= 2.0
 
-class PhenotypeRule:
-    def __init__(self, height_cm: float, disease_present: bool) -> None:
-        self.height_cm = height_cm
-        self.disease_present = disease_present
+sample_passes_qc = concentration_ok and purity_ok
+print("Sample passes QC:", sample_passes_qc)
 
-    def is_eligible(self) -> bool:
-        return self.height_cm > 30 or not self.disease_present
+# Example 2: Accept a sample if either sequencing method succeeded
+illumina_success = False
+nanopore_success = True
 
+sequencing_available = illumina_success or nanopore_success
+print("Sequencing data available:", sequencing_available)
 
-class SequencingSampleValidator:
-    def __init__(self, min_quality: float, min_length: int, contamination: bool) -> None:
-        self.min_quality = min_quality
-        self.min_length = min_length
-        self.contamination = contamination
+# Example 3: Identify samples that are not contaminated
+contamination_detected = False
 
-    def is_valid(self, quality: float, length: int) -> bool:
-        if self.contamination:
-            return False
-        return quality >= self.min_quality and length >= self.min_length
+sample_is_clean = not contamination_detected
+print("Sample is clean:", sample_is_clean)
 
+# Example 4: Combine multiple biological conditions
+temperature = 28
+nutrient_available = True
+light_available = True
 
-if __name__ == "__main__":
-    print(SampleEligibility(45.0, 8).is_healthy())
+growth_conditions_met = (
+    20 <= temperature <= 35
+    and nutrient_available
+    and light_available
+)
 
-    print(PhenotypeRule(25.0, disease_present=True).is_eligible())
+print("Growth conditions met:", growth_conditions_met)
 
-    v = SequencingSampleValidator(min_quality=30.0, min_length=100, contamination=False)
-    print(v.is_valid(quality=35.0, length=120))
+# Example 5: Short-circuit evaluation
+gene_expression = None
+
+# The second condition is evaluated only if the first is True.
+if gene_expression is not None and gene_expression > 10:
+    print("High gene expression detected.")
+else:
+    print("Expression is missing or not above the threshold.")
+
+# Important: Boolean conditions alone do not establish causality.

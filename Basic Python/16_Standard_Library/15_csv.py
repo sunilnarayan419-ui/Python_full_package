@@ -1,143 +1,72 @@
-"""Demonstrates the csv module for structured experimental data import/export."""
+"""
+TOPIC: csv
+MAIN POINTS:
+- Read CSV files row by row.
+- Write rows to a CSV file.
+- Work with named columns using dictionaries.
+- Use newline="" when opening CSV files.
+"""
 
 import csv
-import tempfile
 from pathlib import Path
 
+csv_file = Path("gene_expression.csv")
 
-class UniversityCsv:
-    """Introduces basic CSV reading and writing using plant sample records."""
+# Example scientific dataset
+samples = [
+    {"sample_id": "S001", "condition": "Control", "expression": 10.5},
+    {"sample_id": "S002", "condition": "Control", "expression": 11.2},
+    {"sample_id": "S003", "condition": "Treatment", "expression": 15.7},
+]
 
-    def write_records(self, file_path: Path, records: list[list[str]]) -> None:
-        with file_path.open("w", newline="", encoding="utf-8") as handle:
-            writer = csv.writer(handle)
-            writer.writerow(["sample_id", "species", "height_cm"])
-            writer.writerows(records)
+fieldnames = ["sample_id", "condition", "expression"]
 
-    def read_records(self, file_path: Path) -> list[list[str]]:
-        with file_path.open("r", newline="", encoding="utf-8") as handle:
-            reader = csv.reader(handle)
-            return list(reader)
+# Write CSV
+with csv_file.open("w", newline="", encoding="utf-8") as file:
+    writer = csv.DictWriter(file, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(samples)
 
-    @staticmethod
-    def run() -> None:
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            file_path = Path(tmp_dir) / "samples.csv"
-            demo = UniversityCsv()
+# Read CSV
+with csv_file.open("r", newline="", encoding="utf-8") as file:
+    reader = csv.DictReader(file)
 
-            records = [["PL-001", "Arabidopsis", "24.5"], ["PL-002", "Zea mays", "88.0"]]
-            demo.write_records(file_path, records)
+    for row in reader:
+        # CSV values are strings by default.
+        expression = float(row["expression"])
 
-            read_back = demo.read_records(file_path)
-            print(f"Read back CSV rows: {read_back}")
+        print(
+            row["sample_id"],
+            row["condition"],
+            expression,
+        )
 
+# Calculate the mean expression for the treatment group
+treatment_values = [
+    float(row["expression"])
+    for row in csv.DictReader(
+        csv_file.open("r", newline="", encoding="utf-8")
+    )
+    if row["condition"] == "Treatment"
+]
 
-class InterviewCsv:
-    """Solves a structured CSV-processing problem using DictReader, with edge cases."""
-
-    def load_valid_records(self, file_path: Path, required_fields: list[str]) -> list[dict[str, str]]:
-        """Load CSV rows as dicts, skipping rows missing required data.
-
-        Rows with a blank value for any required field are skipped rather than
-        causing the entire load to fail, since a single malformed row is common
-        in real laboratory data exports.
-        """
-        if not file_path.exists():
-            raise FileNotFoundError(f"CSV file not found: {file_path}")
-
-        valid_records: list[dict[str, str]] = []
-        with file_path.open("r", newline="", encoding="utf-8") as handle:
-            reader = csv.DictReader(handle)
-            for row in reader:
-                if all(row.get(field) for field in required_fields):
-                    valid_records.append(row)
-        return valid_records
-
-    @staticmethod
-    def run() -> None:
-        solver = InterviewCsv()
-
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            file_path = Path(tmp_dir) / "expression.csv"
-            content = (
-                "sample_id,species,height_cm,leaf_count,expression_level\n"
-                "PL-001,Arabidopsis,24.5,14,4.2\n"
-                "PL-002,,88.0,22,3.9\n"  # missing species: should be skipped
-                "PL-003,Oryza sativa,31.0,18,5.1\n"
-            )
-            file_path.write_text(content, encoding="utf-8")
-
-            # Test case 1: normal load with a malformed row present
-            valid_records = solver.load_valid_records(file_path, required_fields=["sample_id", "species"])
-            print(f"Valid records loaded: {len(valid_records)}")
-            for record in valid_records:
-                print(record)
-
-            # Test case 2: edge case, missing file
-            try:
-                solver.load_valid_records(Path(tmp_dir) / "missing.csv", ["sample_id"])
-            except FileNotFoundError as error:
-                print(f"Handled missing file: {error}")
+if treatment_values:
+    mean_expression = sum(treatment_values) / len(treatment_values)
+    print("Treatment mean:", mean_expression)
 
 
-class IndustryCsv:
-    """Reusable scientific-data import/export workflow using DictReader/DictWriter."""
+# alternative 
 
-    FIELDNAMES = ["sample_id", "species", "height_cm", "leaf_count", "expression_level"]
+import csv
+from pathlib import Path
 
-    def export_records(self, file_path: Path, records: list[dict[str, str]]) -> Path:
-        """Export structured experimental records to CSV with a fixed schema."""
-        with file_path.open("w", newline="", encoding="utf-8") as handle:
-            writer = csv.DictWriter(handle, fieldnames=self.FIELDNAMES)
-            writer.writeheader()
-            writer.writerows(records)
-        return file_path
+csv_file = Path("gene_expression.csv")
+treatment_values = []
 
-    def import_records(self, file_path: Path) -> list[dict[str, str]]:
-        """Import structured experimental records from CSV, validating the schema."""
-        if not file_path.exists():
-            raise FileNotFoundError(f"CSV file not found: {file_path}")
+with csv_file.open("r", newline="", encoding="utf-8") as file:
+    for row in csv.DictReader(file):
+        if row["condition"] == "Treatment":
+            treatment_values.append(float(row["expression"]))
 
-        with file_path.open("r", newline="", encoding="utf-8") as handle:
-            reader = csv.DictReader(handle)
-            if reader.fieldnames != self.FIELDNAMES:
-                raise ValueError(
-                    f"Unexpected CSV schema. Expected {self.FIELDNAMES}, got {reader.fieldnames}."
-                )
-            return list(reader)
-
-    @staticmethod
-    def run() -> None:
-        manager = IndustryCsv()
-
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            file_path = Path(tmp_dir) / "experiment_export.csv"
-
-            records = [
-                {
-                    "sample_id": "PL-010",
-                    "species": "Arabidopsis",
-                    "height_cm": "26.1",
-                    "leaf_count": "15",
-                    "expression_level": "4.4",
-                },
-                {
-                    "sample_id": "PL-011",
-                    "species": "Zea mays",
-                    "height_cm": "90.2",
-                    "leaf_count": "24",
-                    "expression_level": "3.8",
-                },
-            ]
-
-            manager.export_records(file_path, records)
-            print(f"Exported {len(records)} records to {file_path.name}")
-
-            imported = manager.import_records(file_path)
-            print(f"Imported records: {imported}")
-
-
-if __name__ == "__main__":
-    UniversityCsv.run()
-    InterviewCsv.run()
-    IndustryCsv.run()
+if treatment_values:
+    print("Treatment mean:", sum(treatment_values) / len(treatment_values))

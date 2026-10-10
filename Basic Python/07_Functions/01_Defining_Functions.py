@@ -1,119 +1,45 @@
-class UniversityDefiningFunctions:
-    def __init__(self, plant_records: list[dict]) -> None:
-        self.plant_records = plant_records
 
-    def count_samples(self) -> int:
-        return len(self.plant_records)
+"""
+01. Defining Functions
 
-    def average_height_cm(self) -> float:
-        if not self.plant_records:
-            return 0.0
-        total = sum(record["height_cm"] for record in self.plant_records)
-        return total / len(self.plant_records)
+Main points
+- A function is a reusable block of code designed to perform a task.
+- Define a function using the def keyword.
+- A function name should describe its purpose.
+- Parentheses contain parameters; a colon starts the function body.
+- Indentation defines the function body.
+- A function executes when it is called.
+- Functions help reduce repetition and organize scientific workflows.
+- A function can accept inputs, perform operations, and return results.
+"""
 
-    def describe_sample(self, index: int) -> str:
-        record = self.plant_records[index]
-        return f"{record['species']} - {record['height_cm']} cm"
-
-    @staticmethod
-    def run() -> None:
-        plant_records = [
-            {"species": "Zea mays", "height_cm": 152.0},
-            {"species": "Arabidopsis thaliana", "height_cm": 12.5},
-            {"species": "Glycine max", "height_cm": 68.3},
-        ]
-        analyzer = UniversityDefiningFunctions(plant_records)
-        print("University - sample count:", analyzer.count_samples())
-        print("University - average height:", analyzer.average_height_cm())
-        print("University - description:", analyzer.describe_sample(0))
+# Example 1: Calculate the GC percentage of a DNA sequence.
+def calculate_gc_percentage(sequence):
+    sequence = sequence.upper()
+    gc_count = sequence.count("G") + sequence.count("C")
+    return (gc_count / len(sequence)) * 100
 
 
-class InterviewDefiningFunctions:
-    def __init__(self, plant_samples: list[dict]) -> None:
-        self.plant_samples = plant_samples
+dna_sequence = "ATGCGCGT"
+gc_percentage = calculate_gc_percentage(dna_sequence)
 
-    def tallest_sample(self) -> dict | None:
-        if not self.plant_samples:
-            return None
-        tallest = self.plant_samples[0]
-        for sample in self.plant_samples[1:]:
-            if sample["height_cm"] > tallest["height_cm"]:
-                tallest = sample
-        return tallest
+print("DNA sequence:", dna_sequence)
+print("GC percentage:", gc_percentage)
 
-    def species_above_threshold(self, threshold_cm: float) -> list[str]:
-        result: list[str] = []
-        for sample in self.plant_samples:
-            if sample["height_cm"] > threshold_cm:
-                result.append(sample["species"])
-        return result
-
-    def handle_empty_dataset(self) -> str:
-        if not self.plant_samples:
-            return "No samples available for analysis."
-        return f"{len(self.plant_samples)} samples available."
-
-    @staticmethod
-    def run() -> None:
-        plant_samples = [
-            {"species": "Zea mays", "height_cm": 152.0},
-            {"species": "Helianthus annuus", "height_cm": 210.7},
-            {"species": "Arabidopsis thaliana", "height_cm": 12.5},
-        ]
-        solver = InterviewDefiningFunctions(plant_samples)
-        print("Interview - tallest sample:", solver.tallest_sample())
-        print("Interview - above 50cm:", solver.species_above_threshold(50.0))
-
-        empty_solver = InterviewDefiningFunctions([])
-        print("Interview - empty check:", empty_solver.handle_empty_dataset())
-        print("Interview - empty tallest:", empty_solver.tallest_sample())
+# Example 2: Display sample information.
+def display_sample(sample_id, organism):
+    print("Sample ID:", sample_id)
+    print("Organism:", organism)
 
 
-class IndustryDefiningFunctions:
-    """Encapsulates reusable operations for a plant phenotyping pipeline."""
+display_sample("S001", "Arabidopsis thaliana")
 
-    def __init__(self, plant_records: list[dict]) -> None:
-        self._validate_records(plant_records)
-        self.plant_records = plant_records
+# Example 3: Reuse a function for multiple sequences.
+sequences = ["ATGC", "GGCC", "ATAT"]
 
-    @staticmethod
-    def _validate_records(records: list[dict]) -> None:
-        required_keys = {"species", "height_cm"}
-        for record in records:
-            missing = required_keys - record.keys()
-            if missing:
-                raise ValueError(f"Record missing required keys: {missing}")
-            if record["height_cm"] < 0:
-                raise ValueError("height_cm cannot be negative")
+for sequence in sequences:
+    print(sequence, calculate_gc_percentage(sequence))
 
-    def summarize_by_species(self) -> dict[str, float]:
-        totals: dict[str, list[float]] = {}
-        for record in self.plant_records:
-            totals.setdefault(record["species"], []).append(record["height_cm"])
-        return {
-            species: sum(heights) / len(heights)
-            for species, heights in totals.items()
-        }
-
-    def generate_report(self) -> str:
-        summary = self.summarize_by_species()
-        lines = [f"{species}: {avg_height:.2f} cm avg" for species, avg_height in summary.items()]
-        return "\n".join(lines)
-
-    @staticmethod
-    def run() -> None:
-        plant_records = [
-            {"species": "Zea mays", "height_cm": 150.0},
-            {"species": "Zea mays", "height_cm": 158.0},
-            {"species": "Glycine max", "height_cm": 65.0},
-        ]
-        pipeline = IndustryDefiningFunctions(plant_records)
-        print("Industry - summary:", pipeline.summarize_by_species())
-        print("Industry - report:")
-        print(pipeline.generate_report())
-
-
-if __name__ == "__main__":
-    UniversityDefiningFunctions.run()
-    InterviewDefiningFunctions.run()
-    IndustryDefiningFunctions.run()
+# Note:
+# This introductory example assumes a non-empty sequence containing
+# only A, T, G, and C. Robust validation can be added later.

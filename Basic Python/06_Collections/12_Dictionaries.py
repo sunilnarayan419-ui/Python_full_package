@@ -1,83 +1,56 @@
-"""12_Dictionaries.py — Python dictionaries through plant science and genomics."""
-from __future__ import annotations
 
+"""
+12. Dictionaries
 
-class PlantSampleDictionaryUniversity:
-    """University level: basic dictionary creation and usage."""
+Main points
+- A dictionary stores key-value pairs.
+- Dictionaries are created using {} or dict().
+- Keys must be hashable and unique.
+- Values can be objects of different types.
+- Assigning an existing key replaces its value.
+- Modern Python dictionaries preserve insertion order.
+- Dictionaries are mutable.
+- They are useful for sample metadata, gene annotations, and lookup tables.
+"""
 
-    def __init__(self) -> None:
-        self.sample: dict[str, str | float] = {
-            "sample_id": "P001",
-            "species": "Wheat",
-            "height_cm": 28.5,
-        }
+# Store biological sample metadata
+sample = {
+    "sample_id": "S001",
+    "organism": "Arabidopsis thaliana",
+    "tissue": "leaf",
+    "temperature_celsius": 25.0
+}
 
-    def display(self) -> None:
-        print("University — Plant sample record:")
-        for key, value in self.sample.items():
-            print(f"  {key}: {value}")
+print("Sample metadata:", sample)
 
-    @staticmethod
-    def run() -> None:
-        demo = PlantSampleDictionaryUniversity()
-        demo.display()
+# Access a value using its key
+print("Sample ID:", sample["sample_id"])
+print("Organism:", sample["organism"])
 
+# Add a new key-value pair
+sample["treatment"] = "control"
+print("Updated sample:", sample)
 
-class GenomicRecordDictionaryInterview:
-    """Interview level: represent realistic plant/genomic records."""
+# Update an existing value
+sample["temperature_celsius"] = 28.0
+print("Updated temperature:", sample["temperature_celsius"])
 
-    def __init__(self, records: list[dict[str, str | float | int]]) -> None:
-        self.records = records
+# Store gene expression values
+expression = {
+    "TP53": 12.5,
+    "BRCA1": 8.2,
+    "EGFR": 18.4
+}
 
-    def index_by_gene_id(self) -> dict[str, dict[str, str | float | int]]:
-        indexed: dict[str, dict[str, str | float | int]] = {}
-        for rec in self.records:
-            gene_id = rec.get("gene_id")
-            if isinstance(gene_id, str):
-                indexed[gene_id] = rec
-        return indexed
+print("TP53 expression:", expression["TP53"])
 
-    @staticmethod
-    def run() -> None:
-        records: list[dict[str, str | float | int]] = [
-            {"gene_id": "AT1G01010", "species": "Arabidopsis", "expression": 12.5},
-            {"gene_id": "AT1G01020", "species": "Arabidopsis", "expression": 8.3},
-            {"gene_id": "AT1G01030", "species": "Arabidopsis", "expression": 15.1},
-        ]
-        demo = GenomicRecordDictionaryInterview(records)
-        indexed = demo.index_by_gene_id()
-        print("Interview — Records indexed by gene_id:")
-        for gid, rec in indexed.items():
-            print(f"  {gid}: {rec}")
+# Count occurrences using a dictionary
+dna_sequence = "ATGCGTAA"
+nucleotide_counts = {}
 
+for nucleotide in dna_sequence:
+    nucleotide_counts[nucleotide] = (
+        nucleotide_counts.get(nucleotide, 0) + 1
+    )
 
-class PhenotypeMetadataStoreIndustry:
-    """Industry level: clean scientific metadata structure using dictionaries."""
-
-    def __init__(self) -> None:
-        self.samples: dict[str, dict[str, str | float | int]] = {}
-
-    def add_sample(self, sample_id: str, metadata: dict[str, str | float | int]) -> None:
-        if not sample_id:
-            raise ValueError("sample_id must not be empty")
-        self.samples[sample_id] = metadata.copy()
-
-    def get_sample(self, sample_id: str) -> dict[str, str | float | int] | None:
-        return self.samples.get(sample_id)
-
-    @staticmethod
-    def run() -> None:
-        store = PhenotypeMetadataStoreIndustry()
-        store.add_sample("WHT-001", {"species": "Wheat", "height_cm": 28.5, "leaf_count": 12})
-        store.add_sample("RCE-001", {"species": "Rice", "height_cm": 32.1, "leaf_count": 15})
-        print("Industry — Phenotype metadata store:")
-        for sid, meta in store.samples.items():
-            print(f"  {sid}: {meta}")
-
-
-if __name__ == "__main__":
-    PlantSampleDictionaryUniversity.run()
-    print()
-    GenomicRecordDictionaryInterview.run()
-    print()
-    PhenotypeMetadataStoreIndustry.run()
+print("Nucleotide counts:", nucleotide_counts)

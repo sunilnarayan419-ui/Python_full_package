@@ -1,133 +1,121 @@
-"""Context managers demonstrated through genomic file and lab session handling."""
+"""
+TOPIC: Context Managers
 
-import contextlib
-import tempfile
+MAIN POINTS
+- A context manager manages resources using the with statement.
+- File objects are common context managers.
+- The resource is cleaned up when the with block exits, including when an exception occurs.
+- Context managers implement the __enter__() and __exit__() protocol.
+- contextlib provides tools for creating and managing context managers.
+- Context managers are useful for files, database connections, and other resources.
+- Use them to make scientific data processing safer and easier to maintain.
+"""
+
 from pathlib import Path
-from types import TracebackType
+from contextlib import contextmanager
 
 
-class UniversityContextManagers:
-    """Teach the fundamental use of the built-in file context manager."""
+# Example 1: Use a file context manager.
+file_path = Path("gene_expression.txt")
 
-    def __init__(self, file_path: Path) -> None:
-        self.file_path = file_path
+with open(file_path, "w", encoding="utf-8") as file:
+    file.write("BRCA1,24.6\n")
+    file.write("TP53,18.2\n")
+    file.write("EGFR,42.8\n")
 
-    def write_and_read_sequence(self, sequence: str) -> str:
-        """Write a DNA sequence to a file, then read it back safely."""
-        with open(self.file_path, mode="w", encoding="utf-8") as handle:
-            handle.write(sequence)
-
-        with open(self.file_path, mode="r", encoding="utf-8") as handle:
-            return handle.read()
-
-    @staticmethod
-    def run() -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            file_path = Path(temp_dir) / "sequence.txt"
-
-            processor = UniversityContextManagers(file_path)
-            content = processor.write_and_read_sequence("ATCGGCTA")
-
-            print(f"Sequence written and read back: {content}")
+# The file is automatically closed after the block.
+print("File saved:", file_path.exists())
 
 
-class InterviewContextManagers:
-    """Demonstrate safe resource handling, including cleanup on exceptions."""
+# Example 2: Read the file safely.
+with open(file_path, "r", encoding="utf-8") as file:
+    for line in file:
+        gene, expression = line.strip().split(",")
 
-    def __init__(self, file_path: Path) -> None:
-        self.file_path = file_path
-
-    def write_results_safely(self, results: list[str]) -> int:
-        """Write experimental results to a file, returning lines written.
-
-        The file handle is guaranteed to close even if writing fails
-        partway through, because the with-block always calls __exit__.
-        """
-        lines_written = 0
-        with open(self.file_path, mode="w", encoding="utf-8") as handle:
-            for line in results:
-                handle.write(f"{line}\n")
-                lines_written += 1
-        return lines_written
-
-    def read_with_missing_file_handling(self) -> str:
-        """Attempt to read a file, handling the case where it does not exist."""
-        try:
-            with open(self.file_path, mode="r", encoding="utf-8") as handle:
-                return handle.read()
-        except FileNotFoundError:
-            return ""
-
-    @staticmethod
-    def run() -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            existing_path = Path(temp_dir) / "results.txt"
-            missing_path = Path(temp_dir) / "missing.txt"
-
-            processor = InterviewContextManagers(existing_path)
-            lines_written = processor.write_results_safely(["pass", "pass", "fail"])
-            content = processor.read_with_missing_file_handling()
-
-            missing_processor = InterviewContextManagers(missing_path)
-            missing_content = missing_processor.read_with_missing_file_handling()
-
-            print(f"Lines written: {lines_written}")
-            print(f"Existing file content: {content!r}")
-            print(f"Missing file handled result: {missing_content!r}")
+        print(
+            f"Gene: {gene}, "
+            f"Expression: {float(expression)}"
+        )
 
 
-class IndustryContextManagers:
-    """A reusable, exception-safe context manager for a lab analysis session."""
+# Example 3: Inspect resource cleanup.
+with open(file_path, "r", encoding="utf-8") as file:
+    print("\nFirst line:", file.readline().strip())
 
-    def __init__(self, session_name: str) -> None:
-        self.session_name = session_name
-        self.records_processed = 0
+print("Is file closed:", file.closed)
 
-    def __enter__(self) -> "IndustryContextManagers":
-        """Acquire the analysis session and prepare it for use."""
-        print(f"Opening analysis session: {self.session_name}")
+
+# Example 4: Create a custom context manager using a class.
+class ExperimentSession:
+    """Represent the start and end of an experiment session."""
+
+    def __init__(self, experiment_name):
+        self.experiment_name = experiment_name
+
+    def __enter__(self):
+        print(f"Starting experiment: {self.experiment_name}")
         return self
 
-    def __exit__(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_value: BaseException | None,
-        traceback: TracebackType | None,
-    ) -> bool:
-        """Release the session, ensuring cleanup even if an error occurred."""
-        print(
-            f"Closing analysis session: {self.session_name} "
-            f"({self.records_processed} records processed)"
-        )
+    def record_observation(self, observation):
+        print("Observation:", observation)
+
+    def __exit__(self, exception_type, exception_value, traceback):
+        if exception_type is not None:
+            print("Experiment ended with an error:", exception_value)
+        else:
+            print("Experiment completed successfully.")
+
+        # False means exceptions are not suppressed.
         return False
 
-    def process_record(self, record: dict[str, float]) -> None:
-        """Process a single scientific record within the active session."""
-        self.records_processed += 1
 
-    @staticmethod
-    @contextlib.contextmanager
-    def temporary_threshold(current_threshold: float, override: float):
-        """Temporarily override a processing threshold, then restore it."""
-        original = current_threshold
-        try:
-            yield override
-        finally:
-            _ = original  # threshold restoration point for downstream logic
-
-    @staticmethod
-    def run() -> None:
-        records = [{"purity": 0.9}, {"purity": 0.85}, {"purity": 0.95}]
-
-        with IndustryContextManagers("genomic_batch_01") as session:
-            for record in records:
-                session.process_record(record)
-
-        with IndustryContextManagers.temporary_threshold(0.8, 0.9) as active_threshold:
-            print(f"Active threshold during override: {active_threshold}")
+with ExperimentSession("Gene Expression Analysis") as experiment:
+    experiment.record_observation("BRCA1 expression measured.")
+    experiment.record_observation("TP53 expression measured.")
 
 
-if __name__ == "__main__":
-    UniversityContextManagers.run()
-    InterviewContextManagers.run()
-    IndustryContextManagers.run()
+# Example 5: Create a context manager using contextlib.
+@contextmanager
+def experiment_log(experiment_name):
+    print(f"\nOpening log for: {experiment_name}")
+
+    try:
+        yield
+    except Exception as error:
+        print("Error during experiment:", error)
+        raise
+    finally:
+        print("Closing experiment log.")
+
+
+with experiment_log("DNA Sequence Analysis"):
+    print("Calculating nucleotide composition.")
+    print("Calculating GC percentage.")
+
+
+# Example 6: Context managers still clean up after exceptions.
+try:
+    with experiment_log("Invalid Analysis"):
+        print("Starting analysis.")
+        raise ValueError("Invalid experimental measurement.")
+except ValueError as error:
+    print("Caught error outside context manager:", error)
+
+
+# Example 7: Use a context manager for a DNA report.
+report_path = Path("dna_report.txt")
+dna_sequence = "ATGCGCGT"
+
+with open(report_path, "w", encoding="utf-8") as report:
+    report.write("DNA SEQUENCE REPORT\n")
+    report.write(f"Sequence: {dna_sequence}\n")
+    report.write(f"Length: {len(dna_sequence)}\n")
+
+    gc_count = dna_sequence.count("G") + dna_sequence.count("C")
+    gc_percentage = gc_count / len(dna_sequence) * 100
+
+    report.write(f"GC percentage: {gc_percentage:.2f}%\n")
+
+with open(report_path, "r", encoding="utf-8") as report:
+    print("\nGenerated report:")
+    print(report.read())

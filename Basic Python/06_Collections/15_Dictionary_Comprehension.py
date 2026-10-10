@@ -1,93 +1,79 @@
-"""15_Dictionary_Comprehension.py — Python dictionary comprehensions through plant science and genomics."""
-from __future__ import annotations
 
+"""
+15. Dictionary Comprehension
 
-class PlantHeightMapUniversity:
-    """University level: simple transformation into a dictionary."""
+Main points
+- Dictionary comprehensions create dictionaries using a concise expression.
+- Basic syntax: {key_expression: value_expression for item in iterable}.
+- Conditions can filter entries.
+- Duplicate generated keys overwrite earlier values.
+- Dictionary comprehensions are useful for transforming annotations,
+  mapping identifiers, and filtering measurements.
+- For complex transformations, a regular loop may be easier to read.
+"""
 
-    def __init__(self, samples: list[tuple[str, float]]) -> None:
-        self.samples = samples
+# Example 1: Map genes to their expression values
+genes = ["TP53", "BRCA1", "EGFR"]
+expression_values = [12.5, 8.2, 18.4]
 
-    def build_map(self) -> dict[str, float]:
-        return {sample_id: height for sample_id, height in self.samples}
+expression_map = {
+    gene: value
+    for gene, value in zip(genes, expression_values)
+}
 
-    @staticmethod
-    def run() -> None:
-        samples = [("WHT-001", 28.5), ("WHT-002", 32.1), ("WHT-003", 25.8)]
-        demo = PlantHeightMapUniversity(samples)
-        height_map = demo.build_map()
-        print("University — Sample height map:")
-        for sid, h in height_map.items():
-            print(f"  {sid}: {h} cm")
+print("Expression map:", expression_map)
 
+# Example 2: Convert expression values to a different scale
+expression_map_scaled = {
+    gene: value / 10
+    for gene, value in expression_map.items()
+}
 
-class GeneExpressionFilterMapInterview:
-    """Interview level: transform and filter scientific records."""
+print("Scaled expression:", expression_map_scaled)
 
-    def __init__(self, records: list[dict[str, str | float]]) -> None:
-        self.records = records
+# Example 3: Keep only genes above a threshold
+high_expression_genes = {
+    gene: value
+    for gene, value in expression_map.items()
+    if value > 10
+}
 
-    def high_expression_map(self, threshold: float) -> dict[str, float]:
-        return {
-            rec["gene_id"]: float(rec["expression"])
-            for rec in self.records
-            if isinstance(rec.get("expression"), (int, float)) and rec["expression"] > threshold
-        }
+print("High-expression genes:", high_expression_genes)
 
-    @staticmethod
-    def run() -> None:
-        records: list[dict[str, str | float]] = [
-            {"gene_id": "AT1G01010", "expression": 12.5},
-            {"gene_id": "AT1G01020", "expression": 3.2},
-            {"gene_id": "AT1G01030", "expression": 8.3},
-            {"gene_id": "AT1G01040", "expression": 15.1},
-        ]
-        demo = GeneExpressionFilterMapInterview(records)
-        high = demo.high_expression_map(threshold=8.0)
-        print("Interview — High-expression map (> 8.0 FPKM):")
-        for gid, expr in high.items():
-            print(f"  {gid}: {expr} FPKM")
+# Example 4: Generate sample identifiers
+sample_numbers = range(1, 5)
 
+sample_map = {
+    number: f"S{number:03d}"
+    for number in sample_numbers
+}
 
-class SequenceGcTransformerIndustry:
-    """Industry level: concise data-transformation component."""
+print("Sample map:", sample_map)
 
-    def __init__(self, sequences: list[dict[str, str]]) -> None:
-        self.sequences = sequences
+# Example 5: Build nucleotide counts from a DNA sequence
+dna_sequence = "ATGCGTAA"
 
-    def gc_content_map(self) -> dict[str, float]:
-        result: dict[str, float] = {}
-        for seq in self.sequences:
-            sid = seq.get("seq_id", "")
-            dna = seq.get("sequence", "")
-            if not isinstance(sid, str) or not isinstance(dna, str) or not dna:
-                continue
-            gc = sum(1 for base in dna.upper() if base in "GC") / len(dna) * 100
-            result[sid] = round(gc, 2)
-        return result
+nucleotide_counts = {
+    nucleotide: dna_sequence.count(nucleotide)
+    for nucleotide in set(dna_sequence)
+}
 
-    def filtered_map(self, min_gc: float) -> dict[str, float]:
-        full = self.gc_content_map()
-        return {sid: gc for sid, gc in full.items() if gc >= min_gc}
+print("Nucleotide counts:", nucleotide_counts)
 
-    @staticmethod
-    def run() -> None:
-        sequences: list[dict[str, str]] = [
-            {"seq_id": "SEQ001", "sequence": "ATGCGTACGGTTA"},
-            {"seq_id": "SEQ002", "sequence": "CGGCGGCGGC"},
-            {"seq_id": "SEQ003", "sequence": "ATATATAT"},
-        ]
-        transformer = SequenceGcTransformerIndustry(sequences)
-        all_gc = transformer.gc_content_map()
-        high_gc = transformer.filtered_map(min_gc=50.0)
-        print("Industry — GC content transformation:")
-        print(f"  All:  {all_gc}")
-        print(f"  >=50: {high_gc}")
+# Example 6: Invert a mapping when values are unique
+gene_to_id = {
+    "TP53": "G001",
+    "BRCA1": "G002",
+    "EGFR": "G003"
+}
 
+id_to_gene = {
+    identifier: gene
+    for gene, identifier in gene_to_id.items()
+}
 
-if __name__ == "__main__":
-    PlantHeightMapUniversity.run()
-    print()
-    GeneExpressionFilterMapInterview.run()
-    print()
-    SequenceGcTransformerIndustry.run()
+print("ID-to-gene mapping:", id_to_gene)
+
+# Important:
+# If multiple genes share the same value in an inverted mapping,
+# earlier entries can be overwritten. Check uniqueness before inverting.

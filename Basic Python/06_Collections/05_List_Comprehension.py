@@ -1,144 +1,63 @@
-"""05_List_Comprehension.py — Python list comprehensions through plant science and genomics."""
 
-from __future__ import annotations
+"""
+05. List Comprehension
 
+Main points
+- List comprehensions create lists from iterables.
+- Basic syntax: [expression for item in iterable].
+- Conditions can filter elements.
+- Syntax with filtering: [expression for item in iterable if condition].
+- Expressions can transform each element.
+- Nested comprehensions are possible but can become difficult to read.
+- Use comprehensions for concise transformations, not at the expense of clarity.
+"""
 
-class PlantHeightConverterUniversity:
-    """University level: transform plant heights with list comprehensions."""
+# Example 1: Convert DNA sequences to uppercase
+sequences = ["atgc", "ggta", "ccga"]
 
-    def __init__(self, heights_cm: list[float]) -> None:
-        self.heights_cm = heights_cm
+uppercase_sequences = [sequence.upper() for sequence in sequences]
+print("Uppercase sequences:", uppercase_sequences)
 
-    def convert_to_meters(self) -> list[float]:
-        return [height / 100 for height in self.heights_cm]
+# Example 2: Select high gene-expression measurements
+expression_values = [2.1, 15.5, 8.4, 22.0, 17.2]
 
-    @staticmethod
-    def run() -> None:
-        heights = [28.5, 32.1, 25.8, 30.0, 27.3]
+high_expression = [
+    value for value in expression_values
+    if value > 10
+]
 
-        demo = PlantHeightConverterUniversity(heights)
-        meters = demo.convert_to_meters()
+print("High expression:", high_expression)
 
-        print("University — Heights in meters:")
-        for cm, meter in zip(heights, meters):
-            print(f"  {cm} cm -> {meter} m")
+# Example 3: Transform concentrations
+concentrations_mg = [1.0, 2.5, 3.2, 4.8]
 
+concentrations_g = [
+    value / 1000 for value in concentrations_mg
+]
 
-class GeneExpressionFilterInterview:
-    """Interview level: filter and transform genomic records."""
+print("Concentrations in grams:", concentrations_g)
 
-    def __init__(self, records: list[dict[str, str | float]]) -> None:
-        self.records = records
+# Example 4: Extract gene identifiers
+gene_records = [
+    {"gene": "TP53", "expression": 12.5},
+    {"gene": "BRCA1", "expression": 8.2},
+    {"gene": "EGFR", "expression": 18.4}
+]
 
-    def high_expression_gene_ids(self, threshold: float) -> list[str]:
-        return [
-            str(record["gene_id"])
-            for record in self.records
-            if isinstance(record.get("gene_id"), str)
-            and isinstance(record.get("expression"), (int, float))
-            and record["expression"] > threshold
-        ]
+gene_names = [record["gene"] for record in gene_records]
+print("Gene names:", gene_names)
 
-    @staticmethod
-    def run() -> None:
-        records: list[dict[str, str | float]] = [
-            {"gene_id": "AT1G01010", "expression": 12.5},
-            {"gene_id": "AT1G01020", "expression": 3.2},
-            {"gene_id": "AT1G01030", "expression": 8.3},
-            {"gene_id": "AT1G01040", "expression": 15.1},
-        ]
+# Example 5: Filter records and transform values
+high_expression_genes = [
+    record["gene"]
+    for record in gene_records
+    if record["expression"] > 10
+]
 
-        demo = GeneExpressionFilterInterview(records)
-        high = demo.high_expression_gene_ids(threshold=8.0)
+print("High-expression genes:", high_expression_genes)
 
-        print("Interview — High-expression gene IDs (> 8.0 FPKM):")
-        for gene_id in high:
-            print(f"  {gene_id}")
+# Example 6: Generate squared values for a simple model
+time_points = [1, 2, 3, 4]
 
-
-class SequenceQualityTransformerIndustry:
-    """Industry level: readable data transformation using list comprehensions."""
-
-    def __init__(self, sequences: list[dict[str, str | int]]) -> None:
-        self.sequences = sequences
-
-    def compute_gc_contents(self) -> list[float]:
-        results: list[float] = []
-
-        for sequence_record in self.sequences:
-            dna = sequence_record.get("sequence", "")
-
-            if not isinstance(dna, str) or not dna:
-                results.append(0.0)
-                continue
-
-            gc_count = sum(
-                1
-                for base in dna.upper()
-                if base in "GC"
-            )
-
-            results.append(round(gc_count / len(dna) * 100, 2))
-
-        return results
-
-    def valid_sequences(
-        self,
-        min_length: int,
-    ) -> list[dict[str, str | int]]:
-        return [
-            sequence
-            for sequence in self.sequences
-            if isinstance(sequence.get("sequence"), str)
-            and len(sequence["sequence"]) >= min_length
-        ]
-
-    @staticmethod
-    def run() -> None:
-        sequences: list[dict[str, str | int]] = [
-            {
-                "seq_id": "SEQ001",
-                "sequence": "ATGCGTACGGTTA",
-                "organism": "Arabidopsis",
-            },
-            {
-                "seq_id": "SEQ002",
-                "sequence": "CGGCGGCGGC",
-                "organism": "Wheat",
-            },
-            {
-                "seq_id": "SEQ003",
-                "sequence": "ATATATAT",
-                "organism": "Rice",
-            },
-        ]
-
-        transformer = SequenceQualityTransformerIndustry(sequences)
-
-        gc_contents = transformer.compute_gc_contents()
-        valid = transformer.valid_sequences(min_length=10)
-
-        print("Industry — Sequence quality metrics:")
-
-        for sequence, gc in zip(sequences, gc_contents):
-            print(f"  {sequence['seq_id']}: GC = {gc}%")
-
-        print("Valid sequences (>= 10 bp):")
-
-        for sequence in valid:
-            print(
-                f"  {sequence['seq_id']}: "
-                f"{sequence['sequence']}"
-            )
-
-
-if __name__ == "__main__":
-    PlantHeightConverterUniversity.run()
-
-    print()
-
-    GeneExpressionFilterInterview.run()
-
-    print()
-
-    SequenceQualityTransformerIndustry.run()
+squared_times = [time ** 2 for time in time_points]
+print("Squared time points:", squared_times)

@@ -1,55 +1,62 @@
-"""Nested loops over hierarchical scientific data."""
 
+"""
+04. Nested Loops
 
-class PlantSampleSummarizer:
-    def __init__(self, samples: list[dict]) -> None:
-        self.samples = samples
+Main points
+- A nested loop is a loop inside another loop.
+- The inner loop runs for each iteration of the outer loop.
+- With n outer iterations and m inner iterations, the body may execute
+  n * m times.
+- Nested loops are useful for comparing samples, sequences, and matrices.
+- Large nested loops can be computationally expensive.
+- Use clear variable names to distinguish outer and inner iterations.
+"""
 
-    def total_leaves(self) -> int:
-        total = 0
-        for s in self.samples:
-            for leaf in s.get("leaves", []):
-                total += leaf
-        return total
+# Example 1: Compare every pair of biological samples.
+sample_ids = ["S001", "S002", "S003"]
 
+for sample_a in sample_ids:
+    for sample_b in sample_ids:
+        print("Comparing:", sample_a, "with", sample_b)
 
-class SequencePairScorer:
-    def __init__(self, a: str, b: str) -> None:
-        self.a = a
-        self.b = b
+# Example 2: Generate a simple gene-by-sample expression table.
+genes = ["GeneA", "GeneB", "GeneC"]
+samples = ["Control", "Treatment"]
 
-    def matches(self) -> int:
-        score = 0
-        for x in self.a:
-            for y in self.b:
-                if x == y:
-                    score += 1
-        return score
+for gene in genes:
+    for sample in samples:
+        print(f"{gene} in {sample}")
 
+# Example 3: Count nucleotides in multiple DNA sequences.
+dna_sequences = [
+    "ATGC",
+    "AATT",
+    "CCGG"
+]
 
-class SampleTissueMatrix:
-    def __init__(self, samples: list[dict]) -> None:
-        self.samples = samples
+for sequence_number, sequence in enumerate(dna_sequences, start=1):
+    print("Sequence", sequence_number)
 
-    def measurement_matrix(self) -> list[list[int]]:
-        result: list[list[int]] = []
-        for s in self.samples:
-            row: list[int] = []
-            for m in s.get("measurements", []):
-                row.append(m)
-            result.append(row)
-        return result
+    for nucleotide in sequence:
+        print(" ", nucleotide)
 
+# Example 4: Calculate pairwise differences between short sequences.
+sequences = ["ATGC", "ATGT", "TTGC"]
 
-if __name__ == "__main__":
-    print(PlantSampleSummarizer([
-        {"id": "P1", "leaves": [3, 4]},
-        {"id": "P2", "leaves": [5]},
-    ]).total_leaves())
+for i in range(len(sequences)):
+    for j in range(i + 1, len(sequences)):
+        differences = sum(
+            base_a != base_b
+            for base_a, base_b in zip(sequences[i], sequences[j])
+        )
 
-    print(SequencePairScorer("ATGC", "ACGT").matches())
+        print(
+            sequences[i],
+            "vs",
+            sequences[j],
+            "differences:",
+            differences
+        )
 
-    print(SampleTissueMatrix([
-        {"id": "P1", "measurements": [10, 20]},
-        {"id": "P2", "measurements": [15]},
-    ]).measurement_matrix())
+# This simple comparison assumes equal-length sequences.
+# Real sequence alignment may require gap handling and alignment algorithms.

@@ -1,58 +1,71 @@
-"""Assignment operators for updating scientific measurements."""
 
+"""
+02. Assignment Operators
 
-class GrowthAccumulator:
-    def __init__(self, height_cm: float) -> None:
-        self.height_cm = height_cm
+Main points
+- = assigns an object to a variable name.
+- += adds a value and reassigns the result.
+- -= subtracts a value and reassigns the result.
+- *= multiplies and reassigns the result.
+- /= divides and reassigns the result.
+- //= performs floor division and reassigns the result.
+- %= stores the remainder after division.
+- **= performs exponentiation and reassigns the result.
+- Assignment does not necessarily copy an object.
+- For mutable objects, augmented assignment may modify the same object.
+"""
 
-    def add_growth(self, growth: float) -> float:
-        self.height_cm += growth
-        return self.height_cm
+# Track DNA extraction samples
+processed_samples = 0
 
-    def reset(self) -> None:
-        self.height_cm = 0.0
+processed_samples += 25
+print("After batch 1:", processed_samples)
 
+processed_samples += 30
+print("After batch 2:", processed_samples)
 
-class SequencingReadCounter:
-    def __init__(self, total: int) -> None:
-        self.total = total
+processed_samples -= 5
+print("After excluding failed samples:", processed_samples)
 
-    def add_batch(self, reads: int) -> None:
-        self.total += reads
+# Calculate reagent inventory
+reagent_ml = 500
 
-    def discard(self, reads: int) -> None:
-        self.total -= reads
+reagent_ml -= 75
+print("Remaining reagent:", reagent_ml, "mL")
 
-    def scale(self, factor: int) -> None:
-        self.total *= factor
+# Scale a concentration value
+concentration = 2.5
+dilution_factor = 4
 
+concentration *= dilution_factor
+print("Scaled concentration:", concentration)
 
-class ExpressionTotalUpdater:
-    def __init__(self, expression: float) -> None:
-        self.expression = expression
+# Calculate average measurements
+total_expression = 240.0
+sample_count = 12
 
-    def add_replicate(self, value: float) -> None:
-        self.expression += value
+total_expression /= sample_count
+print("Mean expression value:", total_expression)
 
-    def normalize(self, factor: float) -> None:
-        if factor == 0:
-            return
-        self.expression /= factor
+# Demonstrate other augmented operators
+number = 17
 
-    def power(self, exponent: int) -> None:
-        self.expression **= exponent
+number //= 5
+print("Floor division result:", number)
 
+number = 17
+number %= 5
+print("Remainder:", number)
 
-if __name__ == "__main__":
-    g = GrowthAccumulator(height_cm=10.0)
-    print(g.add_growth(2.5))
+number = 2
+number **= 4
+print("Exponentiation result:", number)
 
-    s = SequencingReadCounter(total=1000)
-    s.add_batch(500)
-    s.discard(200)
-    print(s.total)
+# Mutable object example
+gene_list = ["BRCA1", "TP53"]
+original_reference = gene_list
 
-    e = ExpressionTotalUpdater(expression=2.0)
-    e.add_replicate(1.5)
-    e.normalize(2)
-    print(e.expression)
+gene_list += ["EGFR"]
+
+print("Updated genes:", gene_list)
+print("Same list object:", gene_list is original_reference)

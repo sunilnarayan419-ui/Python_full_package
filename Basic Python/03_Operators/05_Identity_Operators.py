@@ -1,42 +1,55 @@
-"""Identity operators in scientific data handling."""
 
+"""
+05. Identity Operators
 
-class OptionalMeasurement:
-    def __init__(self, value: float | None) -> None:
-        self.value = value
+Main points
+- is checks whether two references point to the same object.
+- is not checks whether they point to different objects.
+- == checks value equality, not object identity.
+- Use 'is None' to test whether a value is None.
+- Two different lists can contain equal elements but be different objects.
+- Python may reuse certain immutable objects, so identity should not be
+  used as a substitute for numerical or string equality.
+"""
 
-    def is_missing(self) -> bool:
-        return self.value is None
+# Example 1: Compare two gene lists
+genes_a = ["BRCA1", "TP53"]
+genes_b = ["BRCA1", "TP53"]
 
-    def equals(self, other: "OptionalMeasurement") -> bool:
-        return self.value is other.value
+print("Same contents:", genes_a == genes_b)
+print("Same object:", genes_a is genes_b)
 
+# Example 2: Compare references to the same object
+genes_c = genes_a
 
-class MetadataRecord:
-    def __init__(self, source: str | None) -> None:
-        self.source = source
+print("Same contents:", genes_a == genes_c)
+print("Same object:", genes_a is genes_c)
 
-    def has_source(self) -> bool:
-        return self.source is not None
+# Example 3: Mutating a shared list
+genes_c.append("EGFR")
 
+print("Genes A:", genes_a)
+print("Genes C:", genes_c)
 
-class SequenceRecord:
-    def __init__(self, header: str, sequence: str | None) -> None:
-        self.header = header
-        self.sequence = sequence
+# Both names refer to the same list.
+print("Same object after mutation:", genes_a is genes_c)
 
-    def is_blank(self) -> bool:
-        return self.sequence is None
+# Example 4: Identity checks for missing experimental results
+experimental_result = None
 
+if experimental_result is None:
+    print("Experimental result has not been recorded.")
 
-if __name__ == "__main__":
-    a = OptionalMeasurement(value=None)
-    b = OptionalMeasurement(value=10.0)
-    print(a.is_missing())
-    print(a.equals(b))
+# Example 5: is not
+if experimental_result is not None:
+    print("Result is available.")
+else:
+    print("Result is unavailable.")
 
-    m = MetadataRecord(source=None)
-    print(m.has_source())
+# Example 6: Value equality versus identity
+sample_id_a = 1000
+sample_id_b = 1000
 
-    s = SequenceRecord(header="S001", sequence=None)
-    print(s.is_blank())
+print("IDs equal:", sample_id_a == sample_id_b)
+
+# Do not rely on the identity of numeric objects.

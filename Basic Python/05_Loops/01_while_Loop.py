@@ -1,46 +1,53 @@
-"""while loop in scientific data processing."""
 
+"""
+01. while Loop
 
-class GrowthSimulator:
-    def __init__(self, initial_cm: float, rate_cm_per_day: float) -> None:
-        self.height = initial_cm
-        self.rate = rate_cm_per_day
+Main points
+- A while loop repeats a block while its condition is True.
+- The condition is evaluated before each iteration.
+- The loop may execute zero times if the initial condition is False.
+- Update the relevant variable to avoid an unintended infinite loop.
+- while is useful when the number of iterations is not known beforehand.
+- Common applications include retries, convergence checks, and monitoring.
+"""
 
-    def days_to_reach(self, target_cm: float) -> int:
-        days = 0
-        while self.height < target_cm:
-            self.height += self.rate
-            days += 1
-        return days
+# Example 1: Simulate DNA sample processing.
+samples_remaining = 5
 
+while samples_remaining > 0:
+    print("Processing DNA sample:", samples_remaining)
+    samples_remaining -= 1
 
-class SequenceScanner:
-    def __init__(self, sequence: str) -> None:
-        self.sequence = sequence.upper()
+print("All samples processed.")
 
-    def scan_until_stop(self) -> int:
-        i = 0
-        while i < len(self.sequence) and self.sequence[i] != "N":
-            i += 1
-        return i
+# Example 2: Continue analysis until a target is reached.
+gene_expression = 10.0
+target_expression = 20.0
+iterations = 0
 
+while gene_expression < target_expression:
+    gene_expression *= 1.5
+    iterations += 1
 
-class ExperimentalRunner:
-    def __init__(self, replicate: int) -> None:
-        self.replicate = replicate
-        self.results: list[int] = []
+print("Final expression estimate:", gene_expression)
+print("Iterations required:", iterations)
 
-    def run_until_threshold(self, threshold: int) -> int:
-        count = 0
-        while count < threshold:
-            count += 1
-            self.results.append(count * self.replicate)
-        return count
+# Example 3: Simulate retries for a sequencing pipeline.
+attempt = 0
+maximum_attempts = 3
+pipeline_success = False
 
+while attempt < maximum_attempts and not pipeline_success:
+    attempt += 1
+    print("Pipeline attempt:", attempt)
 
-if __name__ == "__main__":
-    print(GrowthSimulator(10.0, 2.0).days_to_reach(20.0))
+    # Simulated success on the third attempt.
+    if attempt == 3:
+        pipeline_success = True
 
-    print(SequenceScanner("ATGCNAT").scan_until_stop())
+if pipeline_success:
+    print("Pipeline completed successfully.")
+else:
+    print("Pipeline failed after all attempts.")
 
-    print(ExperimentalRunner(replicate=5).run_until_threshold(3))
+# These are illustrative simulations, not actual laboratory measurements.

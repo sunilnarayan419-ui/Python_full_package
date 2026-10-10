@@ -1,99 +1,84 @@
-"""Generator functions: yield, lazy value production, and streaming records."""
+"""
+TOPIC: Generator Functions
+
+MAIN POINTS
+- A generator function is a function that contains yield.
+- Calling a generator function returns a generator object.
+- Its body does not execute fully when the generator is created.
+- The body executes as values are requested.
+- A generator remembers its execution state between requests.
+- Generators can produce values incrementally instead of storing every result in a list.
+- They are useful for streaming FASTA records, processing large files, and analyzing genomic datasets.
+"""
+
+def generate_dna_sequences():
+    """Generate DNA sequences one at a time."""
+
+    print("Preparing the first sequence...")
+    yield "ATGCGTAC"
+
+    print("Preparing the second sequence...")
+    yield "TTAGGCAT"
+
+    print("Preparing the third sequence...")
+    yield "CGATCGAT"
 
 
-class UniversityGeneratorFunctions:
-    def __init__(self, plant_records: list[dict]) -> None:
-        self.plant_records = plant_records
+# Calling the function creates a generator object.
+sequence_generator = generate_dna_sequences()
 
-    def height_generator(self):
-        """A simple generator function yielding heights one at a time."""
-        for record in self.plant_records:
-            yield record["height_cm"]
+print("Generator created:")
+print(sequence_generator)
 
-    @staticmethod
-    def run() -> None:
-        data = [
-            {"sample_id": "P001", "species": "Wheat", "height_cm": 28.5},
-            {"sample_id": "P002", "species": "Rice", "height_cm": 31.2},
-            {"sample_id": "P003", "species": "Barley", "height_cm": 24.0},
-        ]
+# The function body begins when a value is requested.
+print("\nFirst request:")
+print(next(sequence_generator))
 
-        demo = UniversityGeneratorFunctions(data)
-        gen = demo.height_generator()
-        print(f"Generator object type: {type(gen).__name__}")
-        print("Pulling heights lazily:")
-        for height in gen:
-            print(f"  height_cm={height}")
+print("\nSecond request:")
+print(next(sequence_generator))
+
+print("\nThird request:")
+print(next(sequence_generator))
+
+# The generator is exhausted after its final yield.
+# Uncomment to observe StopIteration.
+# print(next(sequence_generator))
 
 
-class InterviewGeneratorFunctions:
-    def __init__(self, records: list[dict]) -> None:
-        self.records = records
+# A generator can also be consumed using a for loop.
+def generate_gene_records():
+    genes = [
+        ("BRCA1", 24.6),
+        ("TP53", 18.2),
+        ("EGFR", 42.8),
+        ("MYC", 35.1)
+    ]
 
-    def valid_measurement_generator(self, key: str):
-        """Yields only valid numeric measurements, skipping bad entries defensively."""
-        for record in self.records:
-            value = record.get(key)
-            if isinstance(value, (int, float)) and value >= 0:
-                yield value
-
-    @staticmethod
-    def run() -> None:
-        empty_case: list[dict] = []
-        processor = InterviewGeneratorFunctions(empty_case)
-        result_empty = list(processor.valid_measurement_generator("height_cm"))
-        print(f"Empty input -> collected values: {result_empty}")
-
-        messy_case = [
-            {"height_cm": 28.5},
-            {"height_cm": "not_a_number"},
-            {"height_cm": -5.0},
-            {"height_cm": 31.2},
-            {},
-        ]
-        processor = InterviewGeneratorFunctions(messy_case)
-        result_messy = list(processor.valid_measurement_generator("height_cm"))
-        print(f"Messy input -> collected valid values: {result_messy}")
-
-
-class IndustryGeneratorFunctions:
-    def __init__(self, experiment_data: list[dict]) -> None:
-        self.data = experiment_data
-
-    def stream_records(self, min_height: float = 0.0):
-        """Lazily streams records meeting a minimum height threshold.
-
-        Memory-efficient: does not build an intermediate filtered list.
-        """
-        for record in self.data:
-            height = record.get("height_cm", 0.0)
-            if height >= min_height:
-                yield record
-
-    def process(self, min_height: float = 25.0) -> dict[str, object]:
-        streamed = list(self.stream_records(min_height))
-        return {
-            "total_samples": len(self.data),
-            "passing_threshold": len(streamed),
-            "min_height": min_height,
-            "records": streamed,
+    for gene, expression in genes:
+        yield {
+            "gene": gene,
+            "expression": expression
         }
 
-    @staticmethod
-    def run() -> None:
-        sample_data = [
-            {"id": "P001", "height_cm": 28.5},
-            {"id": "P002", "height_cm": 19.0},
-            {"id": "P003", "height_cm": 31.2},
-            {"id": "P004", "height_cm": 22.4},
-        ]
 
-        processor = IndustryGeneratorFunctions(sample_data)
-        report = processor.process(min_height=25.0)
-        print(f"Experiment report: {report}")
+print("\nGenerated gene records:")
+
+for record in generate_gene_records():
+    print(record)
 
 
-if __name__ == "__main__":
-    UniversityGeneratorFunctions.run()
-    InterviewGeneratorFunctions.run()
-    IndustryGeneratorFunctions.run()
+# Generate synthetic DNA sequences with a chosen length.
+def generate_repeated_dna(base_sequence, repetitions):
+    """Yield repeated DNA sequences one at a time."""
+
+    if repetitions < 0:
+        raise ValueError("Repetitions cannot be negative.")
+
+    for index in range(repetitions):
+        yield f"Sequence_{index + 1}", base_sequence
+
+
+print("\nGenerated sequences:")
+
+for sequence_id, sequence in generate_repeated_dna("ATGC", 5):
+    print(sequence_id, sequence)

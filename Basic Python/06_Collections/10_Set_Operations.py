@@ -1,87 +1,52 @@
-"""10_Set_Operations.py — Python set operations through plant science and genomics."""
-from __future__ import annotations
 
+"""
+10. Set Operations
 
-class PlantSpeciesSetOperationsUniversity:
-    """University level: simple set operations."""
+Main points
+- Union (|) combines elements from both sets.
+- Intersection (&) returns elements common to both sets.
+- Difference (-) returns elements present in the first set but not the second.
+- Symmetric difference (^) returns elements present in exactly one set.
+- issubset() checks whether one set is contained in another.
+- issuperset() checks whether a set contains another set.
+- isdisjoint() checks whether two sets have no common elements.
+- These operations are useful for comparing gene panels and experimental groups.
+"""
 
-    def __init__(self) -> None:
-        self.set_a: set[str] = {"Wheat", "Rice", "Maize"}
-        self.set_b: set[str] = {"Rice", "Barley", "Maize"}
+# Genes identified in two experimental conditions
+control_genes = {"TP53", "BRCA1", "EGFR", "MYC"}
+treated_genes = {"TP53", "EGFR", "APOE", "CFTR"}
 
-    def demonstrate(self) -> None:
-        print("University — Set operations:")
-        print(f"  Union:        {self.set_a | self.set_b}")
-        print(f"  Intersection: {self.set_a & self.set_b}")
-        print(f"  Difference A-B: {self.set_a - self.set_b}")
-        print(f"  Symmetric:    {self.set_a ^ self.set_b}")
+# Union: genes found in either group
+all_genes = control_genes | treated_genes
+print("All genes:", all_genes)
 
-    @staticmethod
-    def run() -> None:
-        demo = PlantSpeciesSetOperationsUniversity()
-        demo.demonstrate()
+# Intersection: shared genes
+shared_genes = control_genes & treated_genes
+print("Shared genes:", shared_genes)
 
+# Difference: genes found only in the control set
+control_only = control_genes - treated_genes
+print("Control-only genes:", control_only)
 
-class GeneSetComparatorInterview:
-    """Interview level: compare two genomic datasets."""
+# Difference: genes found only in the treated set
+treated_only = treated_genes - control_genes
+print("Treated-only genes:", treated_only)
 
-    def __init__(self, set_a: set[str], set_b: set[str]) -> None:
-        self.set_a = set_a
-        self.set_b = set_b
+# Symmetric difference: genes unique to either group
+unique_to_one_group = control_genes ^ treated_genes
+print("Genes unique to one group:", unique_to_one_group)
 
-    def shared_genes(self) -> set[str]:
-        return self.set_a & self.set_b
+# Subset and superset checks
+core_genes = {"TP53", "EGFR"}
 
-    def unique_to_a(self) -> set[str]:
-        return self.set_a - self.set_b
+print("Core genes are a subset:", core_genes.issubset(all_genes))
+print("All genes contain core genes:", all_genes.issuperset(core_genes))
 
-    def unique_to_either(self) -> set[str]:
-        return self.set_a ^ self.set_b
+# Disjointness
+housekeeping_genes = {"ACTB", "GAPDH"}
+print("Disjoint gene sets:", housekeeping_genes.isdisjoint(core_genes))
 
-    @staticmethod
-    def run() -> None:
-        control = {"AT1G01010", "AT1G01020", "AT1G01030", "AT1G01040"}
-        treatment = {"AT1G01010", "AT1G01030", "AT1G01050", "AT1G01060"}
-        demo = GeneSetComparatorInterview(control, treatment)
-        print("Interview — Gene set comparison:")
-        print(f"  Shared:       {sorted(demo.shared_genes())}")
-        print(f"  Unique to control:   {sorted(demo.unique_to_a())}")
-        print(f"  Unique to either:    {sorted(demo.unique_to_either())}")
-
-
-class MultiConditionGeneAnalyzerIndustry:
-    """Industry level: dataset-comparison component."""
-
-    def __init__(self, conditions: dict[str, set[str]]) -> None:
-        self.conditions = conditions
-
-    def genes_in_all_conditions(self) -> set[str]:
-        if not self.conditions:
-            return set()
-        return set.intersection(*self.conditions.values())
-
-    def genes_unique_to(self, condition: str) -> set[str]:
-        if condition not in self.conditions:
-            raise ValueError(f"condition {condition} not found")
-        others = set.union(*(v for k, v in self.conditions.items() if k != condition))
-        return self.conditions[condition] - others
-
-    @staticmethod
-    def run() -> None:
-        conditions = {
-            "drought": {"AT1G01010", "AT1G01020", "AT1G01030"},
-            "salt":    {"AT1G01010", "AT1G01030", "AT1G01040"},
-            "heat":    {"AT1G01010", "AT1G01040", "AT1G01050"},
-        }
-        analyzer = MultiConditionGeneAnalyzerIndustry(conditions)
-        print("Industry — Multi-condition gene analysis:")
-        print(f"  Genes in all conditions: {sorted(analyzer.genes_in_all_conditions())}")
-        print(f"  Unique to drought:       {sorted(analyzer.genes_unique_to('drought'))}")
-
-
-if __name__ == "__main__":
-    PlantSpeciesSetOperationsUniversity.run()
-    print()
-    GeneSetComparatorInterview.run()
-    print()
-    MultiConditionGeneAnalyzerIndustry.run()
+# Important:
+# Different detection lists do not automatically imply differential
+# expression or biological significance.

@@ -1,104 +1,137 @@
-"""key= parameter: custom sorting criteria via lambda and named key functions."""
+"""
+TOPIC: Key Functions
+
+MAIN POINTS
+- The key parameter accepts a function that determines how values are compared.
+- It is commonly used with sorted(), min(), and max().
+- The key function receives one item and returns its comparison value.
+- lambda expressions are useful for short key functions.
+- Named functions are clearer when the comparison logic is complex.
+- A key function can extract nested dictionary values or calculate derived properties.
+- Key functions help rank biological records according to scientific measurements.
+"""
+
+# Example 1: Find the longest DNA sequence.
+dna_sequences = [
+    "ATGC",
+    "ATGCGTAC",
+    "GCTA",
+    "ATGCGCGTAA"
+]
+
+longest_sequence = max(
+    dna_sequences,
+    key=len
+)
+
+print("Longest DNA sequence:", longest_sequence)
+print("Length:", len(longest_sequence))
 
 
-class UniversityKeyFunction:
-    def __init__(self, plant_records: list[dict]) -> None:
-        self.plant_records = plant_records
+# Example 2: Find the shortest sequence.
+shortest_sequence = min(
+    dna_sequences,
+    key=len
+)
 
-    def sort_by_height_lambda(self) -> list[dict]:
-        return sorted(self.plant_records, key=lambda record: record["height_cm"])
-
-    @staticmethod
-    def run() -> None:
-        data = [
-            {"sample_id": "P001", "height_cm": 31.2},
-            {"sample_id": "P002", "height_cm": 18.0},
-            {"sample_id": "P003", "height_cm": 42.8},
-        ]
-
-        processor = UniversityKeyFunction(data)
-        result = processor.sort_by_height_lambda()
-
-        print(f"Original order: {[r['sample_id'] for r in data]}")
-        print(f"Sorted by height_cm (key=lambda): {[r['sample_id'] for r in result]}")
+print("\nShortest DNA sequence:", shortest_sequence)
+print("Length:", len(shortest_sequence))
 
 
-def _phenotype_score_key(record: dict) -> float:
-    """Named key function: extracts phenotype score, defaulting missing to 0.0."""
-    return record.get("phenotype_score", 0.0)
+# Example 3: Rank genes by expression.
+gene_expression = [
+    {"gene": "BRCA1", "expression": 24.6},
+    {"gene": "TP53", "expression": 18.2},
+    {"gene": "EGFR", "expression": 42.8},
+    {"gene": "MYC", "expression": 35.1}
+]
+
+ranked_genes = sorted(
+    gene_expression,
+    key=lambda record: record["expression"],
+    reverse=True
+)
+
+print("\nGenes ranked by expression:")
+
+for record in ranked_genes:
+    print(record["gene"], record["expression"])
 
 
-class InterviewKeyFunction:
-    def __init__(self, samples: list[dict]) -> None:
-        self.samples = samples
+# Example 4: Use a named function for a more readable key.
+def gc_percentage(sequence):
+    if not sequence:
+        return 0.0
 
-    def rank_with_named_function(self) -> list[dict]:
-        return sorted(self.samples, key=_phenotype_score_key, reverse=True)
+    sequence = sequence.upper()
 
-    def rank_with_lambda_and_tiebreak(self) -> list[dict]:
-        """Ranks by expression level, using sample_id as a tiebreaker."""
-        return sorted(
-            self.samples,
-            key=lambda sample: (
-                -sample.get("expression_level", 0.0),
-                sample.get("sample_id", ""),
-            ),
-        )
+    gc_count = sequence.count("G") + sequence.count("C")
 
-    @staticmethod
-    def run() -> None:
-        empty_samples: list[dict] = []
-        processor = InterviewKeyFunction(empty_samples)
-        print(f"Empty samples -> ranked: {processor.rank_with_named_function()}")
-
-        samples = [
-            {"sample_id": "S002", "phenotype_score": 7.5, "expression_level": 12.0},
-            {"sample_id": "S001", "phenotype_score": 9.1, "expression_level": 12.0},
-            {"sample_id": "S003", "phenotype_score": 4.2, "expression_level": 8.5},
-        ]
-        processor = InterviewKeyFunction(samples)
-        ranked = processor.rank_with_named_function()
-        print(f"Ranked by phenotype_score (named key fn): {[s['sample_id'] for s in ranked]}")
-
-        tie_broken = processor.rank_with_lambda_and_tiebreak()
-        print(f"Ranked by expression_level with sample_id tiebreak: {[s['sample_id'] for s in tie_broken]}")
+    return gc_count / len(sequence) * 100
 
 
-class IndustryKeyFunction:
-    def __init__(self, experiment_data: list[dict]) -> None:
-        self.data = experiment_data
+dna_sequences = [
+    "ATATAT",
+    "GCGCGC",
+    "ATGCGT",
+    "GGCCATTA"
+]
 
-    def _quality_key(self, record: dict) -> tuple[float, float]:
-        """Domain-specific composite ranking: quality score, then concentration."""
-        quality = record.get("quality_score", 0.0)
-        concentration = record.get("concentration_ng_per_ul", 0.0)
-        return (-quality, -concentration)
+ranked_by_gc = sorted(
+    dna_sequences,
+    key=gc_percentage,
+    reverse=True
+)
 
-    def rank_by_quality(self) -> list[dict]:
-        return sorted(self.data, key=self._quality_key)
+print("\nSequences ranked by GC percentage:")
 
-    def process(self) -> dict[str, object]:
-        ranked = self.rank_by_quality()
-        return {
-            "total_samples": len(self.data),
-            "ranked_samples": ranked,
-            "best_sample_id": ranked[0]["sample_id"] if ranked else None,
-        }
-
-    @staticmethod
-    def run() -> None:
-        sample_data = [
-            {"sample_id": "S001", "quality_score": 0.88, "concentration_ng_per_ul": 45.2},
-            {"sample_id": "S002", "quality_score": 0.95, "concentration_ng_per_ul": 30.1},
-            {"sample_id": "S003", "quality_score": 0.95, "concentration_ng_per_ul": 52.0},
-        ]
-
-        processor = IndustryKeyFunction(sample_data)
-        report = processor.process()
-        print(f"Experiment report: {report}")
+for sequence in ranked_by_gc:
+    print(
+        sequence,
+        round(gc_percentage(sequence), 2)
+    )
 
 
-if __name__ == "__main__":
-    UniversityKeyFunction.run()
-    InterviewKeyFunction.run()
-    IndustryKeyFunction.run()
+# Example 5: Rank samples by quality and then concentration.
+samples = [
+    {"sample_id": "S001", "purity": 1.91, "concentration": 42.5},
+    {"sample_id": "S002", "purity": 1.91, "concentration": 58.1},
+    {"sample_id": "S003", "purity": 1.86, "concentration": 36.4},
+    {"sample_id": "S004", "purity": 1.98, "concentration": 31.2}
+]
+
+def sample_ranking_key(sample):
+    return (
+        sample["purity"],
+        sample["concentration"]
+    )
+
+
+ranked_samples = sorted(
+    samples,
+    key=sample_ranking_key,
+    reverse=True
+)
+
+print("\nRanked samples:")
+
+for sample in ranked_samples:
+    print(
+        sample["sample_id"],
+        sample_ranking_key(sample)
+    )
+
+
+# Example 6: Use a key function with min() and max().
+highest_expression_gene = max(
+    gene_expression,
+    key=lambda record: record["expression"]
+)
+
+lowest_expression_gene = min(
+    gene_expression,
+    key=lambda record: record["expression"]
+)
+
+print("\nHighest expression gene:", highest_expression_gene["gene"])
+print("Lowest expression gene:", lowest_expression_gene["gene"])

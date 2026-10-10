@@ -1,48 +1,36 @@
-﻿"""Numbers in Python with plant science examples."""
 
+"""
+01. Numbers
 
-class NumberUniversity:
-    def __init__(self, a: int, b: float, c: complex) -> None:
-        self.a = a
-        self.b = b
-        self.c = c
+Main points
+- Python supports integers (int), floating-point numbers (float),
+  and complex numbers (complex).
+- int represents whole numbers.
+- float represents numbers with a fractional component.
+- complex represents numbers with real and imaginary components.
+- Python supports arithmetic operations such as +, -, *, /, //, %, and **.
+- The type() function identifies the type of an object.
+"""
 
-    def add_all(self) -> complex:
-        return self.a + self.b + self.c
+# Integer
+population = 1000
 
+# Floating-point number
+temperature = 25.5
 
-class NumberInterview:
-    def __init__(self, samples: list[int | float]) -> None:
-        self.samples = samples
+# Complex number
+frequency = 3 + 4j
 
-    def total(self) -> int | float:
-        return sum(self.samples)
+# Arithmetic operations
+print("Addition:", 10 + 5)
+print("Subtraction:", 10 - 5)
+print("Multiplication:", 10 * 5)
+print("Division:", 10 / 5)
+print("Floor division:", 10 // 3)
+print("Remainder:", 10 % 3)
+print("Exponentiation:", 2 ** 3)
 
-    def average(self) -> float:
-        if not self.samples:
-            return 0.0
-        return float(sum(self.samples)) / len(self.samples)
-
-
-class NumberIndustry:
-    def __init__(self, chromosome_lengths: dict[str, int]) -> None:
-        self.chromosome_lengths = chromosome_lengths
-
-    def total_length(self) -> int:
-        return sum(self.chromosome_lengths.values())
-
-    def is_within_range(self, chromosome: str, min_len: int, max_len: int) -> bool:
-        length = self.chromosome_lengths.get(chromosome, 0)
-        return min_len <= length <= max_len
-
-
-if __name__ == "__main__":
-    print(NumberUniversity(10, 2.5, 1 + 2j).add_all())
-
-    counter = NumberInterview([12, 14, 16])
-    print(counter.total())
-    print(counter.average())
-
-    lengths = NumberIndustry({"Chr1": 5000, "Chr2": 4000})
-    print(lengths.total_length())
-    print(lengths.is_within_range("Chr1", 1000, 6000))
+# Display values and types
+print(population, type(population))
+print(temperature, type(temperature))
+print(frequency, type(frequency))

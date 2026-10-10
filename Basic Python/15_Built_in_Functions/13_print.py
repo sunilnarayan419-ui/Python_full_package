@@ -1,88 +1,53 @@
-"""Demonstrations of the built-in print() function for scientific reporting."""
+"""
+TOPIC: print()
 
-import logging
+MAIN POINTS
+- print() displays objects as text.
+- Multiple objects can be printed in one call.
+- sep= controls the separator between objects.
+- end= controls what is printed at the end.
+- f-strings provide readable formatting for scientific reports.
+- file= allows print() to write to an open file.
+"""
 
-logger = logging.getLogger(__name__)
+# Example 1: Display DNA information.
+dna_sequence = "ATGCGCGT"
 
+print("DNA sequence:", dna_sequence)
+print("Sequence length:", len(dna_sequence))
 
-class UniversityPrint:
-    """Teach the fundamental behavior of print() for readable output."""
+# Example 2: Control separators.
+print("BRCA1", 24.6, "TP53", 18.2, sep=" | ")
 
-    def __init__(self, sample_id: str, species: str) -> None:
-        self.sample_id = sample_id
-        self.species = species
+# Example 3: Control the ending.
+print("Analyzing sample...", end=" ")
+print("Complete!")
 
-    def show_sample(self) -> None:
-        print(self.sample_id, self.species)
+# Example 4: Format scientific measurements.
+concentration = 42.56789
+gc_percentage = 62.5
 
-    @staticmethod
-    def run() -> None:
-        processor = UniversityPrint(sample_id="P001", species="Wheat")
-        processor.show_sample()
+print(f"Concentration: {concentration:.2f} ng/uL")
+print(f"GC percentage: {gc_percentage:.1f}%")
 
+# Example 5: Print a table.
+gene_expression = {
+    "BRCA1": 24.6,
+    "TP53": 18.2,
+    "EGFR": 42.8
+}
 
-class InterviewPrint:
-    """Produce formatted diagnostic output using sep= and end=."""
+print("\nGENE EXPRESSION REPORT")
+print("-" * 35)
+print(f"{'Gene':<12}{'Expression':>12}")
+print("-" * 35)
 
-    def __init__(self, measurements: list[float]) -> None:
-        self.measurements = measurements
+for gene, expression in gene_expression.items():
+    print(f"{gene:<12}{expression:>12.2f}")
 
-    def print_measurement_row(self) -> None:
-        print(*self.measurements, sep=" | ", end="\n")
+# Example 6: Write printed output to a file.
+with open("analysis_output.txt", "w", encoding="utf-8") as file:
+    print("DNA analysis completed.", file=file)
+    print(f"Sequence: {dna_sequence}", file=file)
 
-    def print_progress(self, total: int) -> None:
-        """Print a single-line style progress indicator using end=."""
-        for step in range(1, total + 1):
-            print(f"Processing sample {step}/{total}", end="; ")
-        print()  # final newline
-
-    @staticmethod
-    def run() -> None:
-        case_one = InterviewPrint([3.2, 3.6, 4.1])
-        case_two = InterviewPrint([])
-
-        case_one.print_measurement_row()
-        case_two.print_measurement_row()
-        case_one.print_progress(total=3)
-
-
-class IndustryPrint:
-    """Structured, human-readable scientific reporting output.
-
-    print() is used here purely for direct human-facing console reports.
-    For application diagnostics, warnings, or errors, the standard
-    `logging` module is the appropriate tool, not print().
-    """
-
-    def __init__(self, samples: list[dict[str, object]]) -> None:
-        self.samples = samples
-
-    def print_report(self) -> None:
-        print("=" * 40)
-        print("SCIENTIFIC SAMPLE REPORT")
-        print("=" * 40)
-        for sample in self.samples:
-            print(f"Sample: {sample['sample_id']:<8} Species: {sample['species']}")
-        print("=" * 40)
-
-    def log_processing_event(self, sample_id: str) -> None:
-        """Application diagnostics belong in logging, not print()."""
-        logger.info("Processed sample %s", sample_id)
-
-    @staticmethod
-    def run() -> None:
-        samples: list[dict[str, object]] = [
-            {"sample_id": "S001", "species": "Wheat"},
-            {"sample_id": "S002", "species": "Rice"},
-        ]
-
-        reporter = IndustryPrint(samples)
-        reporter.print_report()
-        for sample in samples:
-            reporter.log_processing_event(sample["sample_id"])
-
-
-if __name__ == "__main__":
-    UniversityPrint.run()
-    InterviewPrint.run()
-    IndustryPrint.run()
+print("Report written to analysis_output.txt")

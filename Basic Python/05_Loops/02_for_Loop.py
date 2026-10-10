@@ -1,51 +1,52 @@
-"""for loop iterating over scientific records."""
 
+"""
+02. for Loop
 
-class PlantSampleIterator:
-    def __init__(self, samples: list[dict]) -> None:
-        self.samples = samples
+Main points
+- A for loop iterates over the items of an iterable.
+- Iterables include lists, tuples, strings, sets, dictionaries, and ranges.
+- The loop variable receives one item during each iteration.
+- The loop ends when the iterable is exhausted or execution is interrupted.
+- for is useful when processing known collections of data.
+- Iteration order depends on the iterable; lists preserve their element order.
+"""
 
-    def total_height(self) -> float:
-        total = 0.0
-        for s in self.samples:
-            total += s["height_cm"]
-        return total
+# Example 1: Process a list of biological samples.
+sample_ids = ["S001", "S002", "S003", "S004"]
 
+for sample_id in sample_ids:
+    print("Processing sample:", sample_id)
 
-class NucleotideCounter:
-    def __init__(self, sequence: str) -> None:
-        self.sequence = sequence.upper()
+# Example 2: Inspect a DNA sequence one nucleotide at a time.
+dna_sequence = "ATGCGTAC"
 
-    def count_each(self) -> dict[str, int]:
-        counts: dict[str, int] = {}
-        for base in self.sequence:
-            counts[base] = counts.get(base, 0) + 1
-        return counts
+for nucleotide in dna_sequence:
+    print("Nucleotide:", nucleotide)
 
+# Example 3: Count nucleotides.
+dna_sequence = "ATGCGTAC"
+nucleotide_count = {}
 
-class ExpressionRecordProcessor:
-    def __init__(self, records: list[dict]) -> None:
-        self.records = records
+for nucleotide in dna_sequence:
+    nucleotide_count[nucleotide] = (
+        nucleotide_count.get(nucleotide, 0) + 1
+    )
 
-    def summarize(self) -> dict[str, float]:
-        total = 0.0
-        count = 0
-        for r in self.records:
-            total += r["value"]
-            count += 1
-        mean = total / count if count else 0.0
-        return {"mean": mean, "n": float(count)}
+print("Nucleotide counts:", nucleotide_count)
 
+# Example 4: Process gene expression measurements.
+expression_values = [12.5, 15.2, 8.7, 21.3]
 
-if __name__ == "__main__":
-    print(PlantSampleIterator([
-        {"id": "P1", "height_cm": 20.0},
-        {"id": "P2", "height_cm": 30.0},
-    ]).total_height())
+for expression in expression_values:
+    if expression > 15:
+        print(expression, "is above the selected threshold.")
 
-    print(NucleotideCounter("ATGCAT").count_each())
+# Example 5: Iterate over a dictionary.
+sample_metadata = {
+    "organism": "Arabidopsis thaliana",
+    "tissue": "leaf",
+    "temperature_celsius": 25
+}
 
-    print(ExpressionRecordProcessor([
-        {"gene": "A", "value": 1.5},
-        {"gene": "B", "value": 2.5},
-    ]).summarize())
+for key, value in sample_metadata.items():
+    print(key, ":", value)

@@ -1,306 +1,47 @@
-# Define a function to list general variables
-def list_variables():
-    """List general variables in Python."""
-    
-    # Print the title of the section
-    print("# Built-In Variables")
-    print("--------------------")
-
-    # List the built-in variables
-    built_in_vars = [
-        "abs()",
-        "all()",
-        "any()",
-        "ascii()",
-        "bin()",
-        "bool()",
-        "bytearray()",
-        "bytes()",
-        "chr()",
-        "classmethod()",
-        "compile()",
-        "complex()",
-        "delattr()",
-        "dict()",
-        "dir()",
-        "divmod()",
-        "enumerate()",
-        "eval()",
-        "exec()",
-        "filter()",
-        "float()",
-        "format()",
-        "frozenset()",
-        "getattr()",
-        "globals()",
-        "hasattr()",
-        "hash()",
-        "help()",
-        "hex()",
-        "id()",
-        "input()",
-        "int()",
-        "isinstance()",
-        "issubclass()",
-        "iter()",
-        "len()",
-        "list()",
-        "locals()",
-        "map()",
-        "max()",
-        "memoryview()",
-        "min()",
-        "next()",
-        "object()",
-        "oct()",
-        "open()",
-        "ord()",
-        "pow()",
-        "print()",
-        "property()",
-        "range()",
-        "repr()",
-        "reversed()",
-        "round()",
-        "set()",
-        "setattr()",
-        "slice()",
-        "sorted()",
-        "staticmethod()",
-        "str()",
-        "sum()",
-        "tuple()",
-        "type()",
-        "vars()",
-        "zip()",
-    ]
-
-    # Print the list of built-in variables
-    for var in built_in_vars:
-        print(f"- {var}")
-
-    # Print a horizontal line to separate the section from the next one
-    print("-" * 80)
-
-# Define a function to list commonly used variables
-def list_commonly_used_variables():
-    """List commonly used variables in Python."""
-    
-    # Print the title of the section
-    print("# Commonly Used Variables")
-    print("-------------------------")
-
-    # List the commonly used variables
-    common_vars = [
-        "True",
-        "False",
-        "None",
-        "range()",
-        "int()",
-        "float()",
-        "str()",
-        "list()",
-        "dict()",
-        "tuple()",
-        "set()",
-        "bool()",
-        "complex()",
-    ]
-
-    # Print the list of commonly used variables
-    for var in common_vars:
-        print(f"- {var}")
-
-# Define a function to list variables from the built-in functions module
-def list_built_in_functions():
-    """List variables from the built-in functions module."""
-    
-    # Import the built-in functions module
-    import builtins
-
-    # Print the title of the section
-    print("# Built-In Functions")
-    print("-------------------")
-
-    # List the variables from the built-in functions module
-    for var in dir(builtins):
-        if not var.startswith("_"):
-            print(f"- {var}")
-
-# Main program loop
-def main():
-    # List general variables
-    list_variables()
-    
-    # Print a horizontal line to separate the section from the next one
-    print("-" * 80)
-
-    # List commonly used variables
-    list_commonly_used_variables()
-    
-    # Print a horizontal line to separate the section from the next one
-    print("-" * 80)
-
-    # List variables from the built-in functions module
-    list_built_in_functions()
-
-if __name__ == "__main__":
-    main()
-
 """
-# Built-In Variables
---------------------
-- abs()
-- all()
-- any()
-- ascii()
-- bin()
-- bool()
-- bytearray()
-- bytes()
-- chr()
-- classmethod()
-- compile()
-- complex()
-- delattr()
-- dict()
-- dir()
-- divmod()
-- enumerate()
-- eval()
-- exec()
-- filter()
-- float()
-- format()
-- frozenset()
-- getattr()
-- globals()
-- hasattr()
-- hash()
-- help()
-- hex()
-- id()
-- input()
-- int()
-- isinstance()
-- issubclass()
-- iter()
-- len()
-- list()
-- locals()
-- map()
-- max()
-- memoryview()
-- min()
-- next()
-- object()
-- oct()
-- open()
-- ord()
-- pow()
-- print()
-- property()
-- range()
-- repr()
-- reversed()
-- round()
-- set()
-- setattr()
-- slice()
-- sorted()
-- staticmethod()
-- str()
-- sum()
-- tuple()
-- type()
-- vars()
-- zip()
-
----------------------------------------------------
-
-# Commonly Used Variables
--------------------------
-- True
-- False
-- None
-- range()
-- int()
-- float()
-- str()
-- list()
-- dict()
-- tuple()
-- set()
-- bool()
-- complex()
-
----------------------------------------------------
-
-# Built-In Functions
--------------------
-- abs()
-- all()
-- any()
-- ascii()
-- bin()
-- bool()
-- bytearray()
-- bytes()
-- chr()
-- classmethod()
-- compile()
-- complex()
-- delattr()
-- dict()
-- dir()
-- divmod()
-- enumerate()
-- eval()
-- exec()
-- filter()
-- float()
-- format()
-- frozenset()
-- getattr()
-- globals()
-- hasattr()
-- hash()
-- help()
-- hex()
-- id()
-- input()
-- int()
-- isinstance()
-- issubclass()
-- iter()
-- len()
-- list()
-- locals()
-- map()
-- max()
-- memoryview()
-- min()
-- next()
-- object()
-- oct()
-- open()
-- ord()
-- pow()
-- print()
-- property()
-- range()
-- repr()
-- reversed()
-- round()
-- set()
-- setattr()
-- slice()
-- sorted()
-- staticmethod()
-- str()
-- sum()
-- tuple()
-- type()
-- vars()
-- zip()
+08. Variables
+Main points
+- A variable name refers to an object in Python.
+- Assignment uses =.
+- Python is dynamically typed; a name can later refer to an object of a different type.
+- Common built-in types include int, float, str, bool, list, tuple, dict, and set.
+- Python is case-sensitive: sample and Sample are different names.
+- Use type() to inspect an object's type.
 """
+
+
+# Integer
+sample_count = 10
+
+# Floating-point number
+ph_value = 7.4
+
+# String
+organism = "Arabidopsis thaliana"
+
+# Boolean
+is_sample_processed = True
+
+# List
+gene_expression = [2.1, 3.4, 1.8]
+
+# Dictionary
+sample = {
+    "id": "S001",
+    "temperature": 25.0
+}
+
+# Display values and their types
+print(sample_count, type(sample_count))
+print(ph_value, type(ph_value))
+print(organism, type(organism))
+print(is_sample_processed, type(is_sample_processed))
+print(gene_expression, type(gene_expression))
+print(sample, type(sample))
+
+# Reassign a name to a different type of object
+result = 100
+print(result, type(result))
+
+result = "Completed"
+print(result, type(result))

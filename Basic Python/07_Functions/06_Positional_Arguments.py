@@ -1,90 +1,46 @@
-class UniversityPositionalArguments:
-    def __init__(self, plant_species: str) -> None:
-        self.plant_species = plant_species
 
-    def compute_biomass_index(self, height_cm: float, leaf_count: int, stem_diameter_mm: float) -> float:
-        return height_cm * 0.4 + leaf_count * 1.5 + stem_diameter_mm * 0.2
+"""
+06. Positional Arguments
 
-    @staticmethod
-    def run() -> None:
-        plant = UniversityPositionalArguments("Zea mays")
-        index = plant.compute_biomass_index(120.0, 14, 18.5)
-        print("University - biomass index:", index)
+Main points
+- Positional arguments are matched to parameters by their order.
+- The first positional argument goes to the first parameter, and so on.
+- Required positional parameters generally must receive values.
+- Too few or too many arguments can raise TypeError.
+- Positional arguments are concise when the parameter order is obvious.
+- Use keyword arguments when the meaning of values might be unclear.
+"""
 
-
-class InterviewPositionalArguments:
-    def __init__(self) -> None:
-        self.sequences: list[str] = []
-
-    def add_sequence(self, sequence: str) -> None:
-        self.sequences.append(sequence)
-
-    def align_pair(self, sequence_a: str, sequence_b: str) -> int:
-        matches = 0
-        shortest_length = min(len(sequence_a), len(sequence_b))
-        for index in range(shortest_length):
-            if sequence_a[index] == sequence_b[index]:
-                matches += 1
-        return matches
-
-    @staticmethod
-    def run() -> None:
-        aligner = InterviewPositionalArguments()
-        aligner.add_sequence("ATCGGGA")
-        aligner.add_sequence("ATCGTGA")
-
-        correct_order_matches = aligner.align_pair("ATCGGGA", "ATCGTGA")
-        print("Interview - matches (correct order):", correct_order_matches)
-
-        # Demonstrating a common positional-argument mistake: swapping arguments
-        # silently changes which value represents "reference" vs "candidate".
-        # This is safe here because the function is symmetric, but it is called
-        # out explicitly to show why argument order matters.
-        swapped_order_matches = aligner.align_pair("ATCGTGA", "ATCGGGA")
-        print("Interview - matches (swapped order, same result here):", swapped_order_matches)
-
-        mismatched_lengths = aligner.align_pair("ATCG", "ATCGGGA")
-        print("Interview - matches (different lengths):", mismatched_lengths)
+# Example 1: Calculate a dilution factor.
+def calculate_dilution_factor(initial_concentration, final_concentration):
+    return initial_concentration / final_concentration
 
 
-class IndustryPositionalArguments:
-    """Performs unit-aware conversions for laboratory measurement pipelines."""
+dilution_factor = calculate_dilution_factor(100.0, 10.0)
+print("Dilution factor:", dilution_factor)
 
-    def __init__(self, lab_name: str) -> None:
-        self.lab_name = lab_name
+# The first argument is initial_concentration.
+# The second argument is final_concentration.
 
-    def convert_concentration(
-        self, value: float, from_unit: str, to_unit: str
-    ) -> float:
-        conversion_to_molar = {
-            "M": 1.0,
-            "mM": 1e-3,
-            "uM": 1e-6,
-            "nM": 1e-9,
-        }
-        if from_unit not in conversion_to_molar or to_unit not in conversion_to_molar:
-            raise ValueError(f"Unsupported unit conversion: {from_unit} -> {to_unit}")
-        value_in_molar = value * conversion_to_molar[from_unit]
-        return value_in_molar / conversion_to_molar[to_unit]
-
-    def build_conversion_record(
-        self, value: float, from_unit: str, to_unit: str
-    ) -> dict[str, object]:
-        converted_value = self.convert_concentration(value, from_unit, to_unit)
-        return {
-            "lab": self.lab_name,
-            "original": f"{value} {from_unit}",
-            "converted": f"{converted_value} {to_unit}",
-        }
-
-    @staticmethod
-    def run() -> None:
-        converter = IndustryPositionalArguments("Biochemistry Core Lab")
-        record = converter.build_conversion_record(5.0, "mM", "uM")
-        print("Industry - conversion record:", record)
+# Example 2: Calculate fold change.
+def calculate_fold_change(treated, control):
+    return treated / control
 
 
-if __name__ == "__main__":
-    UniversityPositionalArguments.run()
-    InterviewPositionalArguments.run()
-    IndustryPositionalArguments.run()
+fold_change = calculate_fold_change(20.0, 5.0)
+print("Fold change:", fold_change)
+
+# Reversing the order changes the result.
+reverse_fold_change = calculate_fold_change(5.0, 20.0)
+print("Reversed calculation:", reverse_fold_change)
+
+# Example 3: Process sample identifiers.
+def compare_samples(sample_a, sample_b):
+    print("First sample:", sample_a)
+    print("Second sample:", sample_b)
+
+
+compare_samples("CONTROL_01", "TREATMENT_01")
+
+# For complex scientific calculations, choose parameter names carefully
+# and document the expected units.

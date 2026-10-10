@@ -1,77 +1,43 @@
-"""Demonstrations of the built-in chr() function using scientific Unicode symbols."""
+"""
+TOPIC: chr()
 
+MAIN POINTS
+- chr() converts a valid Unicode code point into a string character.
+- Valid code points range from 0 to 0x10FFFF.
+- chr() raises ValueError when the integer is outside that range.
+- It is useful for understanding character encoding and text processing.
+- DNA letters are Unicode characters, but chr() is not a DNA-specific function.
+"""
 
-class UniversityChr:
-    """Teach the fundamental behavior of chr() for code-point-to-character conversion."""
+# Example 1: Convert integer code points into characters.
+print(chr(65))
+print(chr(71))
+print(chr(84))
+print(chr(67))
 
-    def __init__(self, code_point: int) -> None:
-        self.code_point = code_point
+# Example 2: Construct a DNA string from character codes.
+dna_codes = [65, 84, 71, 67]
 
-    def to_character(self) -> str:
-        return chr(self.code_point)
+dna_sequence = "".join(
+    chr(code)
+    for code in dna_codes
+)
 
-    @staticmethod
-    def run() -> None:
-        processor = UniversityChr(code_point=946)  # Greek small letter beta
-        print(f"chr(946) -> {processor.to_character()} (used in beta-diversity notation)")
+print("DNA sequence:", dna_sequence)
 
+# Example 3: Convert ASCII codes for a gene identifier.
+gene_codes = [66, 82, 67, 65, 49]
 
-class InterviewChr:
-    """Unicode-aware processing: convert a range of code points safely."""
+gene_id = "".join(chr(code) for code in gene_codes)
 
-    @staticmethod
-    def safe_chr(code_point: int) -> str | None:
-        """Return the character for a code point, or None if it is invalid."""
-        if not (0 <= code_point <= 0x10FFFF):
-            return None
-        return chr(code_point)
+print("Gene ID:", gene_id)
 
-    @staticmethod
-    def greek_letter_sequence(start_code_point: int, count: int) -> list[str]:
-        return [chr(start_code_point + offset) for offset in range(count)]
+# Example 4: Unicode works beyond ASCII.
+print(chr(945))   # Greek lowercase alpha
+print(chr(946))   # Greek lowercase beta
 
-    @staticmethod
-    def run() -> None:
-        valid_result = InterviewChr.safe_chr(956)  # micro sign, used in µg, µL
-        invalid_result = InterviewChr.safe_chr(-1)
-
-        print(f"Valid code point 956: {valid_result}")
-        print(f"Invalid code point -1: {invalid_result}")
-
-        alpha_start = 0x03B1  # Greek small letter alpha
-        print(f"Greek letters alpha-delta: {InterviewChr.greek_letter_sequence(alpha_start, 4)}")
-
-
-class IndustryChr:
-    """Safe scientific text/symbol generation for reporting workflows."""
-
-    SYMBOL_CODE_POINTS: dict[str, int] = {
-        "micro": 0x00B5,   # µ, e.g. µg, µL, µm
-        "alpha": 0x03B1,   # α, e.g. significance level
-        "beta": 0x03B2,    # β, e.g. beta-diversity
-        "delta": 0x0394,   # Δ, e.g. change in concentration
-        "degree": 0x00B0,  # °, e.g. temperature
-    }
-
-    def symbol(self, name: str) -> str:
-        """Return the character for a known scientific symbol name."""
-        code_point = self.SYMBOL_CODE_POINTS.get(name)
-        if code_point is None:
-            raise ValueError(f"Unknown scientific symbol name: {name}")
-        return chr(code_point)
-
-    def format_measurement(self, value: float, unit_symbol_name: str, unit_suffix: str) -> str:
-        return f"{value}{self.symbol(unit_symbol_name)}{unit_suffix}"
-
-    @staticmethod
-    def run() -> None:
-        formatter = IndustryChr()
-        print(formatter.format_measurement(12.5, "micro", "g"))
-        print(formatter.format_measurement(37.0, "degree", "C"))
-        print(f"Significance level symbol: {formatter.symbol('alpha')} = 0.05")
-
-
-if __name__ == "__main__":
-    UniversityChr.run()
-    InterviewChr.run()
-    IndustryChr.run()
+# Example 5: Reject an invalid code point.
+try:
+    print(chr(0x110000))
+except ValueError as error:
+    print("Invalid Unicode code point:", error)

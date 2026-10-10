@@ -1,41 +1,47 @@
-﻿"""Basic strings and biological sequence processing."""
 
+"""
+05. Strings
 
-class StringUniversity:
-    def __init__(self, sequence: str) -> None:
-        self.sequence = sequence
+Main points
+- str represents text in Python.
+- Strings can be enclosed in single, double, or triple quotes.
+- Strings are ordered sequences of Unicode code points.
+- Strings are immutable: individual characters cannot be changed in place.
+- The + operator concatenates strings.
+- The * operator repeats strings.
+- len() returns the number of characters in a string.
+"""
 
-    def length(self) -> int:
-        return len(self.sequence)
+# Create strings
+organism = "Arabidopsis thaliana"
+message = 'Python is useful for scientific computing.'
+description = """Plant science combines
+biology, chemistry, and computation."""
 
+print(organism)
+print(message)
+print(description)
 
-class StringInterview:
-    def __init__(self, a: str, b: str) -> None:
-        self.a = a
-        self.b = b
+# Concatenation
+first_name = "Sunil"
+last_name = "Narayan"
 
-    def concatenate(self) -> str:
-        return self.a + self.b
+full_name = first_name + " " + last_name
+print("Full name:", full_name)
 
-    def are_equal(self) -> bool:
-        return self.a == self.b
+# Repetition
+print("Python! " * 3)
 
+# String length
+print("Length:", len(organism))
 
-class StringIndustry:
-    def __init__(self, sample_id: str, species: str, sequence: str) -> None:
-        self.sample_id = sample_id
-        self.species = species
-        self.sequence = sequence
+# Strings are immutable
+sequence = "ATGC"
+print("Original sequence:", sequence)
 
-    def header(self) -> str:
-        return f">{self.sample_id} {self.species}"
+# This creates a new string rather than modifying the original.
+sequence = "C" + sequence[1:]
+print("Updated sequence:", sequence)
 
-
-if __name__ == "__main__":
-    print(StringUniversity("ATGC").length())
-
-    s = StringInterview("ATGC", "ATGC")
-    print(s.concatenate())
-    print(s.are_equal())
-
-    print(StringIndustry("S001", "Wheat", "ATGC").header())
+# Type inspection
+print(type(organism))

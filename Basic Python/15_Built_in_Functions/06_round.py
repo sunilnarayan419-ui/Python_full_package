@@ -1,82 +1,49 @@
-"""Demonstrations of the built-in round() function using scientific measurement data."""
+"""
+TOPIC: round()
 
+MAIN POINTS
+- round(number, ndigits) rounds a numeric value.
+- ndigits specifies the number of decimal places.
+- If ndigits is omitted, the result is rounded to an integer.
+- Python uses round-half-to-even for exact halfway cases.
+- Floating-point representation can affect apparent decimal results.
+- Rounding is useful for displaying scientific measurements, but preserve raw values for calculations.
+"""
 
-class UniversityRound:
-    """Teach the fundamental behavior of round() on biological measurements."""
+# Example 1: Round a GC percentage.
+dna_sequence = "ATGCGCGT"
 
-    def __init__(self, raw_value: float) -> None:
-        self.raw_value = raw_value
+gc_count = dna_sequence.count("G") + dna_sequence.count("C")
+gc_percentage = gc_count / len(dna_sequence) * 100
 
-    def rounded_value(self) -> float:
-        return round(self.raw_value)
+print("Original GC percentage:", gc_percentage)
+print("Rounded GC percentage:", round(gc_percentage, 2))
 
-    @staticmethod
-    def run() -> None:
-        processor = UniversityRound(raw_value=58.678)
-        print(f"Raw measurement: {processor.raw_value}")
-        print(f"Rounded measurement: {processor.rounded_value()}")
+# Example 2: Round experimental measurements.
+expression_values = [24.6789, 18.2345, 42.8765, 35.1234]
 
+rounded_values = [
+    round(value, 2)
+    for value in expression_values
+]
 
-class InterviewRound:
-    """Round measurements to a controlled, configurable decimal precision."""
+print("Rounded expression values:", rounded_values)
 
-    def __init__(self, precision: int) -> None:
-        self.precision = precision
+# Example 3: Compare rounding precision.
+measurement = 3.1415926535
 
-    def round_measurement(self, value: float) -> float:
-        return round(value, self.precision)
+print(round(measurement))
+print(round(measurement, 2))
+print(round(measurement, 4))
 
-    def round_batch(self, values: list[float]) -> list[float]:
-        """Round a batch of measurements, skipping non-numeric entries."""
-        return [
-            self.round_measurement(value)
-            for value in values
-            if isinstance(value, (int, float))
-        ]
+# Example 4: Demonstrate halfway behavior.
+print(round(2.5))
+print(round(3.5))
+print(round(2.675, 2))
 
-    @staticmethod
-    def run() -> None:
-        analyzer = InterviewRound(precision=2)
+# Example 5: Keep raw and display values separately.
+raw_concentration = 42.56789
+display_concentration = round(raw_concentration, 2)
 
-        case_one = [3.14159, 2.71828, 1.41421]
-        case_two: list[float] = []
-
-        print(f"Rounded batch (case 1): {analyzer.round_batch(case_one)}")
-        print(f"Rounded batch (case 2, empty): {analyzer.round_batch(case_two)}")
-
-
-class IndustryRound:
-    """Normalize and format scientific measurements for reporting purposes."""
-
-    def __init__(self, report_precision: int) -> None:
-        self.report_precision = report_precision
-
-    def normalize_report(self, measurements: dict[str, float]) -> dict[str, float]:
-        """Return a new dict with each measurement rounded for reporting.
-
-        Note: this does not alter the original underlying scientific data;
-        it only affects the value used in the generated report.
-        """
-        return {
-            key: round(value, self.report_precision)
-            for key, value in measurements.items()
-        }
-
-    @staticmethod
-    def run() -> None:
-        reporter = IndustryRound(report_precision=3)
-        raw_measurements = {
-            "gene_expression": 4.567891,
-            "concentration_mg_ml": 12.345678,
-            "purity_ratio": 0.998765,
-        }
-
-        report = reporter.normalize_report(raw_measurements)
-        for key, value in report.items():
-            print(f"{key}: {value}")
-
-
-if __name__ == "__main__":
-    UniversityRound.run()
-    InterviewRound.run()
-    IndustryRound.run()
+print("Raw concentration:", raw_concentration)
+print("Display concentration:", display_concentration)
